@@ -101,7 +101,10 @@ public class EditCommand extends Command {
         Address updatedAddress = editPersonDescriptor.getAddress().orElse(personToEdit.getAddress());
         Set<Tag> updatedTags = editPersonDescriptor.getTags().orElse(personToEdit.getTags());
 
-        return new Person(updatedName, updatedPhone, updatedEmail, updatedAddress, updatedTags);
+        // Adapted from AB3 AddRemark tutorial integration:
+        // edit should preserve existing remark unless remark command changes it.
+        return new Person(updatedName, updatedPhone, updatedEmail, updatedAddress, personToEdit.getRemark(),
+                updatedTags);
     }
 
     @Override

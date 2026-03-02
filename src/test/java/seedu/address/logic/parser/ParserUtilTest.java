@@ -18,6 +18,7 @@ import seedu.address.model.person.Address;
 import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Phone;
+import seedu.address.model.person.Remark;
 import seedu.address.model.tag.Tag;
 
 public class ParserUtilTest {
@@ -33,6 +34,7 @@ public class ParserUtilTest {
     private static final String VALID_EMAIL = "rachel@example.com";
     private static final String VALID_TAG_1 = "friend";
     private static final String VALID_TAG_2 = "neighbour";
+    private static final String VALID_REMARK = "Helpful teammate";
 
     private static final String WHITESPACE = " \t\r\n";
 
@@ -169,6 +171,17 @@ public class ParserUtilTest {
         String tagWithWhitespace = WHITESPACE + VALID_TAG_1 + WHITESPACE;
         Tag expectedTag = new Tag(VALID_TAG_1);
         assertEquals(expectedTag, ParserUtil.parseTag(tagWithWhitespace));
+    }
+
+    @Test
+    public void parseRemark_null_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> ParserUtil.parseRemark(null));
+    }
+
+    @Test
+    public void parseRemark_validValue_returnsRemark() throws Exception {
+        Remark expectedRemark = new Remark(VALID_REMARK);
+        assertEquals(expectedRemark, ParserUtil.parseRemark(VALID_REMARK));
     }
 
     @Test
