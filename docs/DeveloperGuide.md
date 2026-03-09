@@ -477,8 +477,16 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 ### Glossary
 
-* **Mainstream OS**: Windows, Linux, Unix, MacOS
-* **Private contact detail**: A contact detail that is not meant to be shared with others
+|             Term              | Definition                                                                                                                       |
+|:-----------------------------:|:---------------------------------------------------------------------------------------------------------------------------------|
+|             Alias             | A user-defined shortcut that maps a short command to a longer target command.                                                    |
+|      Availability Window      | The time period during which a volunteer is available to participate in events.                                                  |
+|        Bulk Operation         | An operation that applies to multiple contacts within a single command (e.g., deleting or assigning several volunteers at once). |
+| CSV (Comma-Separated Values)  | A text file format used to store tabular data, used by the system for importing or exporting volunteer records.                  |
+|       Duplicate Contact       | A contact that shares critical identifying fields (e.g., phone number or email address) with an existing contact in the system.  |
+|         Mainstream OS         | Windows, Linux, Unix, macOS.                                                                                                     |
+|         Privacy Mode          | A display mode that masks sensitive personal details such as phone numbers or email addresses.                                   |
+|              Tag              | A user-defined label used to categorize volunteers (e.g., “first-aid”, “logistics”).                                             |
 
 --------------------------------------------------------------------------------------------------------------------
 
