@@ -76,6 +76,15 @@ public class IndexTest {
     }
 
     @Test
+    public void hashCodeMethod() {
+        Index index = Index.fromZeroBased(0);
+        assertEquals(Integer.hashCode(index.getZeroBased()), index.hashCode());
+
+        Index indexCopy = Index.fromZeroBased(0);
+        assertEquals(index.hashCode(), indexCopy.hashCode());
+    }
+
+    @Test
     public void toStringMethod() {
         Index index = Index.fromZeroBased(0);
         String expected = Index.class.getCanonicalName() + "{zeroBasedIndex=" + index.getZeroBased() + "}";

@@ -68,6 +68,11 @@ public class Index implements Comparable<Index> {
     }
 
     @Override
+    public int hashCode() {
+        return Integer.hashCode(zeroBasedIndex);
+    }
+
+    @Override
     public String toString() {
         return new ToStringBuilder(this).add("zeroBasedIndex", zeroBasedIndex).toString();
     }
