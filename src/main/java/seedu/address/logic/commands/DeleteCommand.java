@@ -2,6 +2,8 @@ package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import seedu.address.commons.core.index.Index;
@@ -12,7 +14,9 @@ import seedu.address.model.Model;
 import seedu.address.model.person.Person;
 
 /**
- * Deletes a person identified using it's displayed index from the address book.
+ * Deletes persons identified using their displayed indices from the address book.
+ *
+ * Assumption: Indices are provided in increasing order without duplicates.
  */
 public class DeleteCommand extends Command {
 
@@ -23,7 +27,8 @@ public class DeleteCommand extends Command {
             + "Parameters: INDEX (must be a positive integer)\n"
             + "Example: " + COMMAND_WORD + " 1";
 
-    public static final String MESSAGE_DELETE_PERSON_SUCCESS = "Deleted Person: %1$s";
+    public static final String MESSAGE_DELETE_PERSON_SUCCESS_PREFIX = "Deleted Person(s):";
+    public static final String MESSAGE_DELETE_PERSON_SUCCESS_DELIMITER = "\n";
 
     private final List<Index> targetIndices;
 
@@ -39,17 +44,30 @@ public class DeleteCommand extends Command {
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
         List<Person> lastShownList = model.getFilteredPersonList();
+        requireIndicesInRange(model);
+        List<Person> deletedPersons = new ArrayList<>();
 
-        // Assume that there is only one target index, as the parser does not support multiple indices yet.
-        Index targetIndex = targetIndices.get(0);
-
-        if (targetIndex.getZeroBased() >= lastShownList.size()) {
-            throw new CommandException(Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
+        // Delete persons in order of decreasing index to avoid index shifting issues.
+        for (int i = targetIndices.size() - 1; i >= 0; i--) {
+            Index index = targetIndices.get(i);
+            Person personToDelete = lastShownList.get(index.getZeroBased());
+            model.deletePerson(personToDelete);
+            deletedPersons.add(personToDelete);
         }
 
-        Person personToDelete = lastShownList.get(targetIndex.getZeroBased());
-        model.deletePerson(personToDelete);
-        return new CommandResult(String.format(MESSAGE_DELETE_PERSON_SUCCESS, Messages.format(personToDelete)));
+        // Arrange deleted persons in the order they were displayed in the list.
+        Collections.reverse(deletedPersons);
+
+        return new CommandResult(buildSuccessMessage(deletedPersons));
+    }
+
+    private void requireIndicesInRange(Model model) throws CommandException {
+        List<Person> lastShownList = model.getFilteredPersonList();
+        for (Index targetIndex : targetIndices) {
+            if (targetIndex.getZeroBased() >= lastShownList.size()) {
+                throw new CommandException(Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
+            }
+        }
     }
 
     @Override
@@ -72,5 +90,19 @@ public class DeleteCommand extends Command {
         return new ToStringBuilder(this)
                 .add("targetIndices", targetIndices)
                 .toString();
+    }
+
+    /**
+     * Builds a success message for the DeleteCommand execution, listing all deleted persons.
+     *
+     * @param deletedPersons The list of persons that were deleted, in the order they were displayed in the list.
+     * @return A formatted success message listing all deleted persons.
+     */
+    public static String buildSuccessMessage(List<Person> deletedPersons) {
+        StringBuilder sb = new StringBuilder(MESSAGE_DELETE_PERSON_SUCCESS_PREFIX);
+        for (Person person : deletedPersons) {
+            sb.append(MESSAGE_DELETE_PERSON_SUCCESS_DELIMITER).append(Messages.format(person));
+        }
+        return sb.toString();
     }
 }
