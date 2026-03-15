@@ -78,9 +78,9 @@ public class AddCommandIntegrationTest {
     public void execute_duplicatePersonByPhone_throwsCommandException() {
         Person personInList = model.getAddressBook().getPersonList().get(0);
         Person duplicateByPhone = new PersonBuilder(personInList)
-            .withName("Sarah Teo")
-            .withEmail("sarah.teo@example.com")
-            .build();
+                .withName("Sarah Teo")
+                .withEmail("sarah.teo@example.com")
+                .build();
 
         assertCommandFailure(new AddCommand(duplicateByPhone), model,
             AddCommand.MESSAGE_DUPLICATE_PERSON);
@@ -90,10 +90,10 @@ public class AddCommandIntegrationTest {
     public void execute_duplicatePersonByPhoneAndEmail_throwsCommandException() {
         Person personInList = model.getAddressBook().getPersonList().get(0);
         Person duplicateByBoth = new PersonBuilder(personInList)
-            .withName("Ethan Chua")
-            .withAddress("39 Yishun Ring Rd")
-            .withNotes("Experienced event runner")
-            .build();
+                .withName("Ethan Chua")
+                .withAddress("39 Yishun Ring Rd")
+                .withNotes("Experienced event runner")
+                .build();
 
         assertCommandFailure(new AddCommand(duplicateByBoth), model,
             AddCommand.MESSAGE_DUPLICATE_PERSON);

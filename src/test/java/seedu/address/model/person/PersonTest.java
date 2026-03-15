@@ -61,30 +61,30 @@ public class PersonTest {
 
         // same email ignoring case, all other attributes different -> returns true
         editedAlice = new PersonBuilder(ALICE).withName(VALID_NAME_BOB).withPhone(VALID_PHONE_BOB)
-            .withEmail(ALICE.getEmail().value.toUpperCase()).withAddress(VALID_ADDRESS_BOB)
-            .withRole(VALID_ROLE_BOB).withNotes(VALID_NOTES_BOB).withTags(VALID_TAG_HUSBAND).build();
+                .withEmail(ALICE.getEmail().value.toUpperCase()).withAddress(VALID_ADDRESS_BOB)
+                .withRole(VALID_ROLE_BOB).withNotes(VALID_NOTES_BOB).withTags(VALID_TAG_HUSBAND).build();
         assertTrue(ALICE.isSamePerson(editedAlice));
 
         // same email with a different phone -> returns true
         editedAlice = new PersonBuilder(ALICE)
-            .withName("Noah Lim")
-            .withPhone("93334444")
-            .withEmail(ALICE.getEmail().value)
-            .withAddress("28 Clementi Ave 3")
-            .withRole("Event Coordinator")
-            .withNotes("Available on weekends")
-            .withTags("logistics")
-            .build();
+                .withName("Noah Lim")
+                .withPhone("93334444")
+                .withEmail(ALICE.getEmail().value)
+                .withAddress("28 Clementi Ave 3")
+                .withRole("Event Coordinator")
+                .withNotes("Available on weekends")
+                .withTags("logistics")
+                .build();
         assertTrue(ALICE.isSamePerson(editedAlice));
 
         // same phone and same email, all other attributes different -> returns true
         editedAlice = new PersonBuilder(ALICE)
-            .withName("Maya Tan")
-            .withAddress("91 Bedok North Ave 2")
-            .withRole("Volunteer")
-            .withNotes("Can mentor new joiners")
-            .withTags("mentors")
-            .build();
+                .withName("Maya Tan")
+                .withAddress("91 Bedok North Ave 2")
+                .withRole("Volunteer")
+                .withNotes("Can mentor new joiners")
+                .withTags("mentors")
+                .build();
         assertTrue(ALICE.isSamePerson(editedAlice));
 
         // same name only, phone and email different -> returns false

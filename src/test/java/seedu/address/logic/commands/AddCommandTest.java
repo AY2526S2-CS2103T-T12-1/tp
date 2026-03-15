@@ -58,8 +58,8 @@ public class AddCommandTest {
     public void execute_duplicatePersonByPhone_throwsCommandException() {
         Person existingPerson = new PersonBuilder().build();
         Person duplicateByPhone = new PersonBuilder(existingPerson)
-            .withName("Noah Lim")
-            .withEmail("noah.lim@example.com")
+                .withName("Noah Lim")
+                .withEmail("noah.lim@example.com")
                 .build();
         AddCommand addCommand = new AddCommand(duplicateByPhone);
         ModelStub modelStub = new ModelStubWithPerson(existingPerson);
