@@ -45,4 +45,58 @@ public class AddCommandIntegrationTest {
                 AddCommand.MESSAGE_DUPLICATE_PERSON);
     }
 
+    @Test
+    public void execute_duplicatePersonByEmailIgnoringCase_throwsCommandException() {
+        Person personInList = model.getAddressBook().getPersonList().get(0);
+        Person duplicateByEmail = new PersonBuilder(personInList)
+                .withName("Noah Lim")
+                .withPhone("80001111")
+                .withEmail(personInList.getEmail().value.toUpperCase())
+                .build();
+
+        assertCommandFailure(new AddCommand(duplicateByEmail), model,
+                AddCommand.MESSAGE_DUPLICATE_PERSON);
+    }
+
+    @Test
+    public void execute_sameNameDifferentPhoneAndEmail_success() {
+        Person personInList = model.getAddressBook().getPersonList().get(0);
+        Person sameNameDifferentContacts = new PersonBuilder(personInList)
+                .withPhone("80002222")
+                .withEmail("alice.pauline.alt@example.com")
+                .build();
+
+        Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
+        expectedModel.addPerson(sameNameDifferentContacts);
+
+        assertCommandSuccess(new AddCommand(sameNameDifferentContacts), model,
+                String.format(AddCommand.MESSAGE_SUCCESS, Messages.format(sameNameDifferentContacts)),
+                expectedModel);
+    }
+
+    @Test
+    public void execute_duplicatePersonByPhone_throwsCommandException() {
+        Person personInList = model.getAddressBook().getPersonList().get(0);
+        Person duplicateByPhone = new PersonBuilder(personInList)
+                .withName("Sarah Teo")
+                .withEmail("sarah.teo@example.com")
+                .build();
+
+        assertCommandFailure(new AddCommand(duplicateByPhone), model,
+                AddCommand.MESSAGE_DUPLICATE_PERSON);
+    }
+
+    @Test
+    public void execute_duplicatePersonByPhoneAndEmail_throwsCommandException() {
+        Person personInList = model.getAddressBook().getPersonList().get(0);
+        Person duplicateByBoth = new PersonBuilder(personInList)
+                .withName("Ethan Chua")
+                .withAddress("39 Yishun Ring Rd")
+                .withNotes("Experienced event runner")
+                .build();
+
+        assertCommandFailure(new AddCommand(duplicateByBoth), model,
+                AddCommand.MESSAGE_DUPLICATE_PERSON);
+    }
+
 }

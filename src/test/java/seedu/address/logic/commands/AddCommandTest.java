@@ -4,6 +4,7 @@ import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_PHONE_AMY;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalPersons.ALICE;
 
@@ -49,6 +50,48 @@ public class AddCommandTest {
         Person validPerson = new PersonBuilder().build();
         AddCommand addCommand = new AddCommand(validPerson);
         ModelStub modelStub = new ModelStubWithPerson(validPerson);
+
+        assertThrows(CommandException.class, AddCommand.MESSAGE_DUPLICATE_PERSON, () -> addCommand.execute(modelStub));
+    }
+
+    @Test
+    public void execute_duplicatePersonByPhone_throwsCommandException() {
+        Person existingPerson = new PersonBuilder().build();
+        Person duplicateByPhone = new PersonBuilder(existingPerson)
+                .withName("Noah Lim")
+                .withEmail("noah.lim@example.com")
+                .build();
+        AddCommand addCommand = new AddCommand(duplicateByPhone);
+        ModelStub modelStub = new ModelStubWithPerson(existingPerson);
+
+        assertThrows(CommandException.class, AddCommand.MESSAGE_DUPLICATE_PERSON, () -> addCommand.execute(modelStub));
+    }
+
+    @Test
+    public void execute_duplicatePersonByEmailIgnoringCase_throwsCommandException() {
+        Person existingPerson = new PersonBuilder().build();
+        Person duplicateByEmail = new PersonBuilder(existingPerson)
+                .withName("Sarah Teo")
+                .withPhone(VALID_PHONE_AMY)
+                .withEmail(existingPerson.getEmail().value.toUpperCase())
+                .build();
+        AddCommand addCommand = new AddCommand(duplicateByEmail);
+        ModelStub modelStub = new ModelStubWithPerson(existingPerson);
+
+        assertThrows(CommandException.class, AddCommand.MESSAGE_DUPLICATE_PERSON, () -> addCommand.execute(modelStub));
+    }
+
+    @Test
+    public void execute_duplicatePersonByPhoneAndEmail_throwsCommandException() {
+        Person existingPerson = new PersonBuilder().build();
+        Person duplicateByPhoneAndEmail = new PersonBuilder(existingPerson)
+                .withName("Alicia Goh")
+                .withAddress("18 Toa Payoh Lor 7")
+                .withRole("Outreach Volunteer")
+                .withNotes("Can support weekend events")
+                .build();
+        AddCommand addCommand = new AddCommand(duplicateByPhoneAndEmail);
+        ModelStub modelStub = new ModelStubWithPerson(existingPerson);
 
         assertThrows(CommandException.class, AddCommand.MESSAGE_DUPLICATE_PERSON, () -> addCommand.execute(modelStub));
     }

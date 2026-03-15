@@ -42,7 +42,8 @@ public class AddCommand extends Command {
             + PREFIX_NOTES + "Prefers morning shifts";
 
     public static final String MESSAGE_SUCCESS = "New person added: %1$s";
-    public static final String MESSAGE_DUPLICATE_PERSON = "This person already exists in the address book";
+    public static final String MESSAGE_DUPLICATE_PERSON =
+            "A duplicate person was found: phone already exists or email already exists";
 
     private final Person toAdd;
 
