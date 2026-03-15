@@ -83,7 +83,7 @@ public class AddCommandIntegrationTest {
                 .build();
 
         assertCommandFailure(new AddCommand(duplicateByPhone), model,
-            AddCommand.MESSAGE_DUPLICATE_PERSON);
+                AddCommand.MESSAGE_DUPLICATE_PERSON);
     }
 
     @Test
@@ -96,7 +96,7 @@ public class AddCommandIntegrationTest {
                 .build();
 
         assertCommandFailure(new AddCommand(duplicateByBoth), model,
-            AddCommand.MESSAGE_DUPLICATE_PERSON);
+                AddCommand.MESSAGE_DUPLICATE_PERSON);
     }
 
 }
