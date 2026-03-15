@@ -1,9 +1,12 @@
 package seedu.address.model.person;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_ADDRESS_BOB;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_EMAIL_AMY;
+import static seedu.address.logic.commands.CommandTestUtil.VALID_PHONE_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_TAG_HUSBAND;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalPersons.ALICE;
@@ -48,6 +51,13 @@ public class UniquePersonListTest {
     }
 
     @Test
+    public void contains_personWithSameNameButDifferentPhoneAndEmail_returnsFalse() {
+        uniquePersonList.add(ALICE);
+        Person editedAlice = new PersonBuilder(ALICE).withPhone(VALID_PHONE_AMY).withEmail(VALID_EMAIL_AMY).build();
+        assertFalse(uniquePersonList.contains(editedAlice));
+    }
+
+    @Test
     public void add_nullPerson_throwsNullPointerException() {
         assertThrows(NullPointerException.class, () -> uniquePersonList.add(null));
     }
@@ -56,6 +66,39 @@ public class UniquePersonListTest {
     public void add_duplicatePerson_throwsDuplicatePersonException() {
         uniquePersonList.add(ALICE);
         assertThrows(DuplicatePersonException.class, () -> uniquePersonList.add(ALICE));
+    }
+
+    @Test
+    public void add_personWithDuplicateEmailDifferentCase_throwsDuplicatePersonException() {
+        uniquePersonList.add(ALICE);
+        Person duplicateByEmail = new PersonBuilder(ALICE)
+                .withPhone(VALID_PHONE_AMY)
+                .withEmail(ALICE.getEmail().value.toUpperCase())
+                .build();
+        assertThrows(DuplicatePersonException.class, () -> uniquePersonList.add(duplicateByEmail));
+    }
+
+    @Test
+    public void add_personWithDuplicatePhoneDifferentEmail_throwsDuplicatePersonException() {
+        uniquePersonList.add(ALICE);
+        Person duplicateByPhone = new PersonBuilder(ALICE)
+                .withName("Noah Lim")
+                .withEmail("noah.lim@example.com")
+                .build();
+        assertThrows(DuplicatePersonException.class, () -> uniquePersonList.add(duplicateByPhone));
+    }
+
+    @Test
+    public void add_personWithDuplicatePhoneAndEmail_throwsDuplicatePersonException() {
+        uniquePersonList.add(ALICE);
+        Person duplicateByPhoneAndEmail = new PersonBuilder(ALICE)
+                .withName("Sarah Teo")
+                .withAddress("31 Bukit Batok St 11")
+                .withRole("Event Volunteer")
+                .withNotes("Prefers evening shifts")
+                .withTags("events")
+                .build();
+        assertThrows(DuplicatePersonException.class, () -> uniquePersonList.add(duplicateByPhoneAndEmail));
     }
 
     @Test
@@ -160,6 +203,28 @@ public class UniquePersonListTest {
     public void setPersons_listWithDuplicatePersons_throwsDuplicatePersonException() {
         List<Person> listWithDuplicatePersons = Arrays.asList(ALICE, ALICE);
         assertThrows(DuplicatePersonException.class, () -> uniquePersonList.setPersons(listWithDuplicatePersons));
+    }
+
+    @Test
+    public void setPersons_listWithEmailDuplicateIgnoringCase_throwsDuplicatePersonException() {
+        Person duplicateByEmail = new PersonBuilder(ALICE)
+                .withName("Maya Ong")
+                .withPhone(VALID_PHONE_AMY)
+                .withEmail(ALICE.getEmail().value.toUpperCase())
+                .build();
+        List<Person> listWithDuplicatePersons = Arrays.asList(ALICE, duplicateByEmail);
+        assertThrows(DuplicatePersonException.class, () -> uniquePersonList.setPersons(listWithDuplicatePersons));
+    }
+
+    @Test
+    public void setPersons_listWithSameNameDifferentPhoneAndEmail_success() {
+        Person sameNameDifferentContacts = new PersonBuilder(ALICE)
+                .withPhone(VALID_PHONE_AMY)
+                .withEmail(VALID_EMAIL_AMY)
+                .build();
+        List<Person> listWithoutDuplicates = Arrays.asList(ALICE, sameNameDifferentContacts);
+        assertDoesNotThrow(() -> uniquePersonList.setPersons(listWithoutDuplicates));
+        assertEquals(2, uniquePersonList.asUnmodifiableObservableList().size());
     }
 
     @Test
