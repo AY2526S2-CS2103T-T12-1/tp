@@ -44,6 +44,24 @@ public class AddCommandTest {
                 commandResult.getFeedbackToUser());
         assertEquals(Arrays.asList(validPerson), modelStub.personsAdded);
     }
+    @Test
+    public void execute_personWithRoleAndNotesAcceptedByModel_addSuccessful() throws Exception {
+        ModelStubAcceptingPersonAdded modelStub = new ModelStubAcceptingPersonAdded();
+        Person validPerson = new PersonBuilder()
+                .withName("John Tan")
+                .withPhone("91234567")
+                .withEmail("johntan@example.com")
+                .withAddress("123 Clementi Road")
+                .withRole("Coordinator")
+                .withNotes("Prefers morning shifts")
+                .build();
+
+        CommandResult commandResult = new AddCommand(validPerson).execute(modelStub);
+
+        assertEquals(String.format(AddCommand.MESSAGE_SUCCESS, Messages.format(validPerson)),
+                commandResult.getFeedbackToUser());
+        assertEquals(Arrays.asList(validPerson), modelStub.personsAdded);
+    }
 
     @Test
     public void execute_duplicatePerson_throwsCommandException() {
