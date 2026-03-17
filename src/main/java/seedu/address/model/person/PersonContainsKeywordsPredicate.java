@@ -2,6 +2,7 @@ package seedu.address.model.person;
 
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import seedu.address.commons.util.StringUtil;
 import seedu.address.commons.util.ToStringBuilder;
@@ -24,26 +25,18 @@ public class PersonContainsKeywordsPredicate implements Predicate<Person> {
     }
 
     private boolean matchesAnyField(Person person, String keyword) {
-        if (StringUtil.containsWordIgnoreCase(person.getName().fullName, keyword)) {
-            return true;
-        }
-        if (StringUtil.containsWordIgnoreCase(person.getPhone().value, keyword)) {
-            return true;
-        }
-        if (StringUtil.containsWordIgnoreCase(person.getEmail().value, keyword)) {
-            return true;
-        }
-        if (StringUtil.containsWordIgnoreCase(person.getAddress().value, keyword)) {
-            return true;
-        }
-        if (StringUtil.containsWordIgnoreCase(person.getRole().value, keyword)) {
-            return true;
-        }
-        if (StringUtil.containsWordIgnoreCase(person.getNotes().value, keyword)) {
-            return true;
-        }
-        return person.getTags().stream()
-                .anyMatch(tag -> StringUtil.containsWordIgnoreCase(tag.tagName, keyword));
+        Stream<String> simpleFields = Stream.of(
+                person.getName().fullName,
+                person.getPhone().value,
+                person.getEmail().value,
+                person.getAddress().value,
+                person.getRole().value,
+                person.getNotes().value
+        );
+        Stream<String> tagFields = person.getTags().stream()
+                .map(tag -> tag.tagName);
+        Stream<String> allFields = Stream.concat(simpleFields, tagFields);
+        return allFields.anyMatch(field -> StringUtil.containsWordIgnoreCase(field, keyword));
     }
 
     @Override
