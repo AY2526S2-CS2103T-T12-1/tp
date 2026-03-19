@@ -41,7 +41,7 @@ public class AddCommand extends Command {
             + PREFIX_ROLE + "Coordinator "
             + PREFIX_NOTES + "Prefers morning shifts";
 
-    public static final String MESSAGE_SUCCESS = "New person added: %1$s";
+    public static final String MESSAGE_SUCCESS = "Added person: %1$s";
     public static final String MESSAGE_DUPLICATE_PERSON =
             "A duplicate person was found: phone already exists or email already exists";
 
