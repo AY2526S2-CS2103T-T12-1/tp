@@ -25,9 +25,11 @@ public class PersonTest {
     private static final String VALID_NOTES_BOB = "Prefers morning shifts";
 
     @Test
-    public void asObservableList_modifyList_throwsUnsupportedOperationException() {
+    public void unmodifiableSets_modifySet_throwsUnsupportedOperationException() {
         Person person = new PersonBuilder().build();
         assertThrows(UnsupportedOperationException.class, () -> person.getTags().remove(0));
+        assertThrows(UnsupportedOperationException.class, () -> person.getAvailabilities().remove(null));
+        assertThrows(UnsupportedOperationException.class, () -> person.getRecords().remove(null));
     }
 
     @Test
@@ -152,13 +154,27 @@ public class PersonTest {
         // different notes -> returns false
         editedAlice = new PersonBuilder(ALICE).withNotes(VALID_NOTES_BOB).build();
         assertFalse(ALICE.equals(editedAlice));
+
+        // different availabilities -> returns false
+        editedAlice = new PersonBuilder(ALICE)
+                .withAvailabilities(new VolunteerAvailability(java.time.DayOfWeek.MONDAY,
+                java.time.LocalTime.NOON, java.time.LocalTime.MIDNIGHT)).build();
+        assertFalse(ALICE.equals(editedAlice));
+
+        // different records -> returns false
+        editedAlice = new PersonBuilder(ALICE)
+                .withRecords(new VolunteerRecord(java.time.LocalDateTime.now(),
+                java.time.LocalDateTime.now().plusHours(1))).build();
+        assertFalse(ALICE.equals(editedAlice));
     }
 
     @Test
     public void toStringMethod() {
         String expected = Person.class.getCanonicalName() + "{name=" + ALICE.getName() + ", phone=" + ALICE.getPhone()
                 + ", email=" + ALICE.getEmail() + ", address=" + ALICE.getAddress() + ", role=" + ALICE.getRole()
-                + ", notes=" + ALICE.getNotes() + ", tags=" + ALICE.getTags() + "}";
+                + ", notes=" + ALICE.getNotes() + ", tags=" + ALICE.getTags()
+                + ", availabilities=" + ALICE.getAvailabilities()
+                + ", records=" + ALICE.getRecords() + "}";
         assertEquals(expected, ALICE.toString());
     }
 

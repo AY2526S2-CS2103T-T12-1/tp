@@ -10,6 +10,8 @@ import seedu.address.model.person.Notes;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
 import seedu.address.model.person.Role;
+import seedu.address.model.person.VolunteerAvailability;
+import seedu.address.model.person.VolunteerRecord;
 import seedu.address.model.tag.Tag;
 import seedu.address.model.util.SampleDataUtil;
 
@@ -32,6 +34,8 @@ public class PersonBuilder {
     private Role role;
     private Notes notes;
     private Set<Tag> tags;
+    private Set<VolunteerAvailability> availabilities;
+    private Set<VolunteerRecord> records;
 
     /**
      * Creates a {@code PersonBuilder} with the default details.
@@ -44,6 +48,8 @@ public class PersonBuilder {
         role = new Role(DEFAULT_ROLE);
         notes = new Notes(DEFAULT_NOTES);
         tags = new HashSet<>();
+        availabilities = new HashSet<>();
+        records = new HashSet<>();
     }
 
     /**
@@ -57,6 +63,8 @@ public class PersonBuilder {
         role = personToCopy.getRole();
         notes = personToCopy.getNotes();
         tags = new HashSet<>(personToCopy.getTags());
+        availabilities = new HashSet<>(personToCopy.getAvailabilities());
+        records = new HashSet<>(personToCopy.getRecords());
     }
 
     /**
@@ -115,8 +123,26 @@ public class PersonBuilder {
         return this;
     }
 
+    /**
+     * Parses the {@code availabilities} into a {@code Set<VolunteerAvailability>}
+     * and set it to the {@code Person} that we are building.
+     */
+    public PersonBuilder withAvailabilities(VolunteerAvailability ... availabilities) {
+        this.availabilities = new HashSet<>(java.util.Arrays.asList(availabilities));
+        return this;
+    }
+
+    /**
+     * Parses the {@code records} into a {@code Set<VolunteerRecord>} and set it to the
+     * {@code Person} that we are building.
+     */
+    public PersonBuilder withRecords(VolunteerRecord ... records) {
+        this.records = new HashSet<>(java.util.Arrays.asList(records));
+        return this;
+    }
+
     public Person build() {
-        return new Person(name, phone, email, address, role, notes, tags);
+        return new Person(name, phone, email, address, role, notes, tags, availabilities, records);
     }
 
 }
