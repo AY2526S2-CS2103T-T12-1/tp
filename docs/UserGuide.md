@@ -93,6 +93,36 @@ Shows a list of all persons in RosterBolt.
 
 Format: `list`
 
+### Creating a command alias : `alias`
+
+Creates a custom alias for a built-in command or command template.
+
+Format: `alias SHORT TEMPLATE`
+
+* `SHORT` must be a lowercase command-word-style token.
+* `TEMPLATE` must start with an existing built-in command word.
+* Alias expansion replaces only the leading command word and appends the rest of the user input unchanged.
+* Aliases are persisted in `preferences.json`.
+
+Examples:
+* `alias ls list`
+* `alias rm delete`
+
+### Listing command aliases : `aliases`
+
+Lists all defined command aliases.
+
+Format: `aliases`
+
+### Removing a command alias : `unalias`
+
+Removes an existing command alias.
+
+Format: `unalias SHORT`
+
+Examples:
+* `unalias ls`
+
 ### Editing a person : `edit`
 
 Edits an existing person in RosterBolt.
@@ -192,9 +222,12 @@ _Details coming soon ..._
 Action | Format, Examples
 --------|------------------
 **Add** | `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​` <br> e.g., `add n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 t/friend t/colleague`
+**Alias** | `alias SHORT TEMPLATE`<br> e.g., `alias ls list`
+**Aliases** | `aliases`
 **Clear** | `clear`
 **Delete** | `delete INDEX [MORE_INDICES]`<br> e.g., `delete 2 3`
 **Edit** | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com`
 **Find** | `find KEYWORD [MORE_KEYWORDS]`<br> e.g., `find James Jake`
 **List** | `list`
+**Unalias** | `unalias SHORT`<br> e.g., `unalias ls`
 **Help** | `help`
