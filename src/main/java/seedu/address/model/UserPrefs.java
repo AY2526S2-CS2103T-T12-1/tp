@@ -61,21 +61,33 @@ public class UserPrefs implements ReadOnlyUserPrefs {
         this.addressBookFilePath = addressBookFilePath;
     }
 
+    /**
+     * Returns an unmodifiable view of the command aliases.
+     */
     public Map<String, String> getCommandAliases() {
         return Collections.unmodifiableMap(commandAliases);
     }
 
+    /**
+     * Replaces the contents of the command alias registry with {@code commandAliases}.
+     */
     public void setCommandAliases(Map<String, String> commandAliases) {
         requireNonNull(commandAliases);
         this.commandAliases = new LinkedHashMap<>(commandAliases);
     }
 
+    /**
+      * Adds a command alias to the registry.
+      */
     public void setCommandAlias(String shortName, String template) {
         requireNonNull(shortName);
         requireNonNull(template);
         commandAliases.put(shortName, template);
     }
 
+    /**
+      * Removes a command alias from the registry.
+      */
     public void removeCommandAlias(String shortName) {
         requireNonNull(shortName);
         commandAliases.remove(shortName);
