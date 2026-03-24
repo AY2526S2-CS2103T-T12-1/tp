@@ -11,6 +11,7 @@ import static seedu.address.testutil.TypicalPersons.BENSON;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
@@ -39,12 +40,14 @@ public class ModelManagerTest {
         UserPrefs userPrefs = new UserPrefs();
         userPrefs.setAddressBookFilePath(Paths.get("address/book/file/path"));
         userPrefs.setGuiSettings(new GuiSettings(1, 2, 3, 4));
+        userPrefs.setCommandAlias("ls", "list");
         modelManager.setUserPrefs(userPrefs);
         assertEquals(userPrefs, modelManager.getUserPrefs());
 
         // Modifying userPrefs should not modify modelManager's userPrefs
         UserPrefs oldUserPrefs = new UserPrefs(userPrefs);
         userPrefs.setAddressBookFilePath(Paths.get("new/address/book/file/path"));
+        userPrefs.setCommandAlias("rm", "delete");
         assertEquals(oldUserPrefs, modelManager.getUserPrefs());
     }
 
@@ -70,6 +73,17 @@ public class ModelManagerTest {
         Path path = Paths.get("address/book/file/path");
         modelManager.setAddressBookFilePath(path);
         assertEquals(path, modelManager.getAddressBookFilePath());
+    }
+
+    @Test
+    public void commandAliases_modifyAliasRegistry_success() {
+        modelManager.setCommandAlias("ls", "list");
+        assertTrue(modelManager.hasCommandAlias("ls"));
+        assertEquals(Map.of("ls", "list"), modelManager.getCommandAliases());
+
+        modelManager.removeCommandAlias("ls");
+        assertFalse(modelManager.hasCommandAlias("ls"));
+        assertEquals(Map.of(), modelManager.getCommandAliases());
     }
 
     @Test
