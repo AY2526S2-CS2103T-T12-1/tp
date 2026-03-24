@@ -3,9 +3,11 @@ package seedu.address.logic.parser;
 import static java.util.Objects.requireNonNull;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_AVAILABILITY;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_NAME;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_PHONE;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_RECORD;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_TAG;
 
 import java.util.Collection;
@@ -17,6 +19,8 @@ import seedu.address.commons.core.index.Index;
 import seedu.address.logic.commands.EditCommand;
 import seedu.address.logic.commands.EditCommand.EditPersonDescriptor;
 import seedu.address.logic.parser.exceptions.ParseException;
+import seedu.address.model.person.VolunteerAvailability;
+import seedu.address.model.person.VolunteerRecord;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -32,7 +36,9 @@ public class EditCommandParser implements Parser<EditCommand> {
     public EditCommand parse(String args) throws ParseException {
         requireNonNull(args);
         ArgumentMultimap argMultimap =
-                ArgumentTokenizer.tokenize(args, PREFIX_NAME, PREFIX_PHONE, PREFIX_EMAIL, PREFIX_ADDRESS, PREFIX_TAG);
+                ArgumentTokenizer.tokenize(args,
+                PREFIX_NAME, PREFIX_PHONE, PREFIX_EMAIL, PREFIX_ADDRESS,
+                PREFIX_TAG, PREFIX_AVAILABILITY, PREFIX_RECORD);
 
         Index index;
 
@@ -59,6 +65,10 @@ public class EditCommandParser implements Parser<EditCommand> {
             editPersonDescriptor.setAddress(ParserUtil.parseAddress(argMultimap.getValue(PREFIX_ADDRESS).get()));
         }
         parseTagsForEdit(argMultimap.getAllValues(PREFIX_TAG)).ifPresent(editPersonDescriptor::setTags);
+        parseAvailabilitiesForEdit(argMultimap.getAllValues(PREFIX_AVAILABILITY))
+                .ifPresent(editPersonDescriptor::setAvailabilities);
+        parseRecordsForEdit(argMultimap.getAllValues(PREFIX_RECORD))
+                .ifPresent(editPersonDescriptor::setRecords);
 
         if (!editPersonDescriptor.isAnyFieldEdited()) {
             throw new ParseException(EditCommand.MESSAGE_NOT_EDITED);
@@ -80,6 +90,39 @@ public class EditCommandParser implements Parser<EditCommand> {
         }
         Collection<String> tagSet = tags.size() == 1 && tags.contains("") ? Collections.emptySet() : tags;
         return Optional.of(ParserUtil.parseTags(tagSet));
+    }
+
+    /**
+     * Parses {@code Collection<String> availabilities} into a {@code Set<VolunteerAvailability>}
+     * if {@code availabilities} is non-empty.
+     * If {@code availabilities} contain only one element which is an empty string, it will be parsed into an
+     * empty set.
+     */
+    private Optional<Set<VolunteerAvailability>> parseAvailabilitiesForEdit(Collection<String> availabilities)
+                throws ParseException {
+        assert availabilities != null;
+
+        if (availabilities.isEmpty()) {
+            return Optional.empty();
+        }
+        Collection<String> availabilitySet =
+                availabilities.size() == 1 && availabilities.contains("") ? Collections.emptySet() : availabilities;
+        return Optional.of(ParserUtil.parseVolunteerAvailabilities(availabilitySet));
+    }
+
+    /**
+     * Parses {@code Collection<String> records} into a {@code Set<VolunteerRecord>}
+     * if {@code records} is non-empty.
+     * If {@code records} contain only one element which is an empty string, it will be parsed into an empty set.
+     */
+    private Optional<Set<VolunteerRecord>> parseRecordsForEdit(Collection<String> records) throws ParseException {
+        assert records != null;
+
+        if (records.isEmpty()) {
+            return Optional.empty();
+        }
+        Collection<String> recordSet = records.size() == 1 && records.contains("") ? Collections.emptySet() : records;
+        return Optional.of(ParserUtil.parseVolunteerRecords(recordSet));
     }
 
 }

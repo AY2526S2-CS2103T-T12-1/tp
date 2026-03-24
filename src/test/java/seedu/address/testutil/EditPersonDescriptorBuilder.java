@@ -10,6 +10,8 @@ import seedu.address.model.person.Email;
 import seedu.address.model.person.Name;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.Phone;
+import seedu.address.model.person.VolunteerAvailability;
+import seedu.address.model.person.VolunteerRecord;
 import seedu.address.model.tag.Tag;
 
 /**
@@ -37,6 +39,8 @@ public class EditPersonDescriptorBuilder {
         descriptor.setEmail(person.getEmail());
         descriptor.setAddress(person.getAddress());
         descriptor.setTags(person.getTags());
+        descriptor.setAvailabilities(person.getAvailabilities());
+        descriptor.setRecords(person.getRecords());
     }
 
     /**
@@ -78,6 +82,30 @@ public class EditPersonDescriptorBuilder {
     public EditPersonDescriptorBuilder withTags(String... tags) {
         Set<Tag> tagSet = Stream.of(tags).map(Tag::new).collect(Collectors.toSet());
         descriptor.setTags(tagSet);
+        return this;
+    }
+
+    /**
+     * Parses the {@code availabilities} into a {@code Set<VolunteerAvailability>} and set it to the
+     * {@code EditPersonDescriptor} that we are building.
+     */
+    public EditPersonDescriptorBuilder withAvailabilities(String... availabilities) {
+        Set<VolunteerAvailability> availabilitySet = Stream.of(availabilities)
+                .map(VolunteerAvailability::fromString)
+                .collect(Collectors.toSet());
+        descriptor.setAvailabilities(availabilitySet);
+        return this;
+    }
+
+    /**
+     * Parses the {@code records} into a {@code Set<VolunteerRecord>} and set it to the
+     * {@code EditPersonDescriptor} that we are building.
+     */
+    public EditPersonDescriptorBuilder withRecords(String... records) {
+        Set<VolunteerRecord> recordSet = Stream.of(records)
+                .map(VolunteerRecord::fromString)
+                .collect(Collectors.toSet());
+        descriptor.setRecords(recordSet);
         return this;
     }
 
