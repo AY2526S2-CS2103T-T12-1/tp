@@ -123,6 +123,50 @@ public class StringUtilTest {
         assertTrue(StringUtil.containsWordIgnoreCase("AAA bBb ccc  bbb", "bbB"));
     }
 
+
+    //---------------- Tests for containsSubstringIgnoreCase --------------------------------------
+
+    @Test
+    public void containsSubstringIgnoreCase_nullSubstring_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> StringUtil.containsSubstringIgnoreCase("typical sentence",
+                null));
+    }
+
+    @Test
+    public void containsSubstringIgnoreCase_emptySubstring_throwsIllegalArgumentException() {
+        assertThrows(IllegalArgumentException.class, "Substring parameter cannot be empty", ()
+                -> StringUtil.containsSubstringIgnoreCase("typical sentence", "  "));
+    }
+
+    @Test
+    public void containsSubstringIgnoreCase_multipleWords_throwsIllegalArgumentException() {
+        assertThrows(IllegalArgumentException.class, "Substring parameter should be a single word", ()
+                -> StringUtil.containsSubstringIgnoreCase("typical sentence", "aaa BBB"));
+    }
+
+    @Test
+    public void containsSubstringIgnoreCase_nullSentence_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> StringUtil.containsSubstringIgnoreCase(null, "abc"));
+    }
+
+    @Test
+    public void containsSubstringIgnoreCase_validInputs_correctResult() {
+        // Empty sentence
+        assertFalse(StringUtil.containsSubstringIgnoreCase("", "abc"));
+        assertFalse(StringUtil.containsSubstringIgnoreCase("    ", "123"));
+
+        // No matching substring
+        assertFalse(StringUtil.containsSubstringIgnoreCase("aaa bbb ccc", "ddd"));
+
+        // Matches substrings within words
+        assertTrue(StringUtil.containsSubstringIgnoreCase("ABc def", "abc"));
+        assertTrue(StringUtil.containsSubstringIgnoreCase("ABc def", "B"));
+        assertTrue(StringUtil.containsSubstringIgnoreCase("  AAA   bBb   ccc  ", "bbb"));
+        assertTrue(StringUtil.containsSubstringIgnoreCase("Aaa", "aa"));
+        assertTrue(StringUtil.containsSubstringIgnoreCase("aaa bbb ccc", "  cC  "));
+    }
+
+
     //---------------- Tests for containsFuzzyWordIgnoreCase --------------------------------------
 
     @Test
@@ -181,6 +225,7 @@ public class StringUtilTest {
         assertFalse(StringUtil.containsFuzzyWordIgnoreCase("kitten", "sitting", 2));
         assertTrue(StringUtil.containsFuzzyWordIgnoreCase("kitten", "sitting", 3));
     }
+
 
     //---------------- Tests for getDetails --------------------------------------
 
