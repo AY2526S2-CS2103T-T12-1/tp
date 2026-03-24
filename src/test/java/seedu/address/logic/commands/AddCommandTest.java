@@ -27,6 +27,10 @@ import seedu.address.model.ReadOnlyUserPrefs;
 import seedu.address.model.person.Person;
 import seedu.address.testutil.PersonBuilder;
 
+/**
+ * Reused from Codex suggestions upon providing specifications
+ */
+
 public class AddCommandTest {
 
     @Test

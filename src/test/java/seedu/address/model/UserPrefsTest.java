@@ -7,6 +7,10 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
+/**
+ * Reused from Codex suggestions upon providing specifications
+ */
+
 public class UserPrefsTest {
 
     @Test

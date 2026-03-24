@@ -20,6 +20,10 @@ import seedu.address.commons.core.GuiSettings;
 import seedu.address.model.person.predicates.PersonContainsKeywordsPredicate;
 import seedu.address.testutil.AddressBookBuilder;
 
+/**
+ * Reused from Codex suggestions upon providing specifications
+ */
+
 public class ModelManagerTest {
 
     private ModelManager modelManager = new ModelManager();

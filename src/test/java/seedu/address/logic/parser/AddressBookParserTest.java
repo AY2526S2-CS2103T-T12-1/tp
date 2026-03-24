@@ -32,6 +32,10 @@ import seedu.address.testutil.EditPersonDescriptorBuilder;
 import seedu.address.testutil.PersonBuilder;
 import seedu.address.testutil.PersonUtil;
 
+/**
+ * Reused from Codex suggestions upon providing specifications
+ */
+
 public class AddressBookParserTest {
 
     private final AddressBookParser parser = new AddressBookParser();
