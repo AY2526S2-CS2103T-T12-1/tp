@@ -155,6 +155,44 @@ Classes used by multiple components are in the `seedu.address.commons` package.
 
 This section describes some noteworthy details on how certain features are implemented.
 
+### Find command
+
+The `find` command is implemented as a small pipeline that converts user input into a `PersonPredicate`, and then
+applies that predicate to the model's filtered person list. The diagram below summarizes the key classes and their
+relationships (diagram source: `docs/diagrams/FindCommandClassDiagram.puml`).
+
+![Find Command Class Diagram](images/FindCommandClassDiagram.png)
+
+#### Parsing flow
+
+1. `FindCommandParser` tokenizes the input and extracts the optional match type prefix (`m/`). If the prefix is
+present, the first token after `m/` is interpreted as the match type token and the remaining tokens become the
+keywords. If the prefix is absent, the entire preamble is treated as keywords and the default match type is used.
+2. `FindMatchType` maps the match type token to a concrete `PersonPredicate` via `createPredicate(...)`.
+3. `FindCommand` stores the predicate and executes by calling `Model#updateFilteredPersonList(predicate)`.
+
+#### Predicate structure
+
+All find predicates implement `PersonPredicate`, which is a `Predicate<Person>`. The current implementation provides a
+shared abstract base (`PersonContainsFieldsPredicate`) that:
+
+* iterates through each keyword
+* checks the keyword against multiple `Person` fields (e.g. name, phone, email, address, role, notes, tags)
+* delegates the actual field-matching logic to `matchesField(...)`
+
+Concrete predicates specialize only the `matchesField(...)` method, keeping the overall matching logic consistent and
+easy to extend.
+
+#### Extending find
+
+To add a new match type or predicate in the future:
+
+* implement a new `PersonPredicate` (or extend `PersonContainsFieldsPredicate` if it fits the same "match across fields"
+pattern)
+* add a new enum value and token in `FindMatchType` that returns the new predicate from `createPredicate(...)`
+* update any user-facing docs that mention match types (the parser logic does not need to change if the match type
+continues to be provided via `m/`)
+
 ### \[Proposed\] Undo/redo feature
 
 #### Proposed Implementation

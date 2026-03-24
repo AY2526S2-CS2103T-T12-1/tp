@@ -1,0 +1,28 @@
+@startuml
+!include style.puml
+skinparam arrowThickness 1.1
+skinparam arrowColor LOGIC_COLOR_T4
+skinparam classBackgroundColor LOGIC_COLOR
+
+package Logic as LogicPackage {
+Class FindCommand
+Class FindCommandParser
+Enum FindMatchType
+}
+
+package Model as ModelPackage {
+Interface PersonPredicate #MODEL_COLOR
+Abstract PersonContainsFieldsPredicate #MODEL_COLOR
+Class PersonContainsKeywordsPredicate #MODEL_COLOR
+Class PersonContainsSubstringsPredicate #MODEL_COLOR
+}
+
+FindCommandParser ..> FindMatchType : selects
+FindMatchType ..> PersonPredicate : createPredicate()
+FindCommandParser ..> FindCommand : creates
+FindCommand --> PersonPredicate : uses
+
+PersonContainsFieldsPredicate ..|> PersonPredicate
+PersonContainsKeywordsPredicate --|> PersonContainsFieldsPredicate
+PersonContainsSubstringsPredicate --|> PersonContainsFieldsPredicate
+@enduml
