@@ -23,9 +23,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import seedu.address.logic.commands.AddCommand;
+import seedu.address.logic.commands.AliasCommand;
+import seedu.address.logic.commands.AliasesCommand;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.DeleteCommand;
 import seedu.address.logic.commands.ListCommand;
+import seedu.address.logic.commands.UnaliasCommand;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.Model;
@@ -106,6 +109,52 @@ public class LogicManagerTest {
 
         UserPrefs readBack = new JsonUserPrefsStorage(temporaryFolder.resolve("userPrefs.json")).readUserPrefs().get();
         assertEquals(Map.of("ls", ListCommand.COMMAND_WORD), readBack.getCommandAliases());
+    }
+
+    @Test
+    public void execute_aliasCommandAndUseAlias_success() throws Exception {
+        Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
+        expectedModel.setCommandAlias("ls", ListCommand.COMMAND_WORD);
+
+        assertCommandSuccess("alias ls list",
+                String.format(AliasCommand.MESSAGE_SUCCESS, "ls", ListCommand.COMMAND_WORD),
+                expectedModel);
+        assertCommandSuccess("ls", ListCommand.MESSAGE_SUCCESS, expectedModel);
+    }
+
+    @Test
+    public void execute_aliasesCommand_success() throws Exception {
+        model.setCommandAlias("rm", DeleteCommand.COMMAND_WORD);
+        model.setCommandAlias("ls", ListCommand.COMMAND_WORD);
+
+        String expectedMessage = AliasesCommand.MESSAGE_ALIASES_HEADER
+                + "\nls -> " + ListCommand.COMMAND_WORD
+                + "\nrm -> " + DeleteCommand.COMMAND_WORD;
+        assertCommandSuccess(AliasesCommand.COMMAND_WORD, expectedMessage, model);
+    }
+
+    @Test
+    public void execute_unaliasCommand_success() throws Exception {
+        model.setCommandAlias("ls", ListCommand.COMMAND_WORD);
+
+        Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
+        assertCommandSuccess("unalias ls", String.format(UnaliasCommand.MESSAGE_SUCCESS, "ls"), expectedModel);
+    }
+
+    @Test
+    public void execute_duplicateAliasCommand_throwsCommandException() {
+        model.setCommandAlias("ls", ListCommand.COMMAND_WORD);
+        assertCommandException("alias ls list", AliasCommand.MESSAGE_DUPLICATE_ALIAS);
+    }
+
+    @Test
+    public void execute_reservedAliasName_throwsParseException() {
+        assertParseException("alias list help", AliasCommand.MESSAGE_RESERVED_ALIAS_NAME);
+    }
+
+    @Test
+    public void execute_invalidAliasTemplate_throwsParseException() {
+        assertParseException("alias l ls", AliasCommand.MESSAGE_INVALID_ALIAS_TEMPLATE);
     }
 
     @Test

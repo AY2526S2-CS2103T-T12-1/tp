@@ -14,6 +14,8 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.commands.AddCommand;
+import seedu.address.logic.commands.AliasCommand;
+import seedu.address.logic.commands.AliasesCommand;
 import seedu.address.logic.commands.ClearCommand;
 import seedu.address.logic.commands.DeleteCommand;
 import seedu.address.logic.commands.EditCommand;
@@ -22,6 +24,7 @@ import seedu.address.logic.commands.ExitCommand;
 import seedu.address.logic.commands.FindCommand;
 import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.ListCommand;
+import seedu.address.logic.commands.UnaliasCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.PersonContainsKeywordsPredicate;
@@ -38,6 +41,18 @@ public class AddressBookParserTest {
         Person person = new PersonBuilder().build();
         AddCommand command = (AddCommand) parser.parseCommand(PersonUtil.getAddCommand(person));
         assertEquals(new AddCommand(person), command);
+    }
+
+    @Test
+    public void parseCommand_alias() throws Exception {
+        AliasCommand command = (AliasCommand) parser.parseCommand(AliasCommand.COMMAND_WORD + " ls list");
+        assertEquals(new AliasCommand("ls", "list"), command);
+    }
+
+    @Test
+    public void parseCommand_aliases() throws Exception {
+        assertTrue(parser.parseCommand(AliasesCommand.COMMAND_WORD) instanceof AliasesCommand);
+        assertTrue(parser.parseCommand(AliasesCommand.COMMAND_WORD + " ignored") instanceof AliasesCommand);
     }
 
     @Test
@@ -86,6 +101,12 @@ public class AddressBookParserTest {
     public void parseCommand_list() throws Exception {
         assertTrue(parser.parseCommand(ListCommand.COMMAND_WORD) instanceof ListCommand);
         assertTrue(parser.parseCommand(ListCommand.COMMAND_WORD + " 3") instanceof ListCommand);
+    }
+
+    @Test
+    public void parseCommand_unalias() throws Exception {
+        UnaliasCommand command = (UnaliasCommand) parser.parseCommand(UnaliasCommand.COMMAND_WORD + " ls");
+        assertEquals(new UnaliasCommand("ls"), command);
     }
 
     @Test
