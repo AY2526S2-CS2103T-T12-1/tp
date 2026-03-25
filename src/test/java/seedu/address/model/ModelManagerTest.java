@@ -90,8 +90,13 @@ public class ModelManagerTest {
     }
 
     @Test
-    public void getFilteredPersonList_modifyList_throwsUnsupportedOperationException() {
-        assertThrows(UnsupportedOperationException.class, () -> modelManager.getFilteredPersonList().remove(0));
+    public void getFilteredKeptPersonList_modifyList_throwsUnsupportedOperationException() {
+        assertThrows(UnsupportedOperationException.class, () -> modelManager.getFilteredKeptPersonList().remove(0));
+    }
+
+    @Test
+    public void getFilteredDeletedPersonList_modifyList_throwsUnsupportedOperationException() {
+        assertThrows(UnsupportedOperationException.class, () -> modelManager.getFilteredDeletedPersonList().remove(0));
     }
 
     @Test
@@ -108,7 +113,7 @@ public class ModelManagerTest {
 
         modelManager.addPerson(CARL);
 
-        assertEquals(Arrays.asList(ALICE, BENSON, CARL), modelManager.getFilteredPersonList());
+        assertEquals(Arrays.asList(ALICE, BENSON, CARL), modelManager.getFilteredKeptPersonList());
     }
 
     @Test
@@ -151,10 +156,6 @@ public class ModelManagerTest {
         // different userPrefs -> returns false
         UserPrefs differentUserPrefs = new UserPrefs();
         differentUserPrefs.setAddressBookFilePath(Paths.get("differentFilePath"));
-        assertFalse(modelManager.equals(new ModelManager(addressBook, differentUserPrefs)));
-
-        // different isViewingDeletedPersons -> returns false
-        modelManager.setToViewDeletedPersons();
         assertFalse(modelManager.equals(new ModelManager(addressBook, differentUserPrefs)));
     }
 }

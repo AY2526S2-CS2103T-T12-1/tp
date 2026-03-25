@@ -19,23 +19,23 @@ public class BinCommandTest {
 
     private Model model;
     private Model expectedModel;
+    private CommandResult expectedCommandResult = new CommandResult(BinCommand.MESSAGE_SUCCESS, true, false, false);
 
     @BeforeEach
     public void setUp() {
         model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
-        model.setToViewKeptPersons();
         expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
-        expectedModel.setToViewDeletedPersons();
+        expectedCommandResult = new CommandResult(BinCommand.MESSAGE_SUCCESS, true, false, false);
     }
 
     @Test
     public void execute_listIsNotFiltered_showsFullList() {
-        assertCommandSuccess(new BinCommand(), model, BinCommand.MESSAGE_SUCCESS, expectedModel);
+        assertCommandSuccess(new BinCommand(), model, expectedCommandResult, expectedModel);
     }
 
     @Test
     public void execute_listIsFiltered_showsEverything() {
         showPersonAtIndex(model, INDEX_FIRST_PERSON);
-        assertCommandSuccess(new BinCommand(), model, BinCommand.MESSAGE_SUCCESS, expectedModel);
+        assertCommandSuccess(new BinCommand(), model, expectedCommandResult, expectedModel);
     }
 }

@@ -24,8 +24,6 @@ public class ModelManager implements Model {
     private final FilteredList<Person> filteredKeptPersons;
     private final FilteredList<Person> filteredDeletedPersons;
 
-    private boolean isViewingDeletedPersons = false;
-
     /**
      * Initializes a ModelManager with the given addressBook and userPrefs.
      */
@@ -105,7 +103,6 @@ public class ModelManager implements Model {
     @Override
     public void addPerson(Person person) {
         addressBook.addPerson(person);
-        setToViewKeptPersons();
         updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
     }
 
@@ -124,22 +121,13 @@ public class ModelManager implements Model {
     //=========== Filtered Person List Accessors =============================================================
 
     @Override
-    public void setToViewDeletedPersons() {
-        isViewingDeletedPersons = true;
+    public ObservableList<Person> getFilteredKeptPersonList() {
+        return filteredKeptPersons;
     }
 
     @Override
-    public void setToViewKeptPersons() {
-        isViewingDeletedPersons = false;
-    }
-
-    /**
-     * Returns an unmodifiable view of the list of {@code Person} backed by the internal list of
-     * {@code versionedAddressBook}
-     */
-    @Override
-    public ObservableList<Person> getFilteredPersonList() {
-        return isViewingDeletedPersons ? filteredDeletedPersons : filteredKeptPersons;
+    public ObservableList<Person> getFilteredDeletedPersonList() {
+        return filteredDeletedPersons;
     }
 
     @Override
@@ -164,8 +152,7 @@ public class ModelManager implements Model {
         return addressBook.equals(otherModelManager.addressBook)
                 && userPrefs.equals(otherModelManager.userPrefs)
                 && filteredKeptPersons.equals(otherModelManager.filteredKeptPersons)
-                && filteredDeletedPersons.equals(otherModelManager.filteredDeletedPersons)
-                && isViewingDeletedPersons == otherModelManager.isViewingDeletedPersons;
+                && filteredDeletedPersons.equals(otherModelManager.filteredDeletedPersons);
     }
 
 }

@@ -215,17 +215,12 @@ public class AddCommandTest {
         }
 
         @Override
-        public void setToViewKeptPersons() {
+        public ObservableList<Person> getFilteredKeptPersonList() {
             throw new AssertionError("This method should not be called.");
         }
 
         @Override
-        public void setToViewDeletedPersons() {
-            throw new AssertionError("This method should not be called.");
-        }
-
-        @Override
-        public ObservableList<Person> getFilteredPersonList() {
+        public ObservableList<Person> getFilteredDeletedPersonList() {
             throw new AssertionError("This method should not be called.");
         }
 

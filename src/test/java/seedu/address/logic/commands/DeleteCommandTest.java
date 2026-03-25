@@ -32,8 +32,8 @@ public class DeleteCommandTest {
 
     @Test
     public void execute_validIndexListUnfilteredList_success() {
-        Person firstPersonToDelete = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
-        Person secondPersonToDelete = model.getFilteredPersonList().get(INDEX_SECOND_PERSON.getZeroBased());
+        Person firstPersonToDelete = model.getFilteredKeptPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        Person secondPersonToDelete = model.getFilteredKeptPersonList().get(INDEX_SECOND_PERSON.getZeroBased());
         DeleteCommand deleteCommand = new DeleteCommand(List.of(INDEX_FIRST_PERSON, INDEX_SECOND_PERSON));
 
         String expectedMessage = DeleteCommand.buildSuccessMessage(List.of(firstPersonToDelete, secondPersonToDelete));
@@ -49,7 +49,7 @@ public class DeleteCommandTest {
     public void execute_invalidIndexListUnfilteredList_throwsCommandException() {
         ModelManager expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
 
-        Index outOfBoundIndex = Index.fromOneBased(model.getFilteredPersonList().size() + 1);
+        Index outOfBoundIndex = Index.fromOneBased(model.getFilteredKeptPersonList().size() + 1);
         DeleteCommand deleteCommand = new DeleteCommand(List.of(outOfBoundIndex));
         assertCommandFailure(deleteCommand, model, Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX);
 
@@ -64,7 +64,7 @@ public class DeleteCommandTest {
     public void execute_validIndexListFilteredList_success() {
         showPersonAtIndex(model, INDEX_FIRST_PERSON);
 
-        Person personToDelete = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        Person personToDelete = model.getFilteredKeptPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
         DeleteCommand deleteCommand = new DeleteCommand(List.of(INDEX_FIRST_PERSON));
 
         String expectedMessage = DeleteCommand.buildSuccessMessage(List.of(personToDelete));
@@ -78,10 +78,10 @@ public class DeleteCommandTest {
 
     @Test
     public void execute_validIndexListFilteredListMultipleIndices_success() {
-        Person firstPersonToDelete = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
-        Person secondPersonToDelete = model.getFilteredPersonList().get(INDEX_SECOND_PERSON.getZeroBased());
+        Person firstPersonToDelete = model.getFilteredKeptPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        Person secondPersonToDelete = model.getFilteredKeptPersonList().get(INDEX_SECOND_PERSON.getZeroBased());
         model.updateFilteredPersonList(p -> p.equals(firstPersonToDelete) || p.equals(secondPersonToDelete));
-        assertEquals(2, model.getFilteredPersonList().size());
+        assertEquals(2, model.getFilteredKeptPersonList().size());
 
         DeleteCommand deleteCommand = new DeleteCommand(List.of(INDEX_FIRST_PERSON, INDEX_SECOND_PERSON));
 
@@ -129,23 +129,23 @@ public class DeleteCommandTest {
         model.updateFilteredPersonList(person -> person.getName().fullName.equals("Alice Pauline")
                 || person.getName().fullName.equals("Fiona Kunz")
                 || person.getName().fullName.equals("George Best"));
-        assertEquals(3, model.getFilteredPersonList().size());
+        assertEquals(3, model.getFilteredKeptPersonList().size());
 
-        Person firstPersonToDelete = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
-        Person secondPersonToRemain = model.getFilteredPersonList().get(INDEX_SECOND_PERSON.getZeroBased());
-        Person thirdPersonToDelete = model.getFilteredPersonList().get(INDEX_THIRD_PERSON.getZeroBased());
+        Person firstPersonToDelete = model.getFilteredKeptPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        Person secondPersonToRemain = model.getFilteredKeptPersonList().get(INDEX_SECOND_PERSON.getZeroBased());
+        Person thirdPersonToDelete = model.getFilteredKeptPersonList().get(INDEX_THIRD_PERSON.getZeroBased());
 
         DeleteCommand deleteCommand = new DeleteCommand(List.of(INDEX_FIRST_PERSON, INDEX_THIRD_PERSON));
 
         String expectedMessage = DeleteCommand.buildSuccessMessage(List.of(firstPersonToDelete, thirdPersonToDelete));
 
         Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
-        expectedModel.updateFilteredPersonList(model.getFilteredPersonList()::contains);
+        expectedModel.updateFilteredPersonList(model.getFilteredKeptPersonList()::contains);
         expectedModel.deletePerson(firstPersonToDelete);
         expectedModel.deletePerson(thirdPersonToDelete);
 
         assertCommandSuccess(deleteCommand, model, expectedMessage, expectedModel);
-        assertEquals(List.of(secondPersonToRemain), model.getFilteredPersonList());
+        assertEquals(List.of(secondPersonToRemain), model.getFilteredKeptPersonList());
     }
 
     @Test
@@ -180,8 +180,8 @@ public class DeleteCommandTest {
 
     @Test
     public void buildSuccessMessageMethod() {
-        Person firstPerson = model.getFilteredPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
-        Person secondPerson = model.getFilteredPersonList().get(INDEX_SECOND_PERSON.getZeroBased());
+        Person firstPerson = model.getFilteredKeptPersonList().get(INDEX_FIRST_PERSON.getZeroBased());
+        Person secondPerson = model.getFilteredKeptPersonList().get(INDEX_SECOND_PERSON.getZeroBased());
 
         String expectedMessage = DeleteCommand.MESSAGE_DELETE_PERSON_SUCCESS_PREFIX
                 + DeleteCommand.MESSAGE_DELETE_PERSON_SUCCESS_DELIMITER
@@ -199,6 +199,6 @@ public class DeleteCommandTest {
     private void showNoPerson(Model model) {
         model.updateFilteredPersonList(p -> false);
 
-        assertTrue(model.getFilteredPersonList().isEmpty());
+        assertTrue(model.getFilteredKeptPersonList().isEmpty());
     }
 }

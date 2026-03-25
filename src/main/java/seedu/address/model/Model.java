@@ -81,18 +81,11 @@ public interface Model {
      */
     void deleteAllPersons();
 
-    /**
-     * Sets the filtered person list to show deleted persons.
-     */
-    void setToViewDeletedPersons();
+    /** Returns an unmodifiable view of the filtered kept person list */
+    ObservableList<Person> getFilteredKeptPersonList();
 
-    /**
-     * Sets the filtered person list to show kept persons.
-     */
-    void setToViewKeptPersons();
-
-    /** Returns an unmodifiable view of the filtered person list */
-    ObservableList<Person> getFilteredPersonList();
+    /** Returns an unmodifiable view of the filtered deleted person list */
+    ObservableList<Person> getFilteredDeletedPersonList();
 
     /**
      * Updates the filter of the filtered person list to filter by the given {@code predicate}.
