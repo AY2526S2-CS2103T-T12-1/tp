@@ -123,10 +123,12 @@ public class ModelManager implements Model {
 
     //=========== Filtered Person List Accessors =============================================================
 
+    @Override
     public void setToViewDeletedPersons() {
         isViewingDeletedPersons = true;
     }
 
+    @Override
     public void setToViewKeptPersons() {
         isViewingDeletedPersons = false;
     }
