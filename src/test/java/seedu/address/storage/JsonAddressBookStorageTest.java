@@ -65,7 +65,7 @@ public class JsonAddressBookStorageTest {
     public void readAndSaveAddressBook_allInOrder_success() throws Exception {
         Path filePath = testFolder.resolve("TempAddressBook.json");
         AddressBook original = getTypicalAddressBook();
-        original.addKeptPerson(new PersonBuilder().withName("Role Notes Saver")
+        original.addPerson(new PersonBuilder().withName("Role Notes Saver")
                 .withPhone("91234567")
                 .withEmail("rolenotessaver@example.com")
                 .withAddress("1 Sports Drive")
@@ -80,14 +80,14 @@ public class JsonAddressBookStorageTest {
         assertSameKeptPersons(original, new AddressBook(readBack));
 
         // Modify data, overwrite exiting file, and read back
-        original.addKeptPerson(HOON);
-        original.removeKeptPerson(ALICE);
+        original.addPerson(HOON);
+        original.deletePerson(ALICE);
         jsonAddressBookStorage.saveAddressBook(original, filePath);
         readBack = jsonAddressBookStorage.readAddressBook(filePath).get();
         assertSameKeptPersons(original, new AddressBook(readBack));
 
         // Save and read without specifying file path
-        original.addKeptPerson(IDA);
+        original.addPerson(IDA);
         jsonAddressBookStorage.saveAddressBook(original); // file path not specified
         readBack = jsonAddressBookStorage.readAddressBook().get(); // file path not specified
         assertSameKeptPersons(original, new AddressBook(readBack));

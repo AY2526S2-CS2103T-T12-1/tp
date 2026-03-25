@@ -46,7 +46,7 @@ public class JsonSerializableAddressBookTest {
                 JsonSerializableAddressBook.class).get();
         AddressBook addressBookFromFile = dataFromFile.toModelType();
         AddressBook expectedAddressBook = new AddressBook();
-        expectedAddressBook.addKeptPerson(new PersonBuilder()
+        expectedAddressBook.addPerson(new PersonBuilder()
                 .withName("Role Notes User")
                 .withPhone("81234567")
                 .withEmail("rolenotes@example.com")

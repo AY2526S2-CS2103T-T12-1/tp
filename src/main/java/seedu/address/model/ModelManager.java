@@ -99,12 +99,12 @@ public class ModelManager implements Model {
 
     @Override
     public void deletePerson(Person target) {
-        addressBook.removeKeptPerson(target);
+        addressBook.deletePerson(target);
     }
 
     @Override
     public void addPerson(Person person) {
-        addressBook.addKeptPerson(person);
+        addressBook.addPerson(person);
         setToViewKeptPersons();
         updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
     }

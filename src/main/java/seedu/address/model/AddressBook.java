@@ -80,10 +80,19 @@ public class AddressBook implements ReadOnlyAddressBook {
     }
 
     /**
-     * Adds a person to the address book.
+     * Returns true if a person equal to {@code person} exists in the list of deleted persons.
+     */
+    public boolean hasDeletedPerson(Person person) {
+        requireNonNull(person);
+        return deletedPersons.contains(person);
+    }
+
+    /**
+     * Adds a person to the list of kept persons in the address book.
      * The person must not already exist in the list of kept persons.
      */
-    public void addKeptPerson(Person p) {
+    public void addPerson(Person p) {
+        assert !hasKeptPerson(p) : "Person is already in the list of kept persons";
         keptPersons.add(p);
     }
 
@@ -94,23 +103,30 @@ public class AddressBook implements ReadOnlyAddressBook {
      */
     public void setKeptPerson(Person target, Person editedPerson) {
         requireNonNull(editedPerson);
-
+        assert hasKeptPerson(target) : "Target person is not in the list of kept persons";
         keptPersons.setPerson(target, editedPerson);
     }
 
     /**
-     * Removes {@code key} from the list of kept persons in this {@code AddressBook}.
+     * Moves {@code key} from the list of kept persons to the list of deleted persons.
      * {@code key} must exist in the list of kept persons.
+     * If {@code key} already exists in the list of deleted persons, it will not be added again.
      */
-    public void removeKeptPerson(Person key) {
+    public void deletePerson(Person key) {
+        assert hasKeptPerson(key) : "Person to delete is not in the list of kept persons";
         keptPersons.remove(key);
+
+        if (!hasDeletedPerson(key)) {
+            deletedPersons.add(key);
+        }
     }
 
     /**
-     * Adds a deleted person to the address book.
+     * Adds a person directly to the list of deleted persons in the address book.
      * The person must not already exist in the list of deleted persons.
      */
     public void addDeletedPerson(Person p) {
+        assert !hasDeletedPerson(p) : "Person is already in the list of deleted persons";
         deletedPersons.add(p);
     }
 

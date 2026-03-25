@@ -3,7 +3,6 @@ package seedu.address.logic.commands;
 import static java.util.Objects.requireNonNull;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import seedu.address.commons.core.index.Index;
@@ -41,20 +40,18 @@ public class DeleteCommand extends Command {
         requireNonNull(model);
         List<Person> lastShownList = model.getFilteredPersonList();
         requireIndicesInRange(model);
-        List<Person> deletedPersons = new ArrayList<>();
+        List<Person> personsToDelete = new ArrayList<>();
 
-        // Delete persons in order of decreasing index to avoid index shifting issues.
-        for (int i = targetIndices.size() - 1; i >= 0; i--) {
-            Index index = targetIndices.get(i);
-            Person personToDelete = lastShownList.get(index.getZeroBased());
-            model.deletePerson(personToDelete);
-            deletedPersons.add(personToDelete);
+        for (Index index : targetIndices) {
+            Person person = lastShownList.get(index.getZeroBased());
+            personsToDelete.add(person);
         }
 
-        // Arrange deleted persons in the order they were displayed in the list.
-        Collections.reverse(deletedPersons);
+        for (Person person : personsToDelete) {
+            model.deletePerson(person);
+        }
 
-        return new CommandResult(buildSuccessMessage(deletedPersons));
+        return new CommandResult(buildSuccessMessage(personsToDelete));
     }
 
     private void requireIndicesInRange(Model model) throws CommandException {

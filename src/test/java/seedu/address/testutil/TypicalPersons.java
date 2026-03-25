@@ -70,7 +70,7 @@ public class TypicalPersons {
     public static AddressBook getTypicalAddressBook() {
         AddressBook ab = new AddressBook();
         for (Person person : getTypicalPersons()) {
-            ab.addKeptPerson(person);
+            ab.addPerson(person);
         }
         for (Person person : getTypicalDeletedPersons()) {
             ab.addDeletedPerson(person);
