@@ -45,11 +45,6 @@ public class CsvReaderUtil {
             HEADER_NAME, HEADER_PHONE, HEADER_EMAIL, HEADER_ADDRESS
     );
 
-    private static final List<String> KNOWN_HEADERS = List.of(
-            HEADER_NAME, HEADER_PHONE, HEADER_EMAIL, HEADER_ADDRESS,
-            HEADER_ROLE, HEADER_NOTES, HEADER_TAGS, HEADER_AVAILABILITIES, HEADER_RECORDS
-    );
-
     private static final String MULTI_VALUE_SEPARATOR = ";";
 
     private CsvReaderUtil() {}
@@ -58,7 +53,7 @@ public class CsvReaderUtil {
      * Reads persons from the specified CSV file.
      *
      * @throws IOException if the file cannot be read
-     * @throws IllegalArgumentException if the file is missing required headers or structurally invalid
+     * @throws IllegalArgumentException if required headers are missing or duplicated
      */
     public static CsvImportFileResult readPersons(Path filePath) throws IOException {
         requireNonNull(filePath);
@@ -83,7 +78,7 @@ public class CsvReaderUtil {
 
         for (int i = headerRowIndex + 1; i < rows.size(); i++) {
             List<String> row = rows.get(i);
-            int rowNumber = i + 1; // 1-based row number
+            int rowNumber = i + 1;
 
             if (isBlankRow(row)) {
                 continue;
@@ -104,16 +99,16 @@ public class CsvReaderUtil {
         Map<String, Integer> headerMap = new LinkedHashMap<>();
 
         for (int i = 0; i < headerRow.size(); i++) {
-            String normalized = normalizeHeader(headerRow.get(i));
-            if (normalized.isEmpty()) {
+            String normalizedHeader = normalizeHeader(headerRow.get(i));
+            if (normalizedHeader.isEmpty()) {
                 continue;
             }
 
-            if (headerMap.containsKey(normalized)) {
-                throw new IllegalArgumentException("duplicate header: " + normalized);
+            if (headerMap.containsKey(normalizedHeader)) {
+                throw new IllegalArgumentException("duplicate header: " + normalizedHeader);
             }
 
-            headerMap.put(normalized, i);
+            headerMap.put(normalizedHeader, i);
         }
 
         for (String requiredHeader : REQUIRED_HEADERS) {
@@ -300,127 +295,68 @@ public class CsvReaderUtil {
      */
     static List<List<String>> parseCsv(String content) {
         List<List<String>> rows = new ArrayList<>();
-        List<String> currentRow = new ArrayList<>();
-        StringBuilder currentCell = new StringBuilder();
-
-        boolean inQuotes = false;
+        CsvParsingState state = new CsvParsingState();
 
         for (int i = 0; i < content.length(); i++) {
-            char c = content.charAt(i);
+            char currentChar = content.charAt(i);
 
-            if (c == '"') {
-                if (inQuotes && i + 1 < content.length() && content.charAt(i + 1) == '"') {
-                    currentCell.append('"');
-                    i++;
-                } else {
-                    inQuotes = !inQuotes;
-                }
-            } else if (c == ',' && !inQuotes) {
-                currentRow.add(currentCell.toString());
-                currentCell.setLength(0);
-            } else if ((c == '\n' || c == '\r') && !inQuotes) {
-                if (c == '\r' && i + 1 < content.length() && content.charAt(i + 1) == '\n') {
-                    i++;
-                }
-                currentRow.add(currentCell.toString());
-                rows.add(new ArrayList<>(currentRow));
-                currentRow.clear();
-                currentCell.setLength(0);
+            if (currentChar == '"') {
+                i = handleQuoteCharacter(content, i, state);
+            } else if (currentChar == ',' && !state.inQuotes) {
+                handleDelimiter(state);
+            } else if ((currentChar == '\n' || currentChar == '\r') && !state.inQuotes) {
+                i = handleLineBreak(content, i, rows, state);
             } else {
-                currentCell.append(c);
+                state.currentCell.append(currentChar);
             }
         }
 
-        currentRow.add(currentCell.toString());
-        rows.add(new ArrayList<>(currentRow));
+        finishLastRow(rows, state);
         return rows;
+    }
+
+    private static int handleQuoteCharacter(String content, int index, CsvParsingState state) {
+        if (state.inQuotes && index + 1 < content.length() && content.charAt(index + 1) == '"') {
+            state.currentCell.append('"');
+            return index + 1;
+        }
+
+        state.inQuotes = !state.inQuotes;
+        return index;
+    }
+
+    private static void handleDelimiter(CsvParsingState state) {
+        state.currentRow.add(state.currentCell.toString());
+        state.currentCell.setLength(0);
+    }
+
+    private static int handleLineBreak(String content, int index, List<List<String>> rows, CsvParsingState state) {
+        if (content.charAt(index) == '\r' && index + 1 < content.length() && content.charAt(index + 1) == '\n') {
+            index++;
+        }
+
+        state.currentRow.add(state.currentCell.toString());
+        rows.add(new ArrayList<>(state.currentRow));
+        state.currentRow.clear();
+        state.currentCell.setLength(0);
+
+        return index;
+    }
+
+    private static void finishLastRow(List<List<String>> rows, CsvParsingState state) {
+        state.currentRow.add(state.currentCell.toString());
+        rows.add(new ArrayList<>(state.currentRow));
+    }
+
+    private static class CsvParsingState {
+        private final List<String> currentRow = new ArrayList<>();
+        private final StringBuilder currentCell = new StringBuilder();
+        private boolean inQuotes;
     }
 
     private static class RowParseException extends Exception {
         RowParseException(String message) {
             super(message);
-        }
-    }
-
-    /**
-     * Represents the parsed result of an imported CSV file.
-     * Contains successfully parsed rows and rows that were rejected as invalid.
-     */
-    public static class CsvImportFileResult {
-        private final List<CsvImportRowSuccess> validRows;
-        private final List<CsvImportRowError> invalidRows;
-
-        /**
-         * Creates a {@code CsvImportFileResult} with the given valid and invalid rows.
-         *
-         * @param validRows Rows that were successfully parsed into persons.
-         * @param invalidRows Rows that could not be parsed, together with their error reasons.
-         */
-        public CsvImportFileResult(List<CsvImportRowSuccess> validRows, List<CsvImportRowError> invalidRows) {
-            this.validRows = List.copyOf(validRows);
-            this.invalidRows = List.copyOf(invalidRows);
-        }
-
-        public List<CsvImportRowSuccess> getValidRows() {
-            return validRows;
-        }
-
-        public List<CsvImportRowError> getInvalidRows() {
-            return invalidRows;
-        }
-    }
-
-    /**
-     * Represents a CSV row that was successfully parsed into a {@code Person}.
-     */
-    public static class CsvImportRowSuccess {
-        private final int rowNumber;
-        private final Person person;
-
-        /**
-         * Creates a {@code CsvImportRowSuccess} for the given row number and parsed person.
-         *
-         * @param rowNumber The 1-based row number in the CSV file.
-         * @param person The person parsed from that row.
-         */
-        public CsvImportRowSuccess(int rowNumber, Person person) {
-            this.rowNumber = rowNumber;
-            this.person = person;
-        }
-
-        public int getRowNumber() {
-            return rowNumber;
-        }
-
-        public Person getPerson() {
-            return person;
-        }
-    }
-
-    /**
-     * Represents a CSV row that could not be imported, together with the reason.
-     */
-    public static class CsvImportRowError {
-        private final int rowNumber;
-        private final String reason;
-
-        /**
-         * Creates a {@code CsvImportRowError} for the given row number and error reason.
-         *
-         * @param rowNumber The 1-based row number in the CSV file.
-         * @param reason The reason the row could not be imported.
-         */
-        public CsvImportRowError(int rowNumber, String reason) {
-            this.rowNumber = rowNumber;
-            this.reason = reason;
-        }
-
-        public int getRowNumber() {
-            return rowNumber;
-        }
-
-        public String getReason() {
-            return reason;
         }
     }
 }

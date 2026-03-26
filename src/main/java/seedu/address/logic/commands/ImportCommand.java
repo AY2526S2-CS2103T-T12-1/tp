@@ -7,9 +7,10 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import seedu.address.commons.util.CsvImportFileResult;
+import seedu.address.commons.util.CsvImportRowError;
+import seedu.address.commons.util.CsvImportRowSuccess;
 import seedu.address.commons.util.CsvReaderUtil;
-import seedu.address.commons.util.CsvReaderUtil.CsvImportFileResult;
-import seedu.address.commons.util.CsvReaderUtil.CsvImportRowError;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 import seedu.address.model.person.Person;
@@ -38,6 +39,43 @@ public class ImportCommand extends Command {
     public ImportCommand(Path filePath) {
         requireNonNull(filePath);
         this.filePath = filePath;
+    }
+
+    @Override
+    public CommandResult execute(Model model) throws CommandException {
+        requireNonNull(model);
+
+        CsvImportFileResult result;
+        try {
+            result = CsvReaderUtil.readPersons(filePath);
+        } catch (IOException e) {
+            throw new CommandException(String.format(MESSAGE_IMPORT_FAILURE,
+                    "could not read file " + filePath));
+        } catch (IllegalArgumentException e) {
+            throw new CommandException(String.format(MESSAGE_IMPORT_FAILURE, e.getMessage()));
+        }
+
+        int importedCount = 0;
+        List<CsvImportRowError> invalidRows = new ArrayList<>(result.getInvalidRows());
+        List<CsvImportRowError> duplicateRows = new ArrayList<>();
+        List<Person> personsImportedThisRun = new ArrayList<>();
+
+        for (CsvImportRowSuccess successRow : result.getValidRows()) {
+            Person person = successRow.getPerson();
+
+            Person duplicatePerson = findDuplicatePerson(model, personsImportedThisRun, person);
+            if (duplicatePerson != null) {
+                duplicateRows.add(new CsvImportRowError(
+                        successRow.getRowNumber(),
+                        getDuplicateReason(person, duplicatePerson)));
+            } else {
+                model.addPerson(person);
+                personsImportedThisRun.add(person);
+                importedCount++;
+            }
+        }
+
+        return new CommandResult(buildSummaryMessage(importedCount, duplicateRows, invalidRows));
     }
 
     private Person findDuplicatePerson(Model model, List<Person> personsImportedThisRun, Person person) {
@@ -71,43 +109,6 @@ public class ImportCommand extends Command {
         } else {
             return "duplicate";
         }
-    }
-
-    @Override
-    public CommandResult execute(Model model) throws CommandException {
-        requireNonNull(model);
-
-        CsvImportFileResult result;
-        try {
-            result = CsvReaderUtil.readPersons(filePath);
-        } catch (IOException e) {
-            throw new CommandException(String.format(MESSAGE_IMPORT_FAILURE,
-                    "could not read file " + filePath));
-        } catch (IllegalArgumentException e) {
-            throw new CommandException(String.format(MESSAGE_IMPORT_FAILURE, e.getMessage()));
-        }
-
-        int importedCount = 0;
-        List<CsvImportRowError> invalidRows = new ArrayList<>(result.getInvalidRows());
-        List<CsvImportRowError> duplicateRows = new ArrayList<>();
-        List<Person> personsImportedThisRun = new ArrayList<>();
-
-        for (CsvReaderUtil.CsvImportRowSuccess successRow : result.getValidRows()) {
-            Person person = successRow.getPerson();
-
-            Person duplicatePerson = findDuplicatePerson(model, personsImportedThisRun, person);
-            if (duplicatePerson != null) {
-                duplicateRows.add(new CsvImportRowError(
-                        successRow.getRowNumber(),
-                        getDuplicateReason(person, duplicatePerson)));
-            } else {
-                model.addPerson(person);
-                personsImportedThisRun.add(person);
-                importedCount++;
-            }
-        }
-
-        return new CommandResult(buildSummaryMessage(importedCount, duplicateRows, invalidRows));
     }
 
     private String buildSummaryMessage(int importedCount,
