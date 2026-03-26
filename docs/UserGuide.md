@@ -96,6 +96,15 @@ Shows a list of all persons in RosterBolt.
 
 Format: `list`
 
+### Showing recycle bin of recently deleted persons : `bin`
+
+Shows the recycle bin, which contains all recently deleted persons in RosterBolt.
+
+Format: `bin`
+
+* Persons deleted by the `clear` and `delete` commands will be added to the recycle bin.
+* The recycle bin is cleared when the application is closed.
+
 ### Editing a person : `edit`
 
 Edits an existing person in RosterBolt.
@@ -200,6 +209,7 @@ _Details coming soon ..._
 Action | Format, Examples
 --------|------------------
 **Add** | `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​ [r/ROLE] [nt/NOTES]` <br> e.g., `add n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 t/friend t/colleague r/Usher nt/Available weekends`
+**Bin** | `bin`
 **Clear** | `clear`
 **Delete** | `delete INDEX [MORE_INDICES]`<br> e.g., `delete 2 3`
 **Edit** | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [t/TAG]…​`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com`
