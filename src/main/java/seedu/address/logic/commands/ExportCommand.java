@@ -42,7 +42,7 @@ public class ExportCommand extends Command {
     public CommandResult execute(Model model) throws CommandException {
         requireNonNull(model);
 
-        List<Person> persons = model.getAddressBook().getPersonList();
+        List<Person> persons = model.getAddressBook().getKeptPersonList();
 
         try {
             CsvWriterUtil.writePersons(filePath, persons);
