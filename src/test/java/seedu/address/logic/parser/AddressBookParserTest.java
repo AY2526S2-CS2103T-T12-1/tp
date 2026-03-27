@@ -23,8 +23,10 @@ import seedu.address.logic.commands.DeleteCommand;
 import seedu.address.logic.commands.EditCommand;
 import seedu.address.logic.commands.EditCommand.EditPersonDescriptor;
 import seedu.address.logic.commands.ExitCommand;
+import seedu.address.logic.commands.ExportCommand;
 import seedu.address.logic.commands.FindCommand;
 import seedu.address.logic.commands.HelpCommand;
+import seedu.address.logic.commands.ImportCommand;
 import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.commands.UnaliasCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
@@ -92,6 +94,13 @@ public class AddressBookParserTest {
     }
 
     @Test
+    public void parseCommand_export() throws Exception {
+        ExportCommand command = (ExportCommand) parser.parseCommand(
+                ExportCommand.COMMAND_WORD + " data/volunteers.csv");
+        assertEquals(new ExportCommand(java.nio.file.Paths.get("data/volunteers.csv")), command);
+    }
+
+    @Test
     public void parseCommand_find() throws Exception {
         List<String> keywords = Arrays.asList("foo", "bar", "baz");
         FindCommand defaultCommand = (FindCommand) parser.parseCommand(
@@ -103,6 +112,13 @@ public class AddressBookParserTest {
     public void parseCommand_help() throws Exception {
         assertTrue(parser.parseCommand(HelpCommand.COMMAND_WORD) instanceof HelpCommand);
         assertTrue(parser.parseCommand(HelpCommand.COMMAND_WORD + " 3") instanceof HelpCommand);
+    }
+
+    @Test
+    public void parseCommand_import() throws Exception {
+        ImportCommand command = (ImportCommand) parser.parseCommand(
+                ImportCommand.COMMAND_WORD + " data/volunteers.csv");
+        assertEquals(new ImportCommand(java.nio.file.Paths.get("data/volunteers.csv")), command);
     }
 
     @Test
@@ -130,12 +146,14 @@ public class AddressBookParserTest {
                 Map.entry(DeleteCommand.COMMAND_WORD, "delete 1"),
                 Map.entry(EditCommand.COMMAND_WORD, "edit 1 n/Amy"),
                 Map.entry(ExitCommand.COMMAND_WORD, "exit"),
+                Map.entry(ExportCommand.COMMAND_WORD, "export data/volunteers.csv"),
                 Map.entry(FindCommand.COMMAND_WORD, "find Amy"),
                 Map.entry(HelpCommand.COMMAND_WORD, "help"),
+                Map.entry(ImportCommand.COMMAND_WORD, "import data/volunteers.csv"),
                 Map.entry(ListCommand.COMMAND_WORD, "list"),
                 Map.entry(UnaliasCommand.COMMAND_WORD, "unalias ls"));
 
-        assertEquals(CommandWords.BUILT_IN_COMMAND_WORDS, commandExamples.keySet());
+        assertEquals(CommandWords.TOP_LEVEL_COMMAND_WORDS, commandExamples.keySet());
         for (String commandExample : commandExamples.values()) {
             parser.parseCommand(commandExample);
         }
