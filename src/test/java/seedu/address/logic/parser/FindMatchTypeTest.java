@@ -1,36 +1,22 @@
 package seedu.address.logic.parser;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
-
-import seedu.address.model.person.predicates.PersonContainsFieldsPredicate;
-import seedu.address.model.person.predicates.PersonContainsFuzzyKeywordsPredicate;
-import seedu.address.model.person.predicates.PersonContainsKeywordsPredicate;
-import seedu.address.model.person.predicates.PersonContainsSubstringsPredicate;
 
 public class FindMatchTypeTest {
 
     @Test
-    public void createPredicate_keywordMatchType_returnsKeywordPredicate() {
-        PersonContainsFieldsPredicate predicate = FindMatchType.KEYWORD.createPredicate(List.of("alice"));
-
-        assertTrue(PersonContainsKeywordsPredicate.class.isInstance(predicate));
+    public void fromToken_supportedTokens_returnsMatchType() {
+        assertEquals(Optional.of(FindMatchType.KEYWORD), FindMatchType.fromToken(FindMatchType.KEYWORD_TOKEN));
+        assertEquals(Optional.of(FindMatchType.SUBSTRING), FindMatchType.fromToken(FindMatchType.SUBSTRING_TOKEN));
+        assertEquals(Optional.of(FindMatchType.FUZZY), FindMatchType.fromToken(FindMatchType.FUZZY_TOKEN));
     }
 
     @Test
-    public void createPredicate_substringMatchType_returnsSubstringPredicate() {
-        PersonContainsFieldsPredicate predicate = FindMatchType.SUBSTRING.createPredicate(List.of("alice"));
-
-        assertTrue(PersonContainsSubstringsPredicate.class.isInstance(predicate));
-    }
-
-    @Test
-    public void createPredicate_fuzzyMatchType_returnsFuzzyPredicate() {
-        PersonContainsFieldsPredicate predicate = FindMatchType.FUZZY.createPredicate(List.of("alice"));
-
-        assertTrue(PersonContainsFuzzyKeywordsPredicate.class.isInstance(predicate));
+    public void fromToken_unsupportedToken_returnsEmpty() {
+        assertEquals(Optional.empty(), FindMatchType.fromToken("regex"));
     }
 }

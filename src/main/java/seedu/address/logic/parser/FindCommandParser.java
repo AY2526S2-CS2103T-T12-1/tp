@@ -14,6 +14,7 @@ import seedu.address.model.person.predicates.PersonContainsFieldsPredicate;
  * Parses input arguments and creates a new FindCommand object
  */
 public class FindCommandParser implements Parser<FindCommand> {
+    private final FindMatchTypeFactory findMatchTypeFactory = new FindMatchTypeFactory();
 
     /**
      * Parses the given {@code String} of arguments in the context of the FindCommand
@@ -30,7 +31,8 @@ public class FindCommandParser implements Parser<FindCommand> {
                     String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
         }
 
-        PersonContainsFieldsPredicate predicate = parsedFindArgs.matchType().createPredicate(parsedFindArgs.keywords());
+        PersonContainsFieldsPredicate predicate =
+                findMatchTypeFactory.createPredicate(parsedFindArgs.matchType(), parsedFindArgs.keywords());
         return new FindCommand(predicate);
     }
 
