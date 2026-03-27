@@ -25,11 +25,6 @@ public class AliasCommandParserTest {
     }
 
     @Test
-    public void parse_templateWithDefaultArguments_success() {
-        assertParseSuccess(parser, "ss find m/ss meie", new AliasCommand("ss", "find m/ss meie"));
-    }
-
-    @Test
     public void parse_missingParts_failure() {
         assertParseFailure(parser, "", MESSAGE_INVALID_FORMAT);
         assertParseFailure(parser, "ls", MESSAGE_INVALID_FORMAT);
@@ -43,11 +38,22 @@ public class AliasCommandParserTest {
     @Test
     public void parse_reservedAliasName_failure() {
         assertParseFailure(parser, "list help", AliasCommand.MESSAGE_RESERVED_ALIAS_NAME);
+        assertParseFailure(parser, "editprev help", AliasCommand.MESSAGE_RESERVED_ALIAS_NAME);
     }
 
     @Test
     public void parse_invalidAliasTemplate_failure() {
         assertParseFailure(parser, "ls rm", AliasCommand.MESSAGE_INVALID_ALIAS_TEMPLATE);
         assertParseFailure(parser, "ls ls", AliasCommand.MESSAGE_INVALID_ALIAS_TEMPLATE);
+        assertParseFailure(parser, "ss find m/ss meie", AliasCommand.MESSAGE_INVALID_ALIAS_TEMPLATE);
+        assertParseFailure(parser, "wipe clear now", AliasCommand.MESSAGE_INVALID_ALIAS_TEMPLATE);
+    }
+
+    @Test
+    public void parse_reservedAliasTarget_failure() {
+        assertParseFailure(parser, "aa alias", AliasCommand.MESSAGE_RESERVED_ALIAS_TARGET);
+        assertParseFailure(parser, "aa aliases", AliasCommand.MESSAGE_RESERVED_ALIAS_TARGET);
+        assertParseFailure(parser, "aa unalias", AliasCommand.MESSAGE_RESERVED_ALIAS_TARGET);
+        assertParseFailure(parser, "aa editprev", AliasCommand.MESSAGE_RESERVED_ALIAS_TARGET);
     }
 }
