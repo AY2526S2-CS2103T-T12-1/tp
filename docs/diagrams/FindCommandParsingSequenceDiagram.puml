@@ -6,8 +6,8 @@ box Logic LOGIC_COLOR_T1
 participant ":LogicManager" as LogicManager LOGIC_COLOR
 participant ":AddressBookParser" as AddressBookParser LOGIC_COLOR
 participant ":FindCommandParser" as FindCommandParser LOGIC_COLOR
-participant "<<class>>\nFindMatchTypeFactory" as FindMatchTypeFactoryClass LOGIC_COLOR
-participant ":FindMatchType" as FindMatchType LOGIC_COLOR
+participant "<<class>>\nFindMatchType" as FindMatchTypeClass LOGIC_COLOR
+participant "<<class>>\nFindMatchTypeFactory" as FindMatchTypeFactory LOGIC_COLOR
 participant ":ParsedFindArgs" as ParsedFindArgs LOGIC_COLOR
 participant ":PersonContainsFieldsPredicate" as PersonContainsFieldsPredicate LOGIC_COLOR
 participant "f:FindCommand" as FindCommand LOGIC_COLOR
@@ -26,10 +26,10 @@ activate FindCommandParser
 FindCommandParser -> FindCommandParser : parseFindArgs(...)
 activate FindCommandParser
 alt m/ prefix provided
-    FindCommandParser -> FindMatchTypeFactoryClass : fromToken()
-    activate FindMatchTypeFactoryClass
-    FindMatchTypeFactoryClass --> FindCommandParser : matchType
-    deactivate FindMatchTypeFactoryClass
+    FindCommandParser -> FindMatchTypeClass : fromToken()
+    activate FindMatchTypeClass
+    FindMatchTypeClass --> FindCommandParser : matchType
+    deactivate FindMatchTypeClass
     create ParsedFindArgs
     FindCommandParser -> ParsedFindArgs : ParsedFindArgs(...)
     activate ParsedFindArgs
@@ -44,15 +44,15 @@ else m/ prefix not provided
 end
 deactivate FindCommandParser
 
-FindCommandParser -> FindMatchType : createPredicate(...)
-activate FindMatchType
+FindCommandParser -> FindMatchTypeFactory : createPredicate(...)
+activate FindMatchTypeFactory
 create PersonContainsFieldsPredicate
-FindMatchType -> PersonContainsFieldsPredicate : create concrete subclass of\nPersonContainsFieldsPredicate
+FindMatchTypeFactory -> PersonContainsFieldsPredicate : create concrete subclass
 activate PersonContainsFieldsPredicate
-PersonContainsFieldsPredicate --> FindMatchType : predicate
+PersonContainsFieldsPredicate --> FindMatchTypeFactory : predicate
 deactivate PersonContainsFieldsPredicate
-FindMatchType --> FindCommandParser : predicate
-deactivate FindMatchType
+FindMatchTypeFactory --> FindCommandParser : predicate
+deactivate FindMatchTypeFactory
 
 create FindCommand
 FindCommandParser -> FindCommand : FindCommand(predicate)

@@ -171,7 +171,7 @@ The sequence diagram below shows how the `find` command arguments are transforme
 The parsing flow is as follows:
 * `LogicManager` calls `AddressBookParser#parseCommand()`, which instantiates a `FindCommandParser` for the `find` command.
 * If the user provides an `m/` prefix, `FindMatchType.fromToken()` is used to determine the match type before `ParsedFindArgs` is created; otherwise the default match type (i.e. keyword match type) is assumed when building `ParsedFindArgs`.
-* `FindMatchTypeFactory#createPredicate(...)` returns a predicate object for the provided match type, which is a concrete subclass of `PersonContainsFieldsPredicate`.
+* `FindMatchTypeFactory.createPredicate(...)` returns a predicate object for the provided match type, which is a concrete subclass of `PersonContainsFieldsPredicate`.
 * `FindCommandParser` constructs the `FindCommand` with the predicate and returns it to `AddressBookParser`, which returns it to `LogicManager`.
 
 #### Predicate structure
@@ -191,7 +191,7 @@ To add a new match type or predicate in the future:
 
 * implement a new subclass of `PersonContainsFieldsPredicate`
 * add a new enum value and token in `FindMatchType`
-* update `FindMatchTypeFactory#createPredicate(...)` to return the new predicate for that match type
+* update `FindMatchTypeFactory.createPredicate(...)` to return the new predicate for that match type
 * update any docs that mention match types (the parser logic does not need to change if the match type continues to be provided via `m/`)
 
 ### \[Proposed\] Undo/redo feature
