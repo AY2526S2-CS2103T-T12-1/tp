@@ -34,7 +34,7 @@ public class BinCommandTest {
     }
 
     @Test
-    public void execute_listIsFiltered_showsEverything() {
+    public void execute_listIsFiltered_showsFullList() {
         showPersonAtIndex(model, INDEX_FIRST_PERSON);
         assertCommandSuccess(new BinCommand(), model, expectedCommandResult, expectedModel);
     }
