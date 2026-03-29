@@ -1,0 +1,44 @@
+@startuml
+!include style.puml
+skinparam arrowThickness 1.1
+skinparam arrowColor LOGIC_COLOR_T4
+skinparam classBackgroundColor LOGIC_COLOR
+
+
+package Logic  {
+  class AddressBookParser LOGIC_COLOR
+  class ExportCommandParser LOGIC_COLOR
+  class ImportCommandParser LOGIC_COLOR
+
+  abstract class Command LOGIC_COLOR
+  class ExportCommand LOGIC_COLOR
+  class ImportCommand LOGIC_COLOR
+}
+
+package Commons  {
+  class CsvWriterUtil COMMONS_COLOR
+  class CsvReaderUtil COMMONS_COLOR
+  class ParserUtil COMMONS_COLOR
+}
+
+package Model {
+  class Person MODEL_COLOR
+}
+
+AddressBookParser ..> ExportCommandParser
+AddressBookParser ..> ImportCommandParser
+
+ExportCommandParser ..> ExportCommand
+ImportCommandParser ..> ImportCommand
+
+ExportCommand --|> Command
+ImportCommand --|> Command
+
+ExportCommand ..> CsvWriterUtil
+
+ImportCommand ..> CsvReaderUtil
+
+CsvWriterUtil ..> Person
+CsvReaderUtil ..> Person
+CsvReaderUtil ..> ParserUtil
+@enduml

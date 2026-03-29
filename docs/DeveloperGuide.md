@@ -282,6 +282,42 @@ _{more aspects and alternatives to be added}_
 
 _{Explain here how the data archiving feature will be implemented}_
 
+### CSV import/export commands
+
+The `import` and `export` commands are implemented as a small pipeline that converts a file path argument into a command object, then delegates CSV-specific logic to a utility class.
+
+![CSV Import Export Class Diagram](images/CsvImportExportCommandClassDiagram.png)
+
+At a high level:
+
+* `AddressBookParser#parseCommand()` identifies the command word and instantiates either `ExportCommandParser` or `ImportCommandParser`.
+* The corresponding parser validates the file path argument and constructs either an `ExportCommand` or `ImportCommand`.
+* `ExportCommand` retrieves the active address book from `Model` and delegates CSV generation to `CsvWriterUtil`.
+* `ImportCommand` delegates file reading to `CsvReaderUtil`, which validates the CSV file and parses valid rows into `Person` objects.
+* `ImportCommand` then skips invalid or duplicate rows and adds only valid non-duplicate persons to the active address book.
+
+The sequence diagram below focuses on `import`, since it contains the more complex execution flow.
+
+![Import Command Execution Sequence Diagram](images/ImportCommandSequenceDiagram.png)
+
+The import flow is as follows:
+
+* `ImportCommand` calls `CsvReaderUtil.readPersons(...)` to read and validate the CSV file.
+* `CsvReaderUtil` validates the header row, parses each non-blank row, and uses `ParserUtil` so imported values follow the same validation rules as normal command input.
+* Invalid rows are recorded and skipped.
+* For each valid `Person`, `ImportCommand` checks `Model#hasPerson(...)`.
+* Duplicate persons are skipped, while non-duplicate persons are added using `Model#addPerson(...)`.
+* `ImportCommand` returns a summary showing how many rows were imported, and identified which rows were skipped as duplicates, and skipped as invalid.
+
+The `export` command is simpler and does not require a separate sequence diagram. `ExportCommand` retrieves the active address book from `Model`, delegates writing to `CsvWriterUtil.writePersons(...)`, and returns a success message with the number of exported volunteers and the target file path.
+
+`CsvReaderUtil` and `CsvWriterUtil` keep CSV-specific logic out of the command classes:
+
+* `CsvReaderUtil` handles file reading, header validation, row parsing, and invalid-row detection.
+* `CsvWriterUtil` handles serializing each `Person` into the agreed CSV schema and writing the final file.
+
+This keeps the commands small and limits each class to one main responsibility.
+
 
 --------------------------------------------------------------------------------------------------------------------
 

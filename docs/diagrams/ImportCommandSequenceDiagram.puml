@@ -1,0 +1,88 @@
+@startuml
+!include style.puml
+skinparam ArrowFontStyle plain
+
+box Logic LOGIC_COLOR_T1
+participant ":LogicManager" as LogicManager LOGIC_COLOR
+participant ":AddressBookParser" as AddressBookParser LOGIC_COLOR
+participant ":ImportCommandParser" as ImportCommandParser LOGIC_COLOR
+participant "cmd:ImportCommand" as ImportCommand LOGIC_COLOR
+participant "<<class>>\nCsvReaderUtil" as CsvReaderUtil LOGIC_COLOR
+participant "<<class>>\nParserUtil" as ParserUtil LOGIC_COLOR
+participant "m:Model" as Model LOGIC_COLOR
+end box
+
+[-> LogicManager : execute("import ...")
+activate LogicManager
+
+LogicManager -> AddressBookParser : parseCommand("import ...")
+activate AddressBookParser
+
+create ImportCommandParser
+AddressBookParser -> ImportCommandParser : parse(arguments)
+activate ImportCommandParser
+
+create ImportCommand
+ImportCommandParser -> ImportCommand : ImportCommand(filePath)
+activate ImportCommand
+ImportCommand --> ImportCommandParser : cmd
+deactivate ImportCommand
+
+ImportCommandParser --> AddressBookParser : cmd
+deactivate ImportCommandParser
+ImportCommandParser -[hidden]-> AddressBookParser
+destroy ImportCommandParser
+
+AddressBookParser --> LogicManager : cmd
+deactivate AddressBookParser
+
+LogicManager -> ImportCommand : execute(model)
+activate ImportCommand
+
+ImportCommand -> CsvReaderUtil : readPersons(...)
+activate CsvReaderUtil
+
+alt file unreadable / required headers missing
+    CsvReaderUtil --> ImportCommand : error
+    deactivate CsvReaderUtil
+    ImportCommand --> LogicManager : CommandException
+else file valid
+    loop for each data row
+        CsvReaderUtil -> ParserUtil : parse...
+        activate ParserUtil
+        ParserUtil --> CsvReaderUtil : parsed values
+        deactivate ParserUtil
+
+        alt row invalid
+            CsvReaderUtil -> CsvReaderUtil : record invalid row
+        else row valid
+            CsvReaderUtil -> CsvReaderUtil : create Person
+        end
+    end
+
+    CsvReaderUtil --> ImportCommand : parsed persons + invalid rows
+    deactivate CsvReaderUtil
+
+    loop for each parsed person
+        ImportCommand -> Model : hasPerson(person)
+        activate Model
+        Model --> ImportCommand : true / false
+        deactivate Model
+
+        alt duplicate
+            ImportCommand -> ImportCommand : record duplicate row
+        else not duplicate
+            ImportCommand -> Model : addPerson(person)
+            activate Model
+            Model --> ImportCommand
+            deactivate Model
+        end
+    end
+
+    ImportCommand --> LogicManager : result
+end
+
+deactivate ImportCommand
+[<-- LogicManager
+deactivate LogicManager
+@enduml
