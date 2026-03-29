@@ -103,7 +103,7 @@ How the `Logic` component works:
 1. When `Logic` is called upon to execute a command, it is passed to an `AddressBookParser` object which in turn creates a parser that matches the command (e.g., `DeleteCommandParser`) and uses it to parse the command.
 1. This results in a `Command` object (more precisely, an object of one of its subclasses e.g., `DeleteCommand`) which is executed by the `LogicManager`.
 1. The command can communicate with the `Model` when it is executed (e.g. to delete a person).<br>
-   Note that although this is shown as a single step in the diagram above (for simplicity), in the code it can take several interactions (between the command object and the `Model`) to achieve.
+   Note that in the sequence diagram above, the interactions between the command object and the `Model` are simplified.
 1. The result of the command execution is encapsulated as a `CommandResult` object which is returned back from `Logic`.
 
 Here are the other classes in `Logic` (omitted from the class diagram above) that are used for parsing a user command:
@@ -120,10 +120,13 @@ How the parsing works:
 
 <img src="images/ModelClassDiagram.png" width="450" />
 
+Continuing the example of the `delete` command, the `Model` component executes the `deletePerson` method with a `Person p` as its argument. The sequence diagram below illustrates the interactions within the `Model` component.
+
+![Interactions Inside the Model Component for the `deletePerson` API Call](images/DeleteModelSequenceDiagram.png)
 
 The `Model` component,
 
-* stores the address book data i.e., all `Person` objects (which are contained in a `UniquePersonList` object).
+* stores the address book data i.e., all `Person` objects. `Person` objects in the user's current list of contacts are contained in a `UniquePersonList` object. `Person` objects corresponding to contacts that are deleted in the current session are stored in a separate `DeletedPersonList` object.
 * stores the currently 'selected' `Person` objects (e.g., results of a search query) as a separate _filtered_ list which is exposed to outsiders as a _sorted_ and unmodifiable `ObservableList<Person>` that can be 'observed' e.g. the UI can be bound to this list so that the UI automatically updates when the data in the list change. Sorting is driven by a comparator set on the `Model`, and defaults to insertion order when no comparator is set.
 * stores a `UserPref` object that represents the user’s preferences. This is exposed to the outside as a `ReadOnlyUserPref` objects.
 * does not depend on any of the other three components (as the `Model` represents data entities of the domain, they should make sense on their own without depending on other components)
