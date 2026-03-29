@@ -41,53 +41,53 @@ public class ListCommandTest {
     @Test
     public void execute_listIsNotFiltered_showsSameList() {
         assertCommandSuccess(new ListCommand(), model, ListCommand.MESSAGE_SUCCESS, expectedModel);
-        assertEquals(getTypicalPersons(), model.getFilteredPersonList());
+        assertEquals(getTypicalPersons(), model.getFilteredKeptPersonList());
     }
 
     @Test
     public void execute_listIsFiltered_showsEverything() {
         showPersonAtIndex(model, INDEX_FIRST_PERSON);
         assertCommandSuccess(new ListCommand(), model, ListCommand.MESSAGE_SUCCESS, expectedModel);
-        assertEquals(getTypicalPersons(), model.getFilteredPersonList());
+        assertEquals(getTypicalPersons(), model.getFilteredKeptPersonList());
     }
 
     @Test
     public void execute_listWithoutSort_clearsSorting() {
         model.updateSortedPersonList(new PersonSortComparator(SortAttribute.NAME, SortOrder.DESC));
-        assertEquals(sortedTypicalPersons(SortAttribute.NAME, SortOrder.DESC), model.getFilteredPersonList());
+        assertEquals(sortedTypicalPersons(SortAttribute.NAME, SortOrder.DESC), model.getFilteredKeptPersonList());
         assertCommandSuccess(new ListCommand(), model, ListCommand.MESSAGE_SUCCESS, expectedModel);
-        assertEquals(getTypicalPersons(), model.getFilteredPersonList());
+        assertEquals(getTypicalPersons(), model.getFilteredKeptPersonList());
     }
 
     @Test
     public void execute_listWithNameAsc_sortsList() {
         ListCommand command = new ListCommand(SortAttribute.NAME, SortOrder.ASC);
-        expectedModel.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
+        expectedModel.updateFilteredKeptPersonList(PREDICATE_SHOW_ALL_PERSONS);
         expectedModel.updateSortedPersonList(new PersonSortComparator(SortAttribute.NAME, SortOrder.ASC));
         assertCommandSuccess(command, model,
                 String.format(ListCommand.MESSAGE_SUCCESS_SORTED, "name", "asc"), expectedModel);
-        assertEquals(sortedTypicalPersons(SortAttribute.NAME, SortOrder.ASC), model.getFilteredPersonList());
+        assertEquals(sortedTypicalPersons(SortAttribute.NAME, SortOrder.ASC), model.getFilteredKeptPersonList());
     }
 
     @Test
     public void execute_listWithEmailDesc_sortsList() {
         ListCommand command = new ListCommand(SortAttribute.EMAIL, SortOrder.DESC);
-        expectedModel.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
+        expectedModel.updateFilteredKeptPersonList(PREDICATE_SHOW_ALL_PERSONS);
         expectedModel.updateSortedPersonList(new PersonSortComparator(SortAttribute.EMAIL, SortOrder.DESC));
         assertCommandSuccess(command, model,
                 String.format(ListCommand.MESSAGE_SUCCESS_SORTED, "email", "desc"), expectedModel);
-        assertEquals(sortedTypicalPersons(SortAttribute.EMAIL, SortOrder.DESC), model.getFilteredPersonList());
+        assertEquals(sortedTypicalPersons(SortAttribute.EMAIL, SortOrder.DESC), model.getFilteredKeptPersonList());
     }
 
     @Test
     public void execute_listWithSortWhileFiltered_showsAllSorted() {
         showPersonAtIndex(model, INDEX_FIRST_PERSON);
         ListCommand command = new ListCommand(SortAttribute.EMAIL, SortOrder.DESC);
-        expectedModel.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
+        expectedModel.updateFilteredKeptPersonList(PREDICATE_SHOW_ALL_PERSONS);
         expectedModel.updateSortedPersonList(new PersonSortComparator(SortAttribute.EMAIL, SortOrder.DESC));
         assertCommandSuccess(command, model,
                 String.format(ListCommand.MESSAGE_SUCCESS_SORTED, "email", "desc"), expectedModel);
-        assertEquals(sortedTypicalPersons(SortAttribute.EMAIL, SortOrder.DESC), model.getFilteredPersonList());
+        assertEquals(sortedTypicalPersons(SortAttribute.EMAIL, SortOrder.DESC), model.getFilteredKeptPersonList());
     }
 
     @Test

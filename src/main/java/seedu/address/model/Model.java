@@ -98,14 +98,22 @@ public interface Model {
      */
     void setPerson(Person target, Person editedPerson);
 
-    /** Returns an unmodifiable view of the filtered person list */
-    ObservableList<Person> getFilteredPersonList();
+    /**
+     * Deletes all persons in the address book.
+     */
+    void deleteAllPersons();
+
+    /** Returns an unmodifiable view of the filtered kept person list */
+    ObservableList<Person> getFilteredKeptPersonList();
+
+    /** Returns an unmodifiable view of the filtered deleted person list */
+    ObservableList<Person> getFilteredDeletedPersonList();
 
     /**
      * Updates the filter of the filtered person list to filter by the given {@code predicate}.
      * @throws NullPointerException if {@code predicate} is null.
      */
-    void updateFilteredPersonList(Predicate<Person> predicate);
+    void updateFilteredKeptPersonList(Predicate<Person> predicate);
 
     /**
      * Updates the sorting of the filtered person list using the given {@code comparator}.

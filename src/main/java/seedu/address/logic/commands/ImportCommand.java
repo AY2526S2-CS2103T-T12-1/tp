@@ -80,7 +80,7 @@ public class ImportCommand extends Command {
 
     private Person findDuplicatePerson(Model model, List<Person> personsImportedThisRun, Person person) {
         if (model.hasPerson(person)) {
-            for (Person existingPerson : model.getAddressBook().getPersonList()) {
+            for (Person existingPerson : model.getAddressBook().getKeptPersonList()) {
                 if (existingPerson.isSamePerson(person)) {
                     return existingPerson;
                 }

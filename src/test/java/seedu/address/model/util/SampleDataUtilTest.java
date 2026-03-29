@@ -51,6 +51,6 @@ public class SampleDataUtilTest {
     public void getSampleAddressBook_containsAllSamplePersons() {
         ReadOnlyAddressBook sampleAddressBook = SampleDataUtil.getSampleAddressBook();
 
-        assertEquals(Arrays.asList(SampleDataUtil.getSamplePersons()), sampleAddressBook.getPersonList());
+        assertEquals(Arrays.asList(SampleDataUtil.getSamplePersons()), sampleAddressBook.getKeptPersonList());
     }
 }

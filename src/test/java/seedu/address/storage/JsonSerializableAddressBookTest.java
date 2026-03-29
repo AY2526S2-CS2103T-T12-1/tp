@@ -1,6 +1,7 @@
 package seedu.address.storage;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static seedu.address.storage.StorageTestUtil.assertSameKeptPersons;
 import static seedu.address.testutil.Assert.assertThrows;
 
 import java.nio.file.Path;
@@ -36,7 +37,7 @@ public class JsonSerializableAddressBookTest {
                 JsonSerializableAddressBook.class).get();
         AddressBook addressBookFromFile = dataFromFile.toModelType();
         AddressBook typicalPersonsAddressBook = TypicalPersons.getTypicalAddressBook();
-        assertEquals(addressBookFromFile, typicalPersonsAddressBook);
+        assertSameKeptPersons(addressBookFromFile, typicalPersonsAddressBook);
     }
 
     @Test
@@ -93,7 +94,7 @@ public class JsonSerializableAddressBookTest {
         JsonSerializableAddressBook dataFromFile = JsonUtil.readJsonFile(SAME_NAME_DIFFERENT_CONTACTS_FILE,
                 JsonSerializableAddressBook.class).get();
         AddressBook addressBookFromFile = dataFromFile.toModelType();
-        assertEquals(2, addressBookFromFile.getPersonList().size());
+        assertEquals(2, addressBookFromFile.getKeptPersonList().size());
     }
 
 }

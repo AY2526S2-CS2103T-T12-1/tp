@@ -111,13 +111,18 @@ public class ModelManagerTest {
     }
 
     @Test
-    public void getFilteredPersonList_modifyList_throwsUnsupportedOperationException() {
-        assertThrows(UnsupportedOperationException.class, () -> modelManager.getFilteredPersonList().remove(0));
+    public void getFilteredKeptPersonList_modifyList_throwsUnsupportedOperationException() {
+        assertThrows(UnsupportedOperationException.class, () -> modelManager.getFilteredKeptPersonList().remove(0));
     }
 
     @Test
-    public void updateFilteredPersonList_nullPredicate_throwsNullPointerException() {
-        assertThrows(NullPointerException.class, () -> modelManager.updateFilteredPersonList(null));
+    public void getFilteredDeletedPersonList_modifyList_throwsUnsupportedOperationException() {
+        assertThrows(UnsupportedOperationException.class, () -> modelManager.getFilteredDeletedPersonList().remove(0));
+    }
+
+    @Test
+    public void updateFilteredKeptPersonList_nullPredicate_throwsNullPointerException() {
+        assertThrows(NullPointerException.class, () -> modelManager.updateFilteredKeptPersonList(null));
     }
 
     @Test
@@ -125,28 +130,30 @@ public class ModelManagerTest {
         modelManager.addPerson(ALICE);
         modelManager.addPerson(BENSON);
         modelManager.updateSortedPersonList(new PersonSortComparator(SortAttribute.NAME, SortOrder.DESC));
-        assertEquals(Arrays.asList(BENSON, ALICE), modelManager.getFilteredPersonList());
+        assertEquals(Arrays.asList(BENSON, ALICE), modelManager.getFilteredKeptPersonList());
 
         modelManager.updateSortedPersonList(null);
-        assertEquals(Arrays.asList(ALICE, BENSON), modelManager.getFilteredPersonList());
+        assertEquals(Arrays.asList(ALICE, BENSON), modelManager.getFilteredKeptPersonList());
     }
 
     @Test
     public void addPerson_filteredListResetsToShowAll() {
         AddressBook addressBook = new AddressBookBuilder().withPerson(ALICE).withPerson(BENSON).build();
         modelManager = new ModelManager(addressBook, new UserPrefs());
-        modelManager.updateFilteredPersonList(new PersonContainsKeywordsPredicate(
+        modelManager.updateFilteredKeptPersonList(new PersonContainsKeywordsPredicate(
                 Arrays.asList("Alice")));
 
         modelManager.addPerson(CARL);
 
-        assertEquals(Arrays.asList(ALICE, BENSON, CARL), modelManager.getFilteredPersonList());
+        assertEquals(Arrays.asList(ALICE, BENSON, CARL), modelManager.getFilteredKeptPersonList());
     }
 
     @Test
     public void equals() {
         AddressBook addressBook = new AddressBookBuilder().withPerson(ALICE).withPerson(BENSON).build();
         AddressBook differentAddressBook = new AddressBook();
+        AddressBook deletedAddressBook = new AddressBookBuilder()
+                .withDeletedPerson(ALICE).withDeletedPerson(BENSON).build();
         UserPrefs userPrefs = new UserPrefs();
 
         // same values -> returns true
@@ -166,13 +173,18 @@ public class ModelManagerTest {
         // different addressBook -> returns false
         assertFalse(modelManager.equals(new ModelManager(differentAddressBook, userPrefs)));
 
-        // different filteredList -> returns false
+        // different filteredList for kept persons -> returns false
         String[] keywords = ALICE.getName().fullName.split("\\s+");
-        modelManager.updateFilteredPersonList(new PersonContainsKeywordsPredicate(Arrays.asList(keywords)));
+        modelManager.updateFilteredKeptPersonList(new PersonContainsKeywordsPredicate(Arrays.asList(keywords)));
         assertFalse(modelManager.equals(new ModelManager(addressBook, userPrefs)));
 
+        // both filteredLists are same -> returns true
+        modelManager.setAddressBook(deletedAddressBook);
+        modelManager.updateFilteredKeptPersonList(new PersonContainsKeywordsPredicate(Arrays.asList(keywords)));
+        assertTrue(modelManager.equals(new ModelManager(deletedAddressBook, userPrefs)));
+
         // resets modelManager to initial state for upcoming tests
-        modelManager.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
+        modelManager.updateFilteredKeptPersonList(PREDICATE_SHOW_ALL_PERSONS);
 
         // different sortedList -> returns false
         modelManager.updateSortedPersonList(new PersonSortComparator(SortAttribute.NAME, SortOrder.ASC));

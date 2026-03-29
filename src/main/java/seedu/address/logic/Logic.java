@@ -30,8 +30,17 @@ public interface Logic {
      */
     ReadOnlyAddressBook getAddressBook();
 
-    /** Returns an unmodifiable view of the filtered list of persons */
-    ObservableList<Person> getFilteredPersonList();
+    /**
+     * Returns an unmodifiable view of the filtered kept list of persons.
+     */
+    ObservableList<Person> getFilteredKeptPersonList();
+
+    /**
+     * Returns an unmodifiable view of the filtered list of persons.
+     *
+     * @param isShowBin Indicates whether to show the bin list or the working list.
+     */
+    ObservableList<Person> getFilteredPersonList(boolean isShowBin);
 
     /**
      * Returns the user prefs' address book file path.

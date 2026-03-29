@@ -10,40 +10,34 @@ import seedu.address.model.person.exceptions.PersonNotFoundException;
 
 /**
  * A list of persons that enforces uniqueness between its elements and does not allow nulls.
- * A person is considered unique by comparing using {@code Person#isSamePerson(Person)}. As such, adding and updating of
- * persons uses Person#isSamePerson(Person) for equality so as to ensure that the person being added or updated is
- * unique in terms of identity in the UniquePersonList. However, the removal of a person uses Person#equals(Object) so
- * as to ensure that the person with exactly the same fields will be removed.
+ * A person is considered unique by comparing using {@code Person#equals(Object)}.
  *
  * Supports a minimal set of list operations.
- *
- * @see Person#isSamePerson(Person)
  */
-public class UniquePersonList extends PersonList {
+public class DeletedPersonList extends PersonList {
 
     @Override
     public boolean contains(Person toCheck) {
         requireNonNull(toCheck);
-        return internalList.stream().anyMatch(toCheck::isSamePerson);
+        return internalList.stream().anyMatch(toCheck::equals);
     }
 
     /**
      * Adds a person to the list.
-     * The person must not already exist in the list.
+     * Does nothing if the person already exists in the list.
      */
     @Override
     public void add(Person toAdd) {
         requireNonNull(toAdd);
-        if (contains(toAdd)) {
-            throw new DuplicatePersonException();
+        if (!contains(toAdd)) {
+            internalList.add(toAdd);
         }
-        internalList.add(toAdd);
     }
 
     /**
      * Replaces the person {@code target} in the list with {@code editedPerson}.
      * {@code target} must exist in the list.
-     * The person identity of {@code editedPerson} must not be the same as another existing person in the list.
+     * If {@code editedPerson} already exists in the list, a copy is not added, but the target is removed.
      */
     @Override
     public void setPerson(Person target, Person editedPerson) {
@@ -54,8 +48,8 @@ public class UniquePersonList extends PersonList {
             throw new PersonNotFoundException();
         }
 
-        if (!target.isSamePerson(editedPerson) && contains(editedPerson)) {
-            throw new DuplicatePersonException();
+        if (!target.equals(editedPerson) && contains(editedPerson)) {
+            remove(target);
         }
 
         internalList.set(index, editedPerson);
@@ -77,14 +71,14 @@ public class UniquePersonList extends PersonList {
      * Replaces the contents of this list with {@code replacement}.
      * {@code replacement} must not be null.
      */
-    public void setPersons(UniquePersonList replacement) {
+    public void setPersons(DeletedPersonList replacement) {
         requireNonNull(replacement);
         internalList.setAll(replacement.internalList);
     }
 
     /**
      * Replaces the contents of this list with {@code persons}.
-     * {@code persons} must not contain duplicate persons.
+     * {@code persons} must not contain duplicate persons with respect to Person#equals(Object).
      */
     public void setPersons(List<Person> persons) {
         requireAllNonNull(persons);
@@ -96,12 +90,12 @@ public class UniquePersonList extends PersonList {
     }
 
     /**
-     * Returns true if {@code persons} contains only unique persons.
+     * Returns true if {@code persons} contains only unique persons with respect to Person#equals(Object).
      */
     private boolean personsAreUnique(List<Person> persons) {
         for (int i = 0; i < persons.size() - 1; i++) {
             for (int j = i + 1; j < persons.size(); j++) {
-                if (persons.get(i).isSamePerson(persons.get(j))) {
+                if (persons.get(i).equals(persons.get(j))) {
                     return false;
                 }
             }

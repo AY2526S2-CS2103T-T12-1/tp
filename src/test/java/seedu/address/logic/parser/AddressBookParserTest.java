@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import seedu.address.logic.commands.AddCommand;
 import seedu.address.logic.commands.AliasCommand;
 import seedu.address.logic.commands.AliasesCommand;
+import seedu.address.logic.commands.BinCommand;
 import seedu.address.logic.commands.ClearCommand;
 import seedu.address.logic.commands.CommandWords;
 import seedu.address.logic.commands.DeleteCommand;
@@ -61,6 +62,12 @@ public class AddressBookParserTest {
     public void parseCommand_aliases() throws Exception {
         assertTrue(parser.parseCommand(AliasesCommand.COMMAND_WORD) instanceof AliasesCommand);
         assertTrue(parser.parseCommand(AliasesCommand.COMMAND_WORD + " ignored") instanceof AliasesCommand);
+    }
+
+    @Test
+    public void parseCommand_bin() throws Exception {
+        assertTrue(parser.parseCommand(BinCommand.COMMAND_WORD) instanceof BinCommand);
+        assertTrue(parser.parseCommand(BinCommand.COMMAND_WORD + " 3") instanceof BinCommand);
     }
 
     @Test

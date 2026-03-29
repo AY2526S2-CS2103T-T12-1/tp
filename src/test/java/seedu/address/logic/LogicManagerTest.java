@@ -35,7 +35,6 @@ import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.commands.UnaliasCommand;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.logic.parser.exceptions.ParseException;
-import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.ReadOnlyAddressBook;
@@ -137,7 +136,7 @@ public class LogicManagerTest {
 
         Model expectedModel = new ModelManager(getTypicalAddressBook(), new UserPrefs());
         expectedModel.setCommandAlias("ss", "find m/ss meie");
-        expectedModel.updateFilteredPersonList(
+        expectedModel.updateFilteredKeptPersonList(
                 new PersonContainsSubstringsPredicate(Collections.singletonList("meie")));
 
         assertCommandSuccess("ss", String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 2), expectedModel);
@@ -149,8 +148,9 @@ public class LogicManagerTest {
         model.setCommandAlias("wipe", ClearCommand.COMMAND_WORD);
         resetLogic();
 
-        Model expectedModel = new ModelManager(new AddressBook(), new UserPrefs());
+        Model expectedModel = new ModelManager(getTypicalAddressBook(), new UserPrefs());
         expectedModel.setCommandAlias("wipe", ClearCommand.COMMAND_WORD);
+        new ClearCommand().execute(expectedModel);
 
         assertCommandSuccess("wipe", ClearCommand.MESSAGE_SUCCESS, expectedModel);
     }
@@ -285,7 +285,8 @@ public class LogicManagerTest {
 
     @Test
     public void getFilteredPersonList_modifyList_throwsUnsupportedOperationException() {
-        assertThrows(UnsupportedOperationException.class, () -> logic.getFilteredPersonList().remove(0));
+        assertThrows(UnsupportedOperationException.class, () -> logic.getFilteredPersonList(false).remove(0));
+        assertThrows(UnsupportedOperationException.class, () -> logic.getFilteredPersonList(true).remove(0));
     }
 
     /**

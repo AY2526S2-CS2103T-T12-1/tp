@@ -181,12 +181,23 @@ public class ImportCommandTest {
         }
 
         @Override
-        public ObservableList<Person> getFilteredPersonList() {
+        public ObservableList<Person> getFilteredKeptPersonList() {
             return FXCollections.observableArrayList();
         }
 
         @Override
-        public void updateFilteredPersonList(Predicate<Person> predicate) {
+        public ObservableList<Person> getFilteredDeletedPersonList() {
+            fail("This method should not be called.");
+            return null;
+        }
+
+        @Override
+        public void deleteAllPersons() {
+            fail("This method should not be called.");
+        }
+
+        @Override
+        public void updateFilteredKeptPersonList(Predicate<Person> predicate) {
             fail("This method should not be called.");
         }
 

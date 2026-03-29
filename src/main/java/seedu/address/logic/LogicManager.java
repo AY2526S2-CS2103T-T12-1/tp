@@ -84,6 +84,7 @@ public class LogicManager implements Logic {
                 String.format(EDIT_PREVIOUS_MESSAGE_SUCCESS, lastExecutedCommandText),
                 false,
                 false,
+                false,
                 lastExecutedCommandText);
     }
 
@@ -111,8 +112,13 @@ public class LogicManager implements Logic {
     }
 
     @Override
-    public ObservableList<Person> getFilteredPersonList() {
-        return model.getFilteredPersonList();
+    public ObservableList<Person> getFilteredKeptPersonList() {
+        return model.getFilteredKeptPersonList();
+    }
+
+    @Override
+    public ObservableList<Person> getFilteredPersonList(boolean isShowBin) {
+        return isShowBin ? model.getFilteredDeletedPersonList() : model.getFilteredKeptPersonList();
     }
 
     @Override

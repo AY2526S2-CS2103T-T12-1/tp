@@ -1,21 +1,24 @@
 package seedu.address.model;
 
 import static java.util.Objects.requireNonNull;
+import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
 import java.util.List;
+import java.util.Objects;
 
 import javafx.collections.ObservableList;
 import seedu.address.commons.util.ToStringBuilder;
+import seedu.address.model.person.DeletedPersonList;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.UniquePersonList;
 
 /**
  * Wraps all data at the address-book level
- * Duplicates are not allowed (by .isSamePerson comparison)
  */
 public class AddressBook implements ReadOnlyAddressBook {
 
-    private final UniquePersonList persons;
+    private final UniquePersonList keptPersons;
+    private final DeletedPersonList deletedPersons;
 
     /*
      * The 'unusual' code block below is a non-static initialization block, sometimes used to avoid duplication
@@ -25,7 +28,8 @@ public class AddressBook implements ReadOnlyAddressBook {
      *   among constructors.
      */
     {
-        persons = new UniquePersonList();
+        keptPersons = new UniquePersonList();
+        deletedPersons = new DeletedPersonList();
     }
 
     public AddressBook() {}
@@ -41,11 +45,21 @@ public class AddressBook implements ReadOnlyAddressBook {
     //// list overwrite operations
 
     /**
-     * Replaces the contents of the person list with {@code persons}.
-     * {@code persons} must not contain duplicate persons.
+     * Replaces the contents of the kept person list with {@code keptPersons}.
+     * {@code keptPersons} must not contain duplicate persons with respect to identity fields.
      */
-    public void setPersons(List<Person> persons) {
-        this.persons.setPersons(persons);
+    public void setKeptPersons(List<Person> keptPersons) {
+        requireAllNonNull(keptPersons);
+        this.keptPersons.setPersons(keptPersons);
+    }
+
+    /**
+     * Replaces the contents of the deleted person list with {@code deletedPersons}.
+     * {@code deletedPersons} must not contain duplicate persons with all fields equal.
+     */
+    public void setDeletedPersons(List<Person> deletedPersons) {
+        requireAllNonNull(deletedPersons);
+        this.deletedPersons.setPersons(deletedPersons);
     }
 
     /**
@@ -54,44 +68,79 @@ public class AddressBook implements ReadOnlyAddressBook {
     public void resetData(ReadOnlyAddressBook newData) {
         requireNonNull(newData);
 
-        setPersons(newData.getPersonList());
+        setKeptPersons(newData.getKeptPersonList());
+        setDeletedPersons(newData.getDeletedPersonList());
     }
 
     //// person-level operations
 
     /**
-     * Returns true if a person with the same identity as {@code person} exists in the address book.
+     * Returns true if a person with the same identity as {@code person} exists in the list of kept persons.
      */
-    public boolean hasPerson(Person person) {
+    public boolean hasKeptPerson(Person person) {
         requireNonNull(person);
-        return persons.contains(person);
+        return keptPersons.contains(person);
     }
 
     /**
-     * Adds a person to the address book.
-     * The person must not already exist in the address book.
+     * Returns true if a person equal to {@code person} exists in the list of deleted persons.
+     */
+    public boolean hasDeletedPerson(Person person) {
+        requireNonNull(person);
+        return deletedPersons.contains(person);
+    }
+
+    /**
+     * Adds a person to the list of kept persons in the address book.
+     * The person must not already exist in the list of kept persons.
      */
     public void addPerson(Person p) {
-        persons.add(p);
+        requireNonNull(p);
+        assert !hasKeptPerson(p) : "Person is already in the list of kept persons";
+        keptPersons.add(p);
     }
 
     /**
-     * Replaces the given person {@code target} in the list with {@code editedPerson}.
-     * {@code target} must exist in the address book.
-     * The person identity of {@code editedPerson} must not be the same as another existing person in the address book.
+     * Replaces the given person {@code target} in the list of kept persons with {@code editedPerson}.
+     * {@code target} must exist in the list of kept persons.
+     * The person identity of {@code editedPerson} must not be the same as another existing person in the list.
      */
-    public void setPerson(Person target, Person editedPerson) {
-        requireNonNull(editedPerson);
-
-        persons.setPerson(target, editedPerson);
+    public void setKeptPerson(Person target, Person editedPerson) {
+        requireAllNonNull(target, editedPerson);
+        assert hasKeptPerson(target) : "Target person is not in the list of kept persons";
+        keptPersons.setPerson(target, editedPerson);
     }
 
     /**
-     * Removes {@code key} from this {@code AddressBook}.
-     * {@code key} must exist in the address book.
+     * Moves {@code key} from the list of kept persons to the list of deleted persons.
+     * {@code key} must exist in the list of kept persons.
+     * If {@code key} already exists in the list of deleted persons, it will not be added again.
      */
-    public void removePerson(Person key) {
-        persons.remove(key);
+    public void deletePerson(Person key) {
+        requireNonNull(key);
+        assert hasKeptPerson(key) : "Person to delete is not in the list of kept persons";
+        keptPersons.remove(key);
+        deletedPersons.add(key);
+    }
+
+    /**
+     * Adds a person directly to the list of deleted persons in the address book.
+     * If the person already exists in the list of deleted persons, it will not be added again.
+     */
+    public void addDeletedPerson(Person p) {
+        requireNonNull(p);
+        deletedPersons.add(p);
+    }
+
+    /**
+     * Deletes all persons in the list of kept persons, and adds them to the list of deleted persons.
+     * Persons that already exist in the list of deleted persons will not be added again.
+     */
+    public void deleteAllPersons() {
+        for (Person person : keptPersons) {
+            addDeletedPerson(person);
+        }
+        setKeptPersons(List.of());
     }
 
     //// util methods
@@ -99,13 +148,19 @@ public class AddressBook implements ReadOnlyAddressBook {
     @Override
     public String toString() {
         return new ToStringBuilder(this)
-                .add("persons", persons)
+                .add("keptPersons", keptPersons)
+                .add("deletedPersons", deletedPersons)
                 .toString();
     }
 
     @Override
-    public ObservableList<Person> getPersonList() {
-        return persons.asUnmodifiableObservableList();
+    public ObservableList<Person> getKeptPersonList() {
+        return keptPersons.asUnmodifiableObservableList();
+    }
+
+    @Override
+    public ObservableList<Person> getDeletedPersonList() {
+        return deletedPersons.asUnmodifiableObservableList();
     }
 
     @Override
@@ -120,11 +175,12 @@ public class AddressBook implements ReadOnlyAddressBook {
         }
 
         AddressBook otherAddressBook = (AddressBook) other;
-        return persons.equals(otherAddressBook.persons);
+        return keptPersons.equals(otherAddressBook.keptPersons)
+                && deletedPersons.equals(otherAddressBook.deletedPersons);
     }
 
     @Override
     public int hashCode() {
-        return persons.hashCode();
+        return Objects.hash(keptPersons, deletedPersons);
     }
 }

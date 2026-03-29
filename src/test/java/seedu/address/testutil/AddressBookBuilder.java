@@ -28,6 +28,14 @@ public class AddressBookBuilder {
         return this;
     }
 
+    /**
+     * Adds a new deleted {@code Person} to the {@code AddressBook} that we are building.
+     */
+    public AddressBookBuilder withDeletedPerson(Person person) {
+        addressBook.addDeletedPerson(person);
+        return this;
+    }
+
     public AddressBook build() {
         return addressBook;
     }

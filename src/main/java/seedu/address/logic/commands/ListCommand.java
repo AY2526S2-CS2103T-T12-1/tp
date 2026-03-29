@@ -46,7 +46,7 @@ public class ListCommand extends Command {
     @Override
     public CommandResult execute(Model model) {
         requireNonNull(model);
-        model.updateFilteredPersonList(PREDICATE_SHOW_ALL_PERSONS);
+        model.updateFilteredKeptPersonList(PREDICATE_SHOW_ALL_PERSONS);
 
         if (sortAttribute == null) {
             model.updateSortedPersonList(null);

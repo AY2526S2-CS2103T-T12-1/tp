@@ -40,14 +40,14 @@ public class AddCommandIntegrationTest {
 
     @Test
     public void execute_duplicatePerson_throwsCommandException() {
-        Person personInList = model.getAddressBook().getPersonList().get(0);
+        Person personInList = model.getAddressBook().getKeptPersonList().get(0);
         assertCommandFailure(new AddCommand(personInList), model,
                 AddCommand.MESSAGE_DUPLICATE_PERSON);
     }
 
     @Test
     public void execute_duplicatePersonByEmailIgnoringCase_throwsCommandException() {
-        Person personInList = model.getAddressBook().getPersonList().get(0);
+        Person personInList = model.getAddressBook().getKeptPersonList().get(0);
         Person duplicateByEmail = new PersonBuilder(personInList)
                 .withName("Noah Lim")
                 .withPhone("80001111")
@@ -60,7 +60,7 @@ public class AddCommandIntegrationTest {
 
     @Test
     public void execute_sameNameDifferentPhoneAndEmail_success() {
-        Person personInList = model.getAddressBook().getPersonList().get(0);
+        Person personInList = model.getAddressBook().getKeptPersonList().get(0);
         Person sameNameDifferentContacts = new PersonBuilder(personInList)
                 .withPhone("80002222")
                 .withEmail("alice.pauline.alt@example.com")
@@ -76,7 +76,7 @@ public class AddCommandIntegrationTest {
 
     @Test
     public void execute_duplicatePersonByPhone_throwsCommandException() {
-        Person personInList = model.getAddressBook().getPersonList().get(0);
+        Person personInList = model.getAddressBook().getKeptPersonList().get(0);
         Person duplicateByPhone = new PersonBuilder(personInList)
                 .withName("Sarah Teo")
                 .withEmail("sarah.teo@example.com")
@@ -88,7 +88,7 @@ public class AddCommandIntegrationTest {
 
     @Test
     public void execute_duplicatePersonByPhoneAndEmail_throwsCommandException() {
-        Person personInList = model.getAddressBook().getPersonList().get(0);
+        Person personInList = model.getAddressBook().getKeptPersonList().get(0);
         Person duplicateByBoth = new PersonBuilder(personInList)
                 .withName("Ethan Chua")
                 .withAddress("39 Yishun Ring Rd")
