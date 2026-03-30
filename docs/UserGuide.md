@@ -192,6 +192,20 @@ Examples:
 * `find m/ss ali` returns `Alice Pauline` and `Ali Tan`
 * `find m/fz michigan` returns `Elle Meyer` (address: `michegan ave`)
 
+### Viewing volunteer statistics : `stats`
+
+Displays volunteer statistics as text-based charts in the result display.
+
+Format: `stats CATEGORY`
+
+* Currently supported `CATEGORY`: `role`, `record`.
+* `role` shows the percentage distribution of volunteer roles (empty roles are shown as `Unassigned`).
+* `record` shows volunteers ranked by the number of volunteer records.
+
+Examples:
+* `stats role`
+* `stats record`
+
 ### Deleting a person : `delete`
 
 Deletes the specified persons from RosterBolt.
@@ -283,3 +297,4 @@ Action | Format, Examples
 **Find** | `find [m/MATCH_TYPE] KEYWORD [MORE_KEYWORDS]`<br> e.g., `find m/kw James Jake`, `find m/ss ali`, `find m/fz michigan`
 **List** | `list [ATTRIBUTE [asc｜desc]]`<br> e.g., `list name desc`
 **Help** | `help`
+**Stats** | `stats CATEGORY`<br> e.g., `stats role`, `stats record`

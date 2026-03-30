@@ -148,7 +148,8 @@
 
 .result-display {
     -fx-background-color: transparent;
-    -fx-font-family: "Segoe UI Light";
+    /* Use a monospace font so stats ASCII graphs align correctly. */
+    -fx-font-family: "Consolas";
     -fx-font-size: 13pt;
     -fx-text-fill: white;
 }

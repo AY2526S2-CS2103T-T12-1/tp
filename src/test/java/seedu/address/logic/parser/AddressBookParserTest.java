@@ -27,6 +27,7 @@ import seedu.address.logic.commands.ExitCommand;
 import seedu.address.logic.commands.FindCommand;
 import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.ListCommand;
+import seedu.address.logic.commands.StatsCommand;
 import seedu.address.logic.commands.UnaliasCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.Person;
@@ -146,6 +147,15 @@ public class AddressBookParserTest {
         for (String commandExample : commandExamples.values()) {
             parser.parseCommand(commandExample);
         }
+    }
+
+    @Test
+    public void parseCommand_stats() throws Exception {
+        StatsCommand roleCommand = (StatsCommand) parser.parseCommand(StatsCommand.COMMAND_WORD + " role");
+        assertEquals(new StatsCommand(seedu.address.model.statistics.StatisticsCategory.ROLE), roleCommand);
+
+        StatsCommand recordCommand = (StatsCommand) parser.parseCommand(StatsCommand.COMMAND_WORD + " record");
+        assertEquals(new StatsCommand(seedu.address.model.statistics.StatisticsCategory.RECORD), recordCommand);
     }
 
     @Test
