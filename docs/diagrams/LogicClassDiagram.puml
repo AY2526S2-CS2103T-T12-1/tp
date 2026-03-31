@@ -30,10 +30,10 @@ HiddenOutside ..> Logic
 
 LogicManager .right.|> Logic
 LogicManager -right-> "1 " ParserClasses
-ParserClasses ..> XYZCommand : creates >
+ParserClasses ..> XYZCommand : <<create>>
 
 XYZCommand -up-|> Command
-LogicManager .left.> Command : calls >
+LogicManager .left.> Command : <<call>>
 
 LogicManager --> Model
 LogicManager --> Storage
@@ -44,7 +44,7 @@ note right of XYZCommand: XYZCommand = AddCommand, \nFindCommand, etc
 
 Logic ..> CommandResult
 LogicManager .down.> CommandResult
-Command .up.> CommandResult : creates >
+Command .up.> CommandResult : <<create>>
 
 CommandResult --> "1" ListToShow
 LogicManager --> "1  " ListToShow
