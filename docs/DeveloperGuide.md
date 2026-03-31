@@ -358,7 +358,6 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | `* *` | volunteer coordinator | search for volunteers available during a specific time period | create event rosters quickly |
 | `*` | new user | see the application pre-populated with sample data | understand how the application works |
 | `*` | new user | view the user guide | access documentation if I get stuck |
-| `*` | volunteer coordinator at an event with poor internet connectivity | view the user guide offline | access documentation without internet |
 | `*` | advanced user | read the data file easily | inspect or manipulate data using external tools |
 | `*` | advanced user | transfer my data file between computers | migrate my data easily |
 | `*` | user | have the data file reset automatically if it becomes corrupted | prevent the application from crashing |
@@ -370,7 +369,6 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | `*` | volunteer coordinator | view text-based role distribution graphs | analyze volunteer data in the CLI |
 | `*` | volunteer coordinator | list volunteers sorted by least-recently-served | distribute workload more fairly |
 | `*` | volunteer coordinator | export only selected fields to CSV | generate reports without exposing sensitive personal data |
-| `*` | volunteer coordinator working in a public space | enable privacy mode | prevent accidental exposure of sensitive personal data |
 | `*` | volunteer coordinator | find volunteers even when part of the name is remembered | locate contacts without exact matches |
 | `*` | volunteer coordinator | find volunteers despite small typing mistakes | avoid slowdowns due to typos |
 | `*` | volunteer coordinator | search names case-insensitively | avoid worrying about capitalization |
@@ -527,7 +525,6 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | CSV (Comma-Separated Values)  | A text file format used to store tabular data, used by the system for importing or exporting volunteer records.                  |
 |       Duplicate Contact       | A contact that shares critical identifying fields (e.g., phone number or email address) with an existing contact in the system.  |
 |         Mainstream OS         | Windows, Linux, Unix, macOS.                                                                                                     |
-|         Privacy Mode          | A display mode that masks sensitive personal details such as phone numbers or email addresses.                                   |
 |              Tag              | A user-defined label used to categorize volunteers (e.g., “first-aid”, “logistics”).                                             |
 
 --------------------------------------------------------------------------------------------------------------------
