@@ -45,6 +45,7 @@ public class LogicManager implements Logic {
     private final Model model;
     private final Storage storage;
     private final AddressBookParser addressBookParser;
+
     private String lastExecutedCommandText;
 
     /**
@@ -58,7 +59,8 @@ public class LogicManager implements Logic {
 
     // Reused refactor suggestion from Codex to reduce indentation level and improve readability
     @Override
-    public CommandResult execute(String commandText) throws CommandException, ParseException {
+    public CommandResult execute(String commandText, PersonListView personListView)
+            throws CommandException, ParseException {
         logger.info("----------------[USER COMMAND][" + commandText + "]");
 
         String trimmedCommandText = commandText.trim();
@@ -82,7 +84,7 @@ public class LogicManager implements Logic {
         }
         return new CommandResult(
                 String.format(EDIT_PREVIOUS_MESSAGE_SUCCESS, lastExecutedCommandText),
-                false,
+                personListView,
                 false,
                 false,
                 lastExecutedCommandText);
@@ -117,8 +119,8 @@ public class LogicManager implements Logic {
     }
 
     @Override
-    public ObservableList<Person> getFilteredPersonList(boolean isShowBin) {
-        return isShowBin ? model.getFilteredDeletedPersonList() : model.getFilteredKeptPersonList();
+    public ObservableList<Person> getFilteredDeletedPersonList() {
+        return model.getFilteredDeletedPersonList();
     }
 
     @Override

@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import seedu.address.commons.util.ToStringBuilder;
+import seedu.address.logic.PersonListView;
 
 /**
  * Represents the result of a command execution.
@@ -14,14 +15,13 @@ public class CommandResult {
 
     private final String feedbackToUser;
 
-    /** The bin of recently deleted contacts should be shown to the user. */
-    private final boolean isShowBin;
+    private final PersonListView personListView;
 
     /** Help information should be shown to the user. */
-    private final boolean isShowHelp;
+    private final boolean shouldShowHelp;
 
     /** The application should exit. */
-    private final boolean isExit;
+    private final boolean shouldExit;
 
     /** The command box should be populated with this text. */
     private final String commandTextToPopulate;
@@ -29,20 +29,25 @@ public class CommandResult {
     /**
      * Constructs a {@code CommandResult} with the specified fields.
      */
-    public CommandResult(String feedbackToUser, boolean isShowBin, boolean isShowHelp, boolean isExit) {
-        this(feedbackToUser, isShowBin, isShowHelp, isExit, null);
+    public CommandResult(String feedbackToUser, PersonListView personListView, boolean shouldShowHelp,
+            boolean shouldExit, String commandTextToPopulate) {
+        this.feedbackToUser = requireNonNull(feedbackToUser);
+        this.personListView = requireNonNull(personListView);
+        this.shouldShowHelp = shouldShowHelp;
+        this.shouldExit = shouldExit;
+        this.commandTextToPopulate = commandTextToPopulate;
     }
 
     /**
      * Constructs a {@code CommandResult} with the specified fields.
      */
-    public CommandResult(String feedbackToUser, boolean isShowBin, boolean isShowHelp, boolean isExit,
-            String commandTextToPopulate) {
-        this.feedbackToUser = requireNonNull(feedbackToUser);
-        this.isShowBin = isShowBin;
-        this.isShowHelp = isShowHelp;
-        this.isExit = isExit;
-        this.commandTextToPopulate = commandTextToPopulate;
+    public CommandResult(String feedbackToUser, PersonListView personListView, boolean shouldShowHelp,
+            boolean shouldExit) {
+        this(feedbackToUser, personListView, shouldShowHelp, shouldExit, null);
+    }
+
+    public CommandResult(String feedbackToUser, PersonListView personListView) {
+        this(feedbackToUser, personListView, false, false);
     }
 
     /**
@@ -50,23 +55,23 @@ public class CommandResult {
      * and other fields set to their default value.
      */
     public CommandResult(String feedbackToUser) {
-        this(feedbackToUser, false, false, false);
+        this(feedbackToUser, PersonListView.KEPT_PERSONS);
     }
 
     public String getFeedbackToUser() {
         return feedbackToUser;
     }
 
-    public boolean isShowBin() {
-        return isShowBin;
+    public PersonListView getPersonListView() {
+        return personListView;
     }
 
-    public boolean isShowHelp() {
-        return isShowHelp;
+    public boolean shouldShowHelp() {
+        return shouldShowHelp;
     }
 
-    public boolean isExit() {
-        return isExit;
+    public boolean shouldExit() {
+        return shouldExit;
     }
 
     public Optional<String> getCommandTextToPopulate() {
@@ -86,24 +91,24 @@ public class CommandResult {
 
         CommandResult otherCommandResult = (CommandResult) other;
         return feedbackToUser.equals(otherCommandResult.feedbackToUser)
-                && isShowBin == otherCommandResult.isShowBin
-                && isShowHelp == otherCommandResult.isShowHelp
-                && isExit == otherCommandResult.isExit
+                && personListView == otherCommandResult.personListView
+                && shouldShowHelp == otherCommandResult.shouldShowHelp
+                && shouldExit == otherCommandResult.shouldExit
                 && Objects.equals(commandTextToPopulate, otherCommandResult.commandTextToPopulate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(feedbackToUser, isShowBin, isShowHelp, isExit, commandTextToPopulate);
+        return Objects.hash(feedbackToUser, personListView, shouldShowHelp, shouldExit, commandTextToPopulate);
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this)
                 .add("feedbackToUser", feedbackToUser)
-                .add("isShowBin", isShowBin)
-                .add("isShowHelp", isShowHelp)
-                .add("isExit", isExit)
+                .add("personListView", personListView)
+                .add("shouldShowHelp", shouldShowHelp)
+                .add("shouldExit", shouldExit)
                 .add("commandTextToPopulate", commandTextToPopulate)
                 .toString();
     }
