@@ -12,6 +12,8 @@ Class AddressBook
 Class ModelManager
 Class UserPrefs
 
+Class "{abstract}\nPersonList" as PersonList
+Class DeletedPersonList
 Class UniquePersonList
 Class Person
 Class Address
@@ -35,20 +37,27 @@ ModelManager -left-> "1" AddressBook
 ModelManager -right-> "1" UserPrefs
 UserPrefs .up.|> ReadOnlyUserPrefs
 
+UniquePersonList -up-|> PersonList
+DeletedPersonList -up-|> PersonList
+
 AddressBook *--> "1" UniquePersonList
-UniquePersonList --> "~* all" Person
+AddressBook *--> "1" DeletedPersonList
+UniquePersonList --> "~*" Person : stores kept >
+DeletedPersonList --> "~*" Person : stores deleted >
 Person *--> Name
 Person *--> Phone
 Person *--> Email
 Person *--> Address
 Person *--> "*" Tag
 
-Person -[hidden]up--> I
-UniquePersonList -[hidden]right-> I
+ReadOnlyAddressBook -[hidden]left-> PersonList
+AddressBook -[hidden]down-> I
+DeletedPersonList -[hidden]right-> I
 
 Name -[hidden]right-> Phone
 Phone -[hidden]right-> Address
 Address -[hidden]right-> Email
 
-ModelManager --> "~* filtered" Person
+ModelManager --> "~*" Person : filters kept >
+ModelManager --> "~*" Person : filters deleted >
 @enduml

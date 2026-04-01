@@ -1,0 +1,42 @@
+package seedu.address.model.statistics;
+
+import static java.util.Objects.requireNonNull;
+
+/**
+ * Creates statistics generators for the requested category.
+ */
+public final class StatisticsGeneratorFactory {
+    private static final int DEFAULT_BAR_WIDTH = 20;
+
+    private final AsciiBarChart barChart;
+
+    /**
+     * Creates a factory with a default bar chart configuration.
+     */
+    public StatisticsGeneratorFactory() {
+        this(new AsciiBarChart(DEFAULT_BAR_WIDTH));
+    }
+
+    /**
+     * Creates a factory that uses the provided bar chart.
+     *
+     * @param barChart Bar chart used by generated statistics.
+     */
+    public StatisticsGeneratorFactory(AsciiBarChart barChart) {
+        this.barChart = requireNonNull(barChart);
+    }
+
+    /**
+     * Returns a generator for the given statistics category.
+     */
+    public StatisticsGenerator create(StatisticsCategory category) {
+        requireNonNull(category);
+        if (category == StatisticsCategory.ROLE) {
+            return new RoleStatisticsGenerator(barChart);
+        } else if (category == StatisticsCategory.RECORD) {
+            return new RecordStatisticsGenerator(barChart);
+        } else {
+            throw new IllegalStateException("Unsupported statistics category: " + category);
+        }
+    }
+}

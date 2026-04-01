@@ -35,6 +35,8 @@ public class LogicManager implements Logic {
     private final Storage storage;
     private final AddressBookParser addressBookParser;
 
+    private String lastExecutedCommandText;
+
     /**
      * Constructs a {@code LogicManager} with the given {@code Model} and {@code Storage}.
      */
@@ -45,9 +47,38 @@ public class LogicManager implements Logic {
     }
 
     @Override
-    public CommandResult execute(String commandText) throws CommandException, ParseException {
+    public CommandResult execute(String commandText, PersonListView personListView)
+            throws CommandException, ParseException {
         logger.info("----------------[USER COMMAND][" + commandText + "]");
 
+        String trimmedCommandText = commandText.trim();
+        Matcher commandMatcher = BASIC_COMMAND_FORMAT.matcher(trimmedCommandText);
+        if (!commandMatcher.matches()) {
+            return executeNormalCommand(commandText);
+        }
+
+        String commandWord = commandMatcher.group("commandWord");
+        String arguments = commandMatcher.group("arguments").trim();
+        if (!EDIT_PREVIOUS_COMMAND_WORD.equals(commandWord)) {
+            return executeNormalCommand(commandText);
+        }
+
+        if (!arguments.isEmpty()) {
+            throw new ParseException(String.format(
+                    MESSAGE_INVALID_COMMAND_FORMAT, EDIT_PREVIOUS_MESSAGE_USAGE));
+        }
+        if (lastExecutedCommandText == null) {
+            throw new CommandException(EDIT_PREVIOUS_MESSAGE_NO_PREVIOUS_COMMAND);
+        }
+        return new CommandResult(
+                String.format(EDIT_PREVIOUS_MESSAGE_SUCCESS, lastExecutedCommandText),
+                personListView,
+                false,
+                false,
+                lastExecutedCommandText);
+    }
+
+    private CommandResult executeNormalCommand(String commandText) throws CommandException, ParseException {
         String expandedCommandText = expandAlias(commandText);
         Command command = addressBookParser.parseCommand(expandedCommandText);
         CommandResult commandResult = command.execute(model);
@@ -79,8 +110,8 @@ public class LogicManager implements Logic {
     }
 
     @Override
-    public ObservableList<Person> getFilteredPersonList(boolean isShowBin) {
-        return isShowBin ? model.getFilteredDeletedPersonList() : model.getFilteredKeptPersonList();
+    public ObservableList<Person> getFilteredDeletedPersonList() {
+        return model.getFilteredDeletedPersonList();
     }
 
     @Override

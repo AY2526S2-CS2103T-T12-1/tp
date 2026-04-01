@@ -1,0 +1,35 @@
+@startuml
+!include style.puml
+skinparam ArrowFontStyle plain
+
+box Model MODEL_COLOR_T1
+participant ":ModelManager" as ModelManager MODEL_COLOR
+participant "ab:AddressBook" as AddressBook MODEL_COLOR
+participant "keptPersons:UniquePersonList" as UniquePersonList MODEL_COLOR
+participant "deletedPersons:DeletedPersonList" as DeletedPersonList MODEL_COLOR
+end box
+
+[-> ModelManager : deletePerson(p)
+activate ModelManager
+
+ModelManager -> AddressBook : deletePerson(p)
+activate AddressBook
+
+AddressBook -> UniquePersonList : remove(p)
+activate UniquePersonList
+
+UniquePersonList --> AddressBook
+deactivate UniquePersonList
+
+AddressBook -> DeletedPersonList : add(p)
+activate DeletedPersonList
+
+DeletedPersonList --> AddressBook
+deactivate DeletedPersonList
+
+AddressBook --> ModelManager
+deactivate AddressBook
+
+[<--ModelManager
+deactivate ModelManager
+@enduml

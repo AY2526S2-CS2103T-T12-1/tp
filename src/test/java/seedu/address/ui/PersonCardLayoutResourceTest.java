@@ -27,19 +27,38 @@ public class PersonCardLayoutResourceTest {
             "fx:id=\"name\" text=\"\\$first\" styleClass=\"cell_big_label\" wrapText=\"true\""
         ));
         assertTrue(fxmlContent.contains(
-            "fx:id=\"phone\" styleClass=\"cell_small_label\" text=\"\\$phone\" wrapText=\"true\""
+            "<HBox alignment=\"TOP_LEFT\" spacing=\"0\">"
         ));
         assertTrue(fxmlContent.contains(
-            "fx:id=\"address\" styleClass=\"cell_small_label\" text=\"\\$address\" wrapText=\"true\""
+            "styleClass=\"cell_small_label\" text=\"Phone: \""
         ));
         assertTrue(fxmlContent.contains(
-            "fx:id=\"email\" styleClass=\"cell_small_label\" text=\"\\$email\" wrapText=\"true\""
+            "fx:id=\"phone\" styleClass=\"cell_small_label\" text=\"\\$phone\" wrapText=\"true\" HBox.hgrow=\"ALWAYS\""
         ));
         assertTrue(fxmlContent.contains(
-            "fx:id=\"role\" styleClass=\"cell_small_label\" text=\"\\$role\" wrapText=\"true\""
+            "styleClass=\"cell_small_label\" text=\"Address: \""
         ));
         assertTrue(fxmlContent.contains(
-            "fx:id=\"notes\" styleClass=\"cell_small_label\" text=\"\\$notes\" wrapText=\"true\""
+            "fx:id=\"address\" styleClass=\"cell_small_label\" text=\"\\$address\" "
+                    + "wrapText=\"true\" HBox.hgrow=\"ALWAYS\""
+        ));
+        assertTrue(fxmlContent.contains(
+            "styleClass=\"cell_small_label\" text=\"Email: \""
+        ));
+        assertTrue(fxmlContent.contains(
+            "fx:id=\"email\" styleClass=\"cell_small_label\" text=\"\\$email\" wrapText=\"true\" HBox.hgrow=\"ALWAYS\""
+        ));
+        assertTrue(fxmlContent.contains(
+            "styleClass=\"cell_small_label\" text=\"Role: \""
+        ));
+        assertTrue(fxmlContent.contains(
+            "fx:id=\"role\" styleClass=\"cell_small_label\" text=\"\\$role\" wrapText=\"true\" HBox.hgrow=\"ALWAYS\""
+        ));
+        assertTrue(fxmlContent.contains(
+            "styleClass=\"cell_small_label\" text=\"Notes: \""
+        ));
+        assertTrue(fxmlContent.contains(
+            "fx:id=\"notes\" styleClass=\"cell_small_label\" text=\"\\$notes\" wrapText=\"true\" HBox.hgrow=\"ALWAYS\""
         ));
         assertTrue(fxmlContent.contains(
             "fx:id=\"availability\" styleClass=\"cell_small_label\" text=\"\\$availability\" wrapText=\"true\""

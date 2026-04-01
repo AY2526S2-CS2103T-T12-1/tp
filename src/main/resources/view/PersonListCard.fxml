@@ -28,11 +28,26 @@
         <Label fx:id="name" text="\$first" styleClass="cell_big_label" wrapText="true"/>
       </HBox>
       <FlowPane fx:id="tags" prefWrapLength="240" />
-      <Label fx:id="phone" styleClass="cell_small_label" text="\$phone" wrapText="true"/>
-      <Label fx:id="address" styleClass="cell_small_label" text="\$address" wrapText="true"/>
-      <Label fx:id="email" styleClass="cell_small_label" text="\$email" wrapText="true"/>
-      <Label fx:id="role" styleClass="cell_small_label" text="\$role" wrapText="true"/>
-      <Label fx:id="notes" styleClass="cell_small_label" text="\$notes" wrapText="true"/>
+      <HBox alignment="TOP_LEFT" spacing="0">
+        <Label styleClass="cell_small_label" text="Phone: " />
+        <Label fx:id="phone" styleClass="cell_small_label" text="\$phone" wrapText="true" HBox.hgrow="ALWAYS"/>
+      </HBox>
+      <HBox alignment="TOP_LEFT" spacing="0">
+        <Label styleClass="cell_small_label" text="Address: " />
+        <Label fx:id="address" styleClass="cell_small_label" text="\$address" wrapText="true" HBox.hgrow="ALWAYS"/>
+      </HBox>
+      <HBox alignment="TOP_LEFT" spacing="0">
+        <Label styleClass="cell_small_label" text="Email: " />
+        <Label fx:id="email" styleClass="cell_small_label" text="\$email" wrapText="true" HBox.hgrow="ALWAYS"/>
+      </HBox>
+      <HBox alignment="TOP_LEFT" spacing="0">
+        <Label styleClass="cell_small_label" text="Role: " />
+        <Label fx:id="role" styleClass="cell_small_label" text="\$role" wrapText="true" HBox.hgrow="ALWAYS"/>
+      </HBox>
+      <HBox alignment="TOP_LEFT" spacing="0">
+        <Label styleClass="cell_small_label" text="Notes: " />
+        <Label fx:id="notes" styleClass="cell_small_label" text="\$notes" wrapText="true" HBox.hgrow="ALWAYS"/>
+      </HBox>
       <Label fx:id="availability" styleClass="cell_small_label" text="\$availability" wrapText="true"/>
       <Label fx:id="records" styleClass="cell_small_label" text="\$records" wrapText="true"/>
     </VBox>
