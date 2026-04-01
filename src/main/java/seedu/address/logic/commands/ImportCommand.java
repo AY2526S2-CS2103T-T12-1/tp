@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import seedu.address.commons.util.CsvImportFileResult;
 import seedu.address.commons.util.CsvImportRowError;
@@ -150,5 +151,10 @@ public class ImportCommand extends Command {
         return other == this
                 || (other instanceof ImportCommand
                 && filePath.equals(((ImportCommand) other).filePath));
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(filePath);
     }
 }

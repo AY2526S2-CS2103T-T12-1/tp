@@ -5,6 +5,7 @@ import static java.util.Objects.requireNonNull;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Objects;
 
 import seedu.address.commons.util.CsvWriterUtil;
 import seedu.address.logic.commands.exceptions.CommandException;
@@ -58,5 +59,10 @@ public class ExportCommand extends Command {
         return other == this
                 || (other instanceof ExportCommand
                 && filePath.equals(((ExportCommand) other).filePath));
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(filePath);
     }
 }
