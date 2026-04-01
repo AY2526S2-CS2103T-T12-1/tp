@@ -32,7 +32,8 @@ public class DeleteCommand extends Command {
     private final List<Index> targetIndices;
 
     public DeleteCommand(List<Index> targetIndices) {
-        this.targetIndices = targetIndices;
+        //defensive copy to ensure immutability
+        this.targetIndices = List.copyOf(targetIndices);
     }
 
     @Override
