@@ -18,6 +18,6 @@ public class BinCommand extends Command {
     public CommandResult execute(Model model) {
         requireNonNull(model);
         model.updateFilteredKeptPersonList(PREDICATE_SHOW_ALL_PERSONS);
-        return new CommandResult(MESSAGE_SUCCESS, ListToShow.DELETED_PERSONS, false, false);
+        return new CommandResult(MESSAGE_SUCCESS, PersonListView.DELETED_PERSONS, false, false);
     }
 }

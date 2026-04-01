@@ -128,11 +128,11 @@ public class CommandTestUtil {
 
     /**
      * Convenience wrapper to {@link #assertCommandSuccess(Command, Model, CommandResult, Model)}
-     * that takes a string {@code expectedMessage} and ListToShow {@code expectedListToShow}.
+     * that takes a string {@code expectedMessage} and PersonListView {@code expectedPersonListView}.
      */
     public static void assertCommandSuccess(Command command, Model actualModel, String expectedMessage,
-            ListToShow expectedListToShow, Model expectedModel) {
-        CommandResult expectedCommandResult = new CommandResult(expectedMessage, expectedListToShow);
+                                            PersonListView expectedPersonListView, Model expectedModel) {
+        CommandResult expectedCommandResult = new CommandResult(expectedMessage, expectedPersonListView);
         assertCommandSuccess(command, actualModel, expectedCommandResult, expectedModel);
     }
 

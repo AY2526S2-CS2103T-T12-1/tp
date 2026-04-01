@@ -14,8 +14,8 @@ public class CommandResultTest {
 
         // same values -> returns true
         assertTrue(commandResult.equals(new CommandResult("feedback")));
-        assertTrue(commandResult.equals(new CommandResult("feedback", ListToShow.SAME_AS_PREVIOUS)));
-        assertTrue(commandResult.equals(new CommandResult("feedback", ListToShow.SAME_AS_PREVIOUS, false, false)));
+        assertTrue(commandResult.equals(new CommandResult("feedback", PersonListView.SAME_AS_PREVIOUS)));
+        assertTrue(commandResult.equals(new CommandResult("feedback", PersonListView.SAME_AS_PREVIOUS, false, false)));
 
         // same object -> returns true
         assertTrue(commandResult.equals(commandResult));
@@ -30,18 +30,18 @@ public class CommandResultTest {
         assertFalse(commandResult.equals(new CommandResult("different")));
 
         // different showBin value -> returns false
-        assertFalse(commandResult.equals(new CommandResult("feedback", ListToShow.KEPT_PERSONS, false, false)));
-        assertFalse(commandResult.equals(new CommandResult("feedback", ListToShow.DELETED_PERSONS, false, false)));
+        assertFalse(commandResult.equals(new CommandResult("feedback", PersonListView.KEPT_PERSONS, false, false)));
+        assertFalse(commandResult.equals(new CommandResult("feedback", PersonListView.DELETED_PERSONS, false, false)));
 
         // different showHelp value -> returns false
-        assertFalse(commandResult.equals(new CommandResult("feedback", ListToShow.SAME_AS_PREVIOUS, true, false)));
+        assertFalse(commandResult.equals(new CommandResult("feedback", PersonListView.SAME_AS_PREVIOUS, true, false)));
 
         // different exit value -> returns false
-        assertFalse(commandResult.equals(new CommandResult("feedback", ListToShow.SAME_AS_PREVIOUS, false, true)));
+        assertFalse(commandResult.equals(new CommandResult("feedback", PersonListView.SAME_AS_PREVIOUS, false, true)));
 
         // different commandTextToPopulate value -> returns false
         assertFalse(commandResult.equals(new CommandResult(
-                "feedback", ListToShow.SAME_AS_PREVIOUS, false, false, "list")));
+                "feedback", PersonListView.SAME_AS_PREVIOUS, false, false, "list")));
     }
 
     @Test
@@ -56,21 +56,21 @@ public class CommandResultTest {
 
         // different showBin value -> returns different hashcode
         assertNotEquals(commandResult.hashCode(),
-                new CommandResult("feedback", ListToShow.KEPT_PERSONS, false, false).hashCode());
+                new CommandResult("feedback", PersonListView.KEPT_PERSONS, false, false).hashCode());
         assertNotEquals(commandResult.hashCode(),
-                new CommandResult("feedback", ListToShow.DELETED_PERSONS, false, false).hashCode());
+                new CommandResult("feedback", PersonListView.DELETED_PERSONS, false, false).hashCode());
 
         // different showHelp value -> returns different hashcode
         assertNotEquals(commandResult.hashCode(),
-                new CommandResult("feedback", ListToShow.SAME_AS_PREVIOUS, true, false).hashCode());
+                new CommandResult("feedback", PersonListView.SAME_AS_PREVIOUS, true, false).hashCode());
 
         // different exit value -> returns different hashcode
         assertNotEquals(commandResult.hashCode(),
-                new CommandResult("feedback", ListToShow.SAME_AS_PREVIOUS, false, true).hashCode());
+                new CommandResult("feedback", PersonListView.SAME_AS_PREVIOUS, false, true).hashCode());
 
         // different commandTextToPopulate value -> returns different hashcode
         assertNotEquals(commandResult.hashCode(),
-                new CommandResult("feedback", ListToShow.SAME_AS_PREVIOUS, false, false, "list").hashCode());
+                new CommandResult("feedback", PersonListView.SAME_AS_PREVIOUS, false, false, "list").hashCode());
     }
 
     @Test
@@ -78,7 +78,7 @@ public class CommandResultTest {
         CommandResult commandResult = new CommandResult("feedback");
         String expected = CommandResult.class.getCanonicalName()
                 + "{feedbackToUser=" + commandResult.getFeedbackToUser()
-                + ", listToShow=" + commandResult.getListToShow()
+                + ", personListView=" + commandResult.getListToShow()
                 + ", shouldShowHelp=" + commandResult.shouldShowHelp()
                 + ", shouldExit=" + commandResult.shouldExit()
                 + ", commandTextToPopulate=" + commandResult.getCommandTextToPopulate().orElse(null) + "}";

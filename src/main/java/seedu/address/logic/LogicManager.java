@@ -14,7 +14,7 @@ import seedu.address.commons.core.GuiSettings;
 import seedu.address.commons.core.LogsCenter;
 import seedu.address.logic.commands.Command;
 import seedu.address.logic.commands.CommandResult;
-import seedu.address.logic.commands.ListToShow;
+import seedu.address.logic.commands.PersonListView;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.logic.parser.AddressBookParser;
 import seedu.address.logic.parser.ParserUtil;
@@ -46,7 +46,7 @@ public class LogicManager implements Logic {
     private final Model model;
     private final Storage storage;
     private final AddressBookParser addressBookParser;
-    private ListToShow listToShow;
+    private PersonListView personListView;
     private String lastExecutedCommandText;
 
     /**
@@ -56,7 +56,7 @@ public class LogicManager implements Logic {
         this.model = model;
         this.storage = storage;
         addressBookParser = new AddressBookParser();
-        listToShow = ListToShow.KEPT_PERSONS;
+        personListView = PersonListView.KEPT_PERSONS;
     }
 
     // Reused refactor suggestion from Codex to reduce indentation level and improve readability
@@ -85,7 +85,7 @@ public class LogicManager implements Logic {
         }
         return new CommandResult(
                 String.format(EDIT_PREVIOUS_MESSAGE_SUCCESS, lastExecutedCommandText),
-                ListToShow.SAME_AS_PREVIOUS,
+                PersonListView.SAME_AS_PREVIOUS,
                 false,
                 false,
                 lastExecutedCommandText);
@@ -95,7 +95,7 @@ public class LogicManager implements Logic {
         String expandedCommandText = expandAlias(commandText);
         Command command = addressBookParser.parseCommand(expandedCommandText);
         CommandResult commandResult = command.execute(model);
-        listToShow = ListToShow.updateListToShow(listToShow, commandResult.getListToShow());
+        personListView = PersonListView.updatePersonListView(personListView, commandResult.getListToShow());
 
         try {
             storage.saveAddressBook(model.getAddressBook());
@@ -117,13 +117,13 @@ public class LogicManager implements Logic {
 
     @Override
     public ObservableList<Person> getFilteredPersonList() {
-        switch (listToShow) {
+        switch (personListView) {
         case KEPT_PERSONS:
             return model.getFilteredKeptPersonList();
         case DELETED_PERSONS:
             return model.getFilteredDeletedPersonList();
         default:
-            throw new IllegalStateException("Invalid listToShow: " + listToShow);
+            throw new IllegalStateException("Invalid personListView: " + personListView);
         }
     }
 

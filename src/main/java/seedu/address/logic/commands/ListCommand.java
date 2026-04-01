@@ -56,7 +56,7 @@ public class ListCommand extends Command {
         model.updateSortedPersonList(new PersonSortComparator(sortAttribute, sortOrder));
         String feedback = String.format(MESSAGE_SUCCESS_SORTED,
                 sortAttribute.getToken(), sortOrder.getToken());
-        return new CommandResult(feedback, ListToShow.KEPT_PERSONS);
+        return new CommandResult(feedback, PersonListView.KEPT_PERSONS);
     }
 
     @Override

@@ -15,7 +15,7 @@ public class HelpCommandTest {
     @Test
     public void execute_help_success() {
         CommandResult expectedCommandResult = new CommandResult(
-                SHOWING_HELP_MESSAGE, ListToShow.SAME_AS_PREVIOUS, true, false);
+                SHOWING_HELP_MESSAGE, PersonListView.SAME_AS_PREVIOUS, true, false);
         assertCommandSuccess(new HelpCommand(), model, expectedCommandResult, expectedModel);
     }
 }

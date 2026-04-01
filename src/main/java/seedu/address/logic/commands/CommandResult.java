@@ -14,7 +14,7 @@ public class CommandResult {
 
     private final String feedbackToUser;
 
-    private final ListToShow listToShow;
+    private final PersonListView personListView;
 
     /** Help information should be shown to the user. */
     private final boolean shouldShowHelp;
@@ -28,10 +28,10 @@ public class CommandResult {
     /**
      * Constructs a {@code CommandResult} with the specified fields.
      */
-    public CommandResult(String feedbackToUser, ListToShow listToShow, boolean shouldShowHelp, boolean shouldExit,
-            String commandTextToPopulate) {
+    public CommandResult(String feedbackToUser, PersonListView personListView, boolean shouldShowHelp,
+            boolean shouldExit, String commandTextToPopulate) {
         this.feedbackToUser = requireNonNull(feedbackToUser);
-        this.listToShow = requireNonNull(listToShow);
+        this.personListView = requireNonNull(personListView);
         this.shouldShowHelp = shouldShowHelp;
         this.shouldExit = shouldExit;
         this.commandTextToPopulate = commandTextToPopulate;
@@ -40,12 +40,13 @@ public class CommandResult {
     /**
      * Constructs a {@code CommandResult} with the specified fields.
      */
-    public CommandResult(String feedbackToUser, ListToShow listToShow, boolean shouldShowHelp, boolean shouldExit) {
-        this(feedbackToUser, listToShow, shouldShowHelp, shouldExit, null);
+    public CommandResult(String feedbackToUser, PersonListView personListView, boolean shouldShowHelp,
+            boolean shouldExit) {
+        this(feedbackToUser, personListView, shouldShowHelp, shouldExit, null);
     }
 
-    public CommandResult(String feedbackToUser, ListToShow listToShow) {
-        this(feedbackToUser, listToShow, false, false);
+    public CommandResult(String feedbackToUser, PersonListView personListView) {
+        this(feedbackToUser, personListView, false, false);
     }
 
     /**
@@ -53,15 +54,15 @@ public class CommandResult {
      * and other fields set to their default value.
      */
     public CommandResult(String feedbackToUser) {
-        this(feedbackToUser, ListToShow.SAME_AS_PREVIOUS);
+        this(feedbackToUser, PersonListView.SAME_AS_PREVIOUS);
     }
 
     public String getFeedbackToUser() {
         return feedbackToUser;
     }
 
-    public ListToShow getListToShow() {
-        return listToShow;
+    public PersonListView getListToShow() {
+        return personListView;
     }
 
     public boolean shouldShowHelp() {
@@ -89,7 +90,7 @@ public class CommandResult {
 
         CommandResult otherCommandResult = (CommandResult) other;
         return feedbackToUser.equals(otherCommandResult.feedbackToUser)
-                && listToShow == otherCommandResult.listToShow
+                && personListView == otherCommandResult.personListView
                 && shouldShowHelp == otherCommandResult.shouldShowHelp
                 && shouldExit == otherCommandResult.shouldExit
                 && Objects.equals(commandTextToPopulate, otherCommandResult.commandTextToPopulate);
@@ -97,14 +98,14 @@ public class CommandResult {
 
     @Override
     public int hashCode() {
-        return Objects.hash(feedbackToUser, listToShow, shouldShowHelp, shouldExit, commandTextToPopulate);
+        return Objects.hash(feedbackToUser, personListView, shouldShowHelp, shouldExit, commandTextToPopulate);
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this)
                 .add("feedbackToUser", feedbackToUser)
-                .add("listToShow", listToShow)
+                .add("personListView", personListView)
                 .add("shouldShowHelp", shouldShowHelp)
                 .add("shouldExit", shouldExit)
                 .add("commandTextToPopulate", commandTextToPopulate)
