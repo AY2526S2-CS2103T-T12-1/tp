@@ -1,5 +1,6 @@
 package seedu.address.logic.commands;
 
+import seedu.address.logic.PersonListView;
 import seedu.address.model.Model;
 
 /**

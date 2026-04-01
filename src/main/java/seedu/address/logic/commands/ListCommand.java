@@ -4,6 +4,7 @@ import static java.util.Objects.requireNonNull;
 import static seedu.address.model.Model.PREDICATE_SHOW_ALL_PERSONS;
 
 import seedu.address.commons.util.ToStringBuilder;
+import seedu.address.logic.PersonListView;
 import seedu.address.model.Model;
 import seedu.address.model.person.sort.PersonSortComparator;
 import seedu.address.model.person.sort.SortAttribute;

@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import seedu.address.commons.util.ToStringBuilder;
+import seedu.address.logic.PersonListView;
 
 /**
  * Represents the result of a command execution.

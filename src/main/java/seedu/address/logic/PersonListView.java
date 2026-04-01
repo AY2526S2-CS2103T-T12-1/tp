@@ -1,4 +1,4 @@
-package seedu.address.logic.commands;
+package seedu.address.logic;
 
 import static seedu.address.commons.util.CollectionUtil.requireAllNonNull;
 
