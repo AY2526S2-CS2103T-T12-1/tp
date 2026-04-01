@@ -9,9 +9,11 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import seedu.address.logic.parser.ParserUtil;
 import seedu.address.logic.parser.exceptions.ParseException;
@@ -129,10 +131,10 @@ public class CsvReaderUtil {
         Role role = parseOptionalRole(getCell(row, headerMap, HEADER_ROLE));
         Notes notes = parseOptionalNotes(getCell(row, headerMap, HEADER_NOTES));
 
-        java.util.Set<Tag> tags = parseOptionalTags(getCell(row, headerMap, HEADER_TAGS));
-        java.util.Set<VolunteerAvailability> availabilities =
+        Set<Tag> tags = parseOptionalTags(getCell(row, headerMap, HEADER_TAGS));
+        Set<VolunteerAvailability> availabilities =
                 parseOptionalAvailabilities(getCell(row, headerMap, HEADER_AVAILABILITIES));
-        java.util.Set<VolunteerRecord> records =
+        Set<VolunteerRecord> records =
                 parseOptionalRecords(getCell(row, headerMap, HEADER_RECORDS));
 
         return new Person(name, phone, email, address, role, notes, tags, availabilities, records);
@@ -204,12 +206,12 @@ public class CsvReaderUtil {
         }
     }
 
-    private static java.util.Set<Tag> parseOptionalTags(String value) throws RowParseException {
+    private static Set<Tag> parseOptionalTags(String value) throws RowParseException {
         if (isBlank(value)) {
             return Collections.emptySet();
         }
 
-        java.util.Set<Tag> tags = new java.util.HashSet<>();
+        Set<Tag> tags = new HashSet<>();
         for (String part : splitMultiValueCell(value)) {
             try {
                 tags.add(ParserUtil.parseTag(part));
@@ -220,13 +222,13 @@ public class CsvReaderUtil {
         return tags;
     }
 
-    private static java.util.Set<VolunteerAvailability> parseOptionalAvailabilities(String value)
+    private static Set<VolunteerAvailability> parseOptionalAvailabilities(String value)
             throws RowParseException {
         if (isBlank(value)) {
             return Collections.emptySet();
         }
 
-        java.util.Set<VolunteerAvailability> availabilities = new java.util.HashSet<>();
+        Set<VolunteerAvailability> availabilities = new HashSet<>();
         for (String part : splitMultiValueCell(value)) {
             try {
                 availabilities.add(ParserUtil.parseVolunteerAvailability(part));
@@ -237,13 +239,13 @@ public class CsvReaderUtil {
         return availabilities;
     }
 
-    private static java.util.Set<VolunteerRecord> parseOptionalRecords(String value)
+    private static Set<VolunteerRecord> parseOptionalRecords(String value)
             throws RowParseException {
         if (isBlank(value)) {
             return Collections.emptySet();
         }
 
-        java.util.Set<VolunteerRecord> records = new java.util.HashSet<>();
+        Set<VolunteerRecord> records = new HashSet<>();
         for (String part : splitMultiValueCell(value)) {
             try {
                 records.add(ParserUtil.parseVolunteerRecord(part));
