@@ -259,6 +259,16 @@ public class AddCommandTest {
         public void updateSortedPersonList(Comparator<Person> comparator) {
             throw new AssertionError("This method should not be called.");
         }
+
+        @Override
+        public String getLastCommandText() {
+            throw new AssertionError("This method should not be called.");
+        }
+
+        @Override
+        public void setLastCommandText(String commandText) {
+            throw new AssertionError("This method should not be called.");
+        }
     }
 
     /**

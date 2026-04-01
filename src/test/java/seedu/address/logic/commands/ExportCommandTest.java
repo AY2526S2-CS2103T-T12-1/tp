@@ -240,6 +240,17 @@ public class ExportCommandTest {
         public void updateSortedPersonList(Comparator<Person> comparator) {
             fail("This method should not be called.");
         }
+
+        @Override
+        public String getLastCommandText() {
+            fail("This method should not be called.");
+            return null;
+        }
+
+        @Override
+        public void setLastCommandText(String commandText) {
+            fail("This method should not be called.");
+        }
     }
 
     /**

@@ -29,6 +29,7 @@ public class ModelManager implements Model {
     private final FilteredList<Person> filteredDeletedPersons;
     private final SortedList<Person> sortedPersons;
     private Comparator<Person> sortComparator;
+    private String lastCommandText;
 
     /**
      * Initializes a ModelManager with the given addressBook and userPrefs.
@@ -171,6 +172,16 @@ public class ModelManager implements Model {
     public void updateSortedPersonList(Comparator<Person> comparator) {
         sortComparator = comparator;
         sortedPersons.setComparator(comparator);
+    }
+
+    @Override
+    public String getLastCommandText() {
+        return lastCommandText;
+    }
+
+    @Override
+    public void setLastCommandText(String commandText) {
+        this.lastCommandText = commandText;
     }
 
     @Override

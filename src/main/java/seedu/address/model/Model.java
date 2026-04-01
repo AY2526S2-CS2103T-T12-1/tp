@@ -120,4 +120,14 @@ public interface Model {
      * A {@code null} comparator removes sorting and restores the original order.
      */
     void updateSortedPersonList(Comparator<Person> comparator);
+
+    /**
+     * Returns the last successfully executed command text, or null if none.
+     */
+    String getLastCommandText();
+
+    /**
+     * Sets the last successfully executed command text.
+     */
+    void setLastCommandText(String commandText);
 }

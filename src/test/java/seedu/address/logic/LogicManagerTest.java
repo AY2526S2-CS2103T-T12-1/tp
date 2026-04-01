@@ -31,6 +31,7 @@ import seedu.address.logic.commands.AliasesCommand;
 import seedu.address.logic.commands.ClearCommand;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.DeleteCommand;
+import seedu.address.logic.commands.EditPreviousCommand;
 import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.commands.UnaliasCommand;
 import seedu.address.logic.commands.exceptions.CommandException;
@@ -213,8 +214,8 @@ public class LogicManagerTest {
 
     @Test
     public void execute_editPreviousWithoutPreviousCommand_throwsCommandException() {
-        assertCommandException(LogicManager.EDIT_PREVIOUS_COMMAND_WORD,
-                LogicManager.EDIT_PREVIOUS_MESSAGE_NO_PREVIOUS_COMMAND);
+        assertCommandException(EditPreviousCommand.COMMAND_WORD,
+                EditPreviousCommand.MESSAGE_NO_PREVIOUS_COMMAND);
     }
 
     @Test
@@ -222,9 +223,9 @@ public class LogicManagerTest {
         assertCommandSuccess(ListCommand.COMMAND_WORD, ListCommand.MESSAGE_SUCCESS, model);
 
         Model expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
-        CommandResult result = logic.execute(LogicManager.EDIT_PREVIOUS_COMMAND_WORD);
+        CommandResult result = logic.execute(EditPreviousCommand.COMMAND_WORD);
 
-        assertEquals(String.format(LogicManager.EDIT_PREVIOUS_MESSAGE_SUCCESS, ListCommand.COMMAND_WORD),
+        assertEquals(String.format(EditPreviousCommand.MESSAGE_SUCCESS, ListCommand.COMMAND_WORD),
                 result.getFeedbackToUser());
         assertEquals(Optional.of(ListCommand.COMMAND_WORD), result.getCommandTextToPopulate());
         assertEquals(expectedModel, model);
@@ -242,8 +243,8 @@ public class LogicManagerTest {
                 DeleteCommand.buildSuccessMessage(List.of(ALICE)),
                 expectedModel);
 
-        CommandResult result = logic.execute(LogicManager.EDIT_PREVIOUS_COMMAND_WORD);
-        assertEquals(String.format(LogicManager.EDIT_PREVIOUS_MESSAGE_SUCCESS, deleteCommand),
+        CommandResult result = logic.execute(EditPreviousCommand.COMMAND_WORD);
+        assertEquals(String.format(EditPreviousCommand.MESSAGE_SUCCESS, deleteCommand),
                 result.getFeedbackToUser());
         assertEquals(Optional.of(deleteCommand), result.getCommandTextToPopulate());
         assertEquals(expectedModel, model);
@@ -253,22 +254,15 @@ public class LogicManagerTest {
     public void execute_repeatedEditPrevious_success() throws Exception {
         assertCommandSuccess(ListCommand.COMMAND_WORD, ListCommand.MESSAGE_SUCCESS, model);
 
-        CommandResult firstResult = logic.execute(LogicManager.EDIT_PREVIOUS_COMMAND_WORD);
-        assertEquals(String.format(LogicManager.EDIT_PREVIOUS_MESSAGE_SUCCESS, ListCommand.COMMAND_WORD),
+        CommandResult firstResult = logic.execute(EditPreviousCommand.COMMAND_WORD);
+        assertEquals(String.format(EditPreviousCommand.MESSAGE_SUCCESS, ListCommand.COMMAND_WORD),
                 firstResult.getFeedbackToUser());
         assertEquals(Optional.of(ListCommand.COMMAND_WORD), firstResult.getCommandTextToPopulate());
 
-        CommandResult secondResult = logic.execute(LogicManager.EDIT_PREVIOUS_COMMAND_WORD);
-        assertEquals(String.format(LogicManager.EDIT_PREVIOUS_MESSAGE_SUCCESS, ListCommand.COMMAND_WORD),
+        CommandResult secondResult = logic.execute(EditPreviousCommand.COMMAND_WORD);
+        assertEquals(String.format(EditPreviousCommand.MESSAGE_SUCCESS, ListCommand.COMMAND_WORD),
                 secondResult.getFeedbackToUser());
         assertEquals(Optional.of(ListCommand.COMMAND_WORD), secondResult.getCommandTextToPopulate());
-    }
-
-    @Test
-    public void execute_editPreviousWithArguments_throwsParseException() {
-        assertParseException(LogicManager.EDIT_PREVIOUS_COMMAND_WORD + " extra",
-                String.format(seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT,
-                        LogicManager.EDIT_PREVIOUS_MESSAGE_USAGE));
     }
 
     @Test
