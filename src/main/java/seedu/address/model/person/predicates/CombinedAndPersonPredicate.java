@@ -12,14 +12,14 @@ import seedu.address.model.person.Person;
  * A predicate that combines multiple {@code PersonPredicate}s with AND logic.
  * All component predicates must be satisfied for the combined predicate to return true.
  */
-public class CombinedPersonPredicate implements PersonPredicate {
+public class CombinedAndPersonPredicate implements PersonPredicate {
 
     private final List<PersonPredicate> predicates;
 
     /**
-     * Constructs a {@code CombinedPersonPredicate} that ANDs the given predicates together.
+     * Constructs a {@code CombinedAndPersonPredicate} that ANDs the given predicates together.
      */
-    public CombinedPersonPredicate(List<PersonPredicate> predicates) {
+    public CombinedAndPersonPredicate(List<PersonPredicate> predicates) {
         requireNonNull(predicates);
         this.predicates = List.copyOf(predicates);
     }
@@ -35,11 +35,11 @@ public class CombinedPersonPredicate implements PersonPredicate {
             return true;
         }
 
-        if (!(other instanceof CombinedPersonPredicate)) {
+        if (!(other instanceof CombinedAndPersonPredicate)) {
             return false;
         }
 
-        CombinedPersonPredicate otherPredicate = (CombinedPersonPredicate) other;
+        CombinedAndPersonPredicate otherPredicate = (CombinedAndPersonPredicate) other;
         return predicates.equals(otherPredicate.predicates);
     }
 
