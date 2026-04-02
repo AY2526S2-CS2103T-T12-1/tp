@@ -20,6 +20,7 @@ public final class CommandWords {
             EditPreviousCommand.COMMAND_WORD,
             ExitCommand.COMMAND_WORD,
             ExportCommand.COMMAND_WORD,
+            FindAvailCommand.COMMAND_WORD,
             FindCommand.COMMAND_WORD,
             HelpCommand.COMMAND_WORD,
             ImportCommand.COMMAND_WORD,
