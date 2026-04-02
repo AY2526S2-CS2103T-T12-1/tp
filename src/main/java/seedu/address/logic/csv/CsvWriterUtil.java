@@ -1,4 +1,4 @@
-package seedu.address.commons.util;
+package seedu.address.logic.csv;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

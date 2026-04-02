@@ -1,4 +1,4 @@
-package seedu.address.commons.util;
+package seedu.address.logic.csv;
 
 /**
  * Represents a CSV row that could not be imported, together with the reason.

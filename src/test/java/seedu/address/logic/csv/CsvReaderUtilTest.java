@@ -1,4 +1,4 @@
-package seedu.address.commons.util;
+package seedu.address.logic.csv;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;

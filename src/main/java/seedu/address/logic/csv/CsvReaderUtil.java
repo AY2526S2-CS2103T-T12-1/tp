@@ -1,4 +1,4 @@
-package seedu.address.commons.util;
+package seedu.address.logic.csv;
 
 import static java.util.Objects.requireNonNull;
 
