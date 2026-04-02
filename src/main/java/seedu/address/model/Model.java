@@ -3,6 +3,7 @@ package seedu.address.model;
 import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 import javafx.collections.ObservableList;
@@ -106,8 +107,16 @@ public interface Model {
     /** Returns an unmodifiable view of the filtered kept person list */
     ObservableList<Person> getFilteredKeptPersonList();
 
+    /** Returns an unmodifiable view of the full kept person list. */
+    ObservableList<Person> getKeptPersonList();
+
     /** Returns an unmodifiable view of the filtered deleted person list */
     ObservableList<Person> getFilteredDeletedPersonList();
+
+    /**
+     * Returns an existing kept person with the same identity as {@code person}, if any.
+     */
+    Optional<Person> findDuplicatePerson(Person person);
 
     /**
      * Updates the filter of the filtered person list to filter by the given {@code predicate}.

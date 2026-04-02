@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 import org.junit.jupiter.api.Test;
@@ -186,6 +187,11 @@ public class ImportCommandTest {
         }
 
         @Override
+        public ObservableList<Person> getKeptPersonList() {
+            return FXCollections.observableArrayList();
+        }
+
+        @Override
         public ObservableList<Person> getFilteredDeletedPersonList() {
             fail("This method should not be called.");
             return null;
@@ -194,6 +200,12 @@ public class ImportCommandTest {
         @Override
         public void deleteAllPersons() {
             fail("This method should not be called.");
+        }
+
+        @Override
+        public Optional<Person> findDuplicatePerson(Person person) {
+            fail("This method should not be called.");
+            return Optional.empty();
         }
 
         @Override
@@ -213,6 +225,13 @@ public class ImportCommandTest {
         @Override
         public boolean hasPerson(Person person) {
             return personsAdded.stream().anyMatch(existing -> existing.isSamePerson(person));
+        }
+
+        @Override
+        public Optional<Person> findDuplicatePerson(Person person) {
+            return personsAdded.stream()
+                    .filter(existing -> existing.isSamePerson(person))
+                    .findFirst();
         }
 
         @Override

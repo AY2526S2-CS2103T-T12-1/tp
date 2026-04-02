@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.logic.csv.CsvImportFileResult;
@@ -79,18 +80,16 @@ public class ImportCommand extends Command {
     }
 
     private Person findDuplicatePerson(Model model, List<Person> personsImportedThisRun, Person person) {
-        if (model.hasPerson(person)) {
-            for (Person existingPerson : model.getAddressBook().getKeptPersonList()) {
-                if (existingPerson.isSamePerson(person)) {
-                    return existingPerson;
-                }
-            }
+        Optional<Person> duplicateFromCurrentImport = personsImportedThisRun.stream()
+                .filter(importedPerson -> importedPerson.isSamePerson(person))
+                .findFirst();
+        if (duplicateFromCurrentImport.isPresent()) {
+            return duplicateFromCurrentImport.get();
         }
 
-        for (Person importedPerson : personsImportedThisRun) {
-            if (importedPerson.isSamePerson(person)) {
-                return importedPerson;
-            }
+        Optional<Person> duplicateFromAddressBook = model.findDuplicatePerson(person);
+        if (duplicateFromAddressBook.isPresent()) {
+            return duplicateFromAddressBook.get();
         }
 
         return null;
