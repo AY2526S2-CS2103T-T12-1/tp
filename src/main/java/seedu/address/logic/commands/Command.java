@@ -1,5 +1,6 @@
 package seedu.address.logic.commands;
 
+import seedu.address.logic.PersonListView;
 import seedu.address.logic.commands.exceptions.CommandException;
 import seedu.address.model.Model;
 
@@ -12,9 +13,22 @@ public abstract class Command {
      * Executes the command and returns the result message.
      *
      * @param model {@code Model} which the command should operate on.
+     * @param personListView List which is viewed by the user before command execution.
      * @return feedback message of the operation result for display
      * @throws CommandException If an error occurs during command execution.
      */
-    public abstract CommandResult execute(Model model) throws CommandException;
+    public abstract CommandResult execute(Model model, PersonListView personListView) throws CommandException;
+
+    /**
+     * Executes the command and returns the result message.
+     *
+     * @param model {@code Model} which the command should operate on.
+     * @return feedback message of the operation result for display
+     * @throws CommandException If an error occurs during command execution.
+     * @deprecated Use {@link #execute(Model, PersonListView)} instead, which specifies the currently viewed list.
+     */
+    @Deprecated public CommandResult execute(Model model) throws CommandException {
+        return execute(model, PersonListView.KEPT_PERSONS);
+    }
 
 }
