@@ -16,15 +16,22 @@ import static seedu.address.testutil.TypicalPersons.getTypicalAddressBook;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import seedu.address.model.AddressBook;
 import seedu.address.model.Model;
 import seedu.address.model.ModelManager;
 import seedu.address.model.UserPrefs;
+import seedu.address.model.person.Person;
+import seedu.address.model.person.VolunteerAvailability;
+import seedu.address.model.person.predicates.CombinedPersonPredicate;
+import seedu.address.model.person.predicates.PersonAvailableDuringPredicate;
 import seedu.address.model.person.predicates.PersonContainsFuzzyKeywordsPredicate;
 import seedu.address.model.person.predicates.PersonContainsKeywordsPredicate;
 import seedu.address.model.person.predicates.PersonContainsSubstringsPredicate;
+import seedu.address.testutil.PersonBuilder;
 
 /**
  * Contains integration tests (interaction with the Model) for {@code FindCommand}.
@@ -132,6 +139,88 @@ public class FindCommandTest {
         expectedModel.updateFilteredKeptPersonList(predicate);
         assertCommandSuccess(command, model, expectedMessage, expectedModel);
         assertEquals(Arrays.asList(CARL, DANIEL, GEORGE), model.getFilteredKeptPersonList());
+    }
+
+    @Test
+    public void execute_availabilityFilter_matchingPersonFound() {
+        AddressBook ab = new AddressBook();
+        Person available = new PersonBuilder().withName("Alice")
+                .withPhone("91111111").withEmail("alice@example.com")
+                .withAvailabilities("MONDAY,13:00,18:00").build();
+        Person unavailable = new PersonBuilder().withName("Bob")
+                .withPhone("92222222").withEmail("bob@example.com")
+                .withAvailabilities("TUESDAY,09:00,12:00").build();
+        ab.addPerson(available);
+        ab.addPerson(unavailable);
+
+        Model availModel = new ModelManager(ab, new UserPrefs());
+        Model expectedAvailModel = new ModelManager(ab, new UserPrefs());
+
+        VolunteerAvailability query = VolunteerAvailability.fromString("MONDAY,14:00,17:00");
+        PersonAvailableDuringPredicate predicate = new PersonAvailableDuringPredicate(query);
+        FindCommand command = new FindCommand(predicate);
+
+        expectedAvailModel.updateFilteredKeptPersonList(predicate);
+        String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 1);
+        assertCommandSuccess(command, availModel, expectedMessage, expectedAvailModel);
+        assertEquals(List.of(available), availModel.getFilteredKeptPersonList());
+    }
+
+    @Test
+    public void execute_availabilityFilter_noMatchingPerson() {
+        AddressBook ab = new AddressBook();
+        Person person = new PersonBuilder().withName("Alice")
+                .withPhone("91111111").withEmail("alice@example.com")
+                .withAvailabilities("MONDAY,13:00,15:00").build();
+        ab.addPerson(person);
+
+        Model availModel = new ModelManager(ab, new UserPrefs());
+        Model expectedAvailModel = new ModelManager(ab, new UserPrefs());
+
+        // Query ends after volunteer's availability — should not match (full coverage required)
+        VolunteerAvailability query = VolunteerAvailability.fromString("MONDAY,14:00,17:00");
+        PersonAvailableDuringPredicate predicate = new PersonAvailableDuringPredicate(query);
+        FindCommand command = new FindCommand(predicate);
+
+        expectedAvailModel.updateFilteredKeptPersonList(predicate);
+        String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 0);
+        assertCommandSuccess(command, availModel, expectedMessage, expectedAvailModel);
+    }
+
+    @Test
+    public void execute_keywordsAndAvailability_bothMustMatch() {
+        AddressBook ab = new AddressBook();
+        // Matches both name keyword "Alice" and Monday availability
+        Person matchesBoth = new PersonBuilder().withName("Alice Tan")
+                .withPhone("91111111").withEmail("alice@example.com")
+                .withAvailabilities("MONDAY,13:00,18:00").build();
+        // Matches name keyword "Alice" but NOT Monday availability
+        Person matchesNameOnly = new PersonBuilder().withName("Alice Lee")
+                .withPhone("92222222").withEmail("alicelee@example.com")
+                .withAvailabilities("TUESDAY,09:00,12:00").build();
+        // Matches Monday availability but NOT name keyword "Alice"
+        Person matchesAvailOnly = new PersonBuilder().withName("Bob")
+                .withPhone("93333333").withEmail("bob@example.com")
+                .withAvailabilities("MONDAY,13:00,18:00").build();
+        ab.addPerson(matchesBoth);
+        ab.addPerson(matchesNameOnly);
+        ab.addPerson(matchesAvailOnly);
+
+        Model combinedModel = new ModelManager(ab, new UserPrefs());
+        Model expectedCombinedModel = new ModelManager(ab, new UserPrefs());
+
+        VolunteerAvailability query = VolunteerAvailability.fromString("MONDAY,14:00,17:00");
+        PersonContainsKeywordsPredicate textPredicate =
+                new PersonContainsKeywordsPredicate(Collections.singletonList("Alice"));
+        PersonAvailableDuringPredicate availPredicate = new PersonAvailableDuringPredicate(query);
+        CombinedPersonPredicate combinedPredicate =
+                new CombinedPersonPredicate(List.of(textPredicate, availPredicate));
+        FindCommand command = new FindCommand(combinedPredicate);
+
+        expectedCombinedModel.updateFilteredKeptPersonList(combinedPredicate);
+        String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 1);
+        assertCommandSuccess(command, combinedModel, expectedMessage, expectedCombinedModel);
+        assertEquals(List.of(matchesBoth), combinedModel.getFilteredKeptPersonList());
     }
 
     @Test

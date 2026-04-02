@@ -1,6 +1,7 @@
 package seedu.address.logic.parser;
 
 import static seedu.address.logic.Messages.MESSAGE_INVALID_COMMAND_FORMAT;
+import static seedu.address.logic.parser.CliSyntax.PREFIX_AVAILABILITY;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_MATCH_TYPE;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseFailure;
 import static seedu.address.logic.parser.CommandParserTestUtil.assertParseSuccess;
@@ -9,10 +10,14 @@ import static seedu.address.logic.parser.FindMatchType.KEYWORD_TOKEN;
 import static seedu.address.logic.parser.FindMatchType.SUBSTRING_TOKEN;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
 import seedu.address.logic.commands.FindCommand;
+import seedu.address.model.person.VolunteerAvailability;
+import seedu.address.model.person.predicates.CombinedPersonPredicate;
+import seedu.address.model.person.predicates.PersonAvailableDuringPredicate;
 import seedu.address.model.person.predicates.PersonContainsFuzzyKeywordsPredicate;
 import seedu.address.model.person.predicates.PersonContainsKeywordsPredicate;
 import seedu.address.model.person.predicates.PersonContainsSubstringsPredicate;
@@ -73,6 +78,86 @@ public class FindCommandParserTest {
                 new FindCommand(new PersonContainsSubstringsPredicate(Arrays.asList("ali"))));
         assertParseSuccess(parser, PREFIX_MATCH_TYPE + FUZZY_TOKEN + " michigan",
                 new FindCommand(new PersonContainsFuzzyKeywordsPredicate(Arrays.asList("michigan"))));
+    }
+
+    @Test
+    public void parse_availabilityOnly_returnsFindCommand() {
+        VolunteerAvailability query = VolunteerAvailability.fromString("MONDAY,14:00,17:00");
+        PersonAvailableDuringPredicate predicate = new PersonAvailableDuringPredicate(query);
+        FindCommand expectedCommand = new FindCommand(predicate);
+        assertParseSuccess(parser, " " + PREFIX_AVAILABILITY + "MONDAY,14:00,17:00", expectedCommand);
+    }
+
+    @Test
+    public void parse_keywordsAndAvailability_returnsFindCommand() {
+        VolunteerAvailability query = VolunteerAvailability.fromString("MONDAY,14:00,17:00");
+        PersonAvailableDuringPredicate availPredicate = new PersonAvailableDuringPredicate(query);
+        PersonContainsKeywordsPredicate textPredicate =
+                new PersonContainsKeywordsPredicate(Arrays.asList("Alice"));
+        FindCommand expectedCommand = new FindCommand(
+                new CombinedPersonPredicate(List.of(textPredicate, availPredicate)));
+        assertParseSuccess(parser, "Alice " + PREFIX_AVAILABILITY + "MONDAY,14:00,17:00", expectedCommand);
+    }
+
+    @Test
+    public void parse_matchTypeKeywordAndAvailability_returnsFindCommand() {
+        VolunteerAvailability query = VolunteerAvailability.fromString("TUESDAY,09:00,12:00");
+        PersonAvailableDuringPredicate availPredicate = new PersonAvailableDuringPredicate(query);
+        PersonContainsKeywordsPredicate textPredicate =
+                new PersonContainsKeywordsPredicate(Arrays.asList("Bob", "Charlie"));
+        FindCommand expectedCommand = new FindCommand(
+                new CombinedPersonPredicate(List.of(textPredicate, availPredicate)));
+        assertParseSuccess(parser, PREFIX_MATCH_TYPE + KEYWORD_TOKEN + " Bob Charlie "
+                + PREFIX_AVAILABILITY + "TUESDAY,09:00,12:00", expectedCommand);
+    }
+
+    @Test
+    public void parse_matchTypeSubstringAndAvailability_returnsFindCommand() {
+        VolunteerAvailability query = VolunteerAvailability.fromString("WEDNESDAY,10:00,15:00");
+        PersonAvailableDuringPredicate availPredicate = new PersonAvailableDuringPredicate(query);
+        PersonContainsSubstringsPredicate textPredicate =
+                new PersonContainsSubstringsPredicate(Arrays.asList("ali"));
+        FindCommand expectedCommand = new FindCommand(
+                new CombinedPersonPredicate(List.of(textPredicate, availPredicate)));
+        assertParseSuccess(parser, PREFIX_MATCH_TYPE + SUBSTRING_TOKEN + " ali "
+                + PREFIX_AVAILABILITY + "WEDNESDAY,10:00,15:00", expectedCommand);
+    }
+
+    @Test
+    public void parse_matchTypeFuzzyAndAvailability_returnsFindCommand() {
+        VolunteerAvailability query = VolunteerAvailability.fromString("FRIDAY,08:00,12:00");
+        PersonAvailableDuringPredicate availPredicate = new PersonAvailableDuringPredicate(query);
+        PersonContainsFuzzyKeywordsPredicate textPredicate =
+                new PersonContainsFuzzyKeywordsPredicate(Arrays.asList("meyr"));
+        FindCommand expectedCommand = new FindCommand(
+                new CombinedPersonPredicate(List.of(textPredicate, availPredicate)));
+        assertParseSuccess(parser, PREFIX_MATCH_TYPE + FUZZY_TOKEN + " meyr "
+                + PREFIX_AVAILABILITY + "FRIDAY,08:00,12:00", expectedCommand);
+    }
+
+    @Test
+    public void parse_matchTypeOnlyWithAvailability_returnsFindCommand() {
+        // m/kw with no keywords but with availability should still succeed
+        VolunteerAvailability query = VolunteerAvailability.fromString("MONDAY,14:00,17:00");
+        PersonAvailableDuringPredicate predicate = new PersonAvailableDuringPredicate(query);
+        FindCommand expectedCommand = new FindCommand(predicate);
+        assertParseSuccess(parser, PREFIX_MATCH_TYPE + KEYWORD_TOKEN + " "
+                + PREFIX_AVAILABILITY + "MONDAY,14:00,17:00", expectedCommand);
+    }
+
+    @Test
+    public void parse_invalidAvailability_throwsParseException() {
+        // Invalid day
+        assertParseFailure(parser, " " + PREFIX_AVAILABILITY + "NOTADAY,14:00,17:00",
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
+
+        // Start after end
+        assertParseFailure(parser, " " + PREFIX_AVAILABILITY + "MONDAY,17:00,14:00",
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
+
+        // Empty availability value
+        assertParseFailure(parser, " " + PREFIX_AVAILABILITY,
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT, FindCommand.MESSAGE_USAGE));
     }
 
     @Test
