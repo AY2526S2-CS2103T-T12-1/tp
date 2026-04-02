@@ -26,6 +26,7 @@ import seedu.address.logic.commands.EditCommand.EditPersonDescriptor;
 import seedu.address.logic.commands.EditPreviousCommand;
 import seedu.address.logic.commands.ExitCommand;
 import seedu.address.logic.commands.ExportCommand;
+import seedu.address.logic.commands.FindAvailCommand;
 import seedu.address.logic.commands.FindCommand;
 import seedu.address.logic.commands.HelpCommand;
 import seedu.address.logic.commands.ImportCommand;
@@ -34,6 +35,8 @@ import seedu.address.logic.commands.StatsCommand;
 import seedu.address.logic.commands.UnaliasCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.Person;
+import seedu.address.model.person.VolunteerAvailability;
+import seedu.address.model.person.predicates.PersonAvailableDuringPredicate;
 import seedu.address.model.person.predicates.PersonContainsKeywordsPredicate;
 import seedu.address.model.person.sort.SortAttribute;
 import seedu.address.model.person.sort.SortOrder;
@@ -102,6 +105,15 @@ public class AddressBookParserTest {
     }
 
     @Test
+    public void parseCommand_findAvail() throws Exception {
+        VolunteerAvailability query = VolunteerAvailability.fromString("MONDAY,14:00,17:00");
+        PersonAvailableDuringPredicate predicate = new PersonAvailableDuringPredicate(query);
+        FindAvailCommand command = (FindAvailCommand) parser.parseCommand(
+                FindAvailCommand.COMMAND_WORD + " MONDAY,14:00,17:00");
+        assertEquals(new FindAvailCommand(predicate), command);
+    }
+
+    @Test
     public void parseCommand_find() throws Exception {
         List<String> keywords = Arrays.asList("foo", "bar", "baz");
         FindCommand defaultCommand = (FindCommand) parser.parseCommand(
@@ -143,6 +155,7 @@ public class AddressBookParserTest {
                 Map.entry(EditPreviousCommand.COMMAND_WORD, "editprev"),
                 Map.entry(ExitCommand.COMMAND_WORD, "exit"),
                 Map.entry(ExportCommand.COMMAND_WORD, "export data/volunteers.csv"),
+                Map.entry(FindAvailCommand.COMMAND_WORD, "findavail MONDAY,14:00,17:00"),
                 Map.entry(FindCommand.COMMAND_WORD, "find Amy"),
                 Map.entry(HelpCommand.COMMAND_WORD, "help"),
                 Map.entry(ImportCommand.COMMAND_WORD, "import data/volunteers.csv"),
