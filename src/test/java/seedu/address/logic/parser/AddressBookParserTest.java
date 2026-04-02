@@ -23,9 +23,12 @@ import seedu.address.logic.commands.CommandWords;
 import seedu.address.logic.commands.DeleteCommand;
 import seedu.address.logic.commands.EditCommand;
 import seedu.address.logic.commands.EditCommand.EditPersonDescriptor;
+import seedu.address.logic.commands.EditPreviousCommand;
 import seedu.address.logic.commands.ExitCommand;
+import seedu.address.logic.commands.ExportCommand;
 import seedu.address.logic.commands.FindCommand;
 import seedu.address.logic.commands.HelpCommand;
+import seedu.address.logic.commands.ImportCommand;
 import seedu.address.logic.commands.ListCommand;
 import seedu.address.logic.commands.StatsCommand;
 import seedu.address.logic.commands.UnaliasCommand;
@@ -41,7 +44,6 @@ import seedu.address.testutil.PersonUtil;
 /**
  * Reused from Codex suggestions upon providing specifications
  */
-
 public class AddressBookParserTest {
 
     private final AddressBookParser parser = new AddressBookParser();
@@ -134,13 +136,18 @@ public class AddressBookParserTest {
                 Map.entry(AddCommand.COMMAND_WORD, "add n/Amy p/91234567 e/amy@example.com a/123, Clementi Rd"),
                 Map.entry(AliasCommand.COMMAND_WORD, "alias ls list"),
                 Map.entry(AliasesCommand.COMMAND_WORD, "aliases"),
+                Map.entry(BinCommand.COMMAND_WORD, "bin"),
                 Map.entry(ClearCommand.COMMAND_WORD, "clear"),
                 Map.entry(DeleteCommand.COMMAND_WORD, "delete 1"),
                 Map.entry(EditCommand.COMMAND_WORD, "edit 1 n/Amy"),
+                Map.entry(EditPreviousCommand.COMMAND_WORD, "editprev"),
                 Map.entry(ExitCommand.COMMAND_WORD, "exit"),
+                Map.entry(ExportCommand.COMMAND_WORD, "export data/volunteers.csv"),
                 Map.entry(FindCommand.COMMAND_WORD, "find Amy"),
                 Map.entry(HelpCommand.COMMAND_WORD, "help"),
+                Map.entry(ImportCommand.COMMAND_WORD, "import data/volunteers.csv"),
                 Map.entry(ListCommand.COMMAND_WORD, "list"),
+                Map.entry(StatsCommand.COMMAND_WORD, "stats role"),
                 Map.entry(UnaliasCommand.COMMAND_WORD, "unalias ls"));
 
         assertEquals(CommandWords.BUILT_IN_COMMAND_WORDS, commandExamples.keySet());

@@ -101,6 +101,4 @@ public class LogsCenter {
             logger.warning("Error adding file handler for logger.");
         }
     }
-
-
 }

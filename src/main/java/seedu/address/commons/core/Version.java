@@ -64,9 +64,10 @@ public class Version implements Comparable<Version> {
         return new Version(Integer.parseInt(versionMatcher.group(1)),
                 Integer.parseInt(versionMatcher.group(2)),
                 Integer.parseInt(versionMatcher.group(3)),
-                versionMatcher.group(4) == null ? false : true);
+                versionMatcher.group(4) != null);
     }
 
+    @Override
     @JsonValue
     public String toString() {
         return String.format("V%d.%d.%d%s", major, minor, patch, isEarlyAccess ? "ea" : "");
@@ -112,10 +113,11 @@ public class Version implements Comparable<Version> {
 
     @Override
     public int hashCode() {
-        String hash = String.format("%03d%03d%03d", major, minor, patch);
-        if (!isEarlyAccess) {
-            hash = "1" + hash;
-        }
-        return Integer.parseInt(hash);
+        int hash = 17;
+        hash = 31 * hash + major;
+        hash = 31 * hash + minor;
+        hash = 31 * hash + patch;
+        hash = 31 * hash + Boolean.hashCode(isEarlyAccess);
+        return hash;
     }
 }

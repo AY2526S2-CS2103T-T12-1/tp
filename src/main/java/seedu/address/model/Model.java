@@ -106,6 +106,9 @@ public interface Model {
     /** Returns an unmodifiable view of the filtered kept person list */
     ObservableList<Person> getFilteredKeptPersonList();
 
+    /** Returns an unmodifiable view of the full kept person list. */
+    ObservableList<Person> getKeptPersonList();
+
     /** Returns an unmodifiable view of the filtered deleted person list */
     ObservableList<Person> getFilteredDeletedPersonList();
 
@@ -120,4 +123,14 @@ public interface Model {
      * A {@code null} comparator removes sorting and restores the original order.
      */
     void updateSortedPersonList(Comparator<Person> comparator);
+
+    /**
+     * Returns the last successfully executed command text, or null if none.
+     */
+    String getLastCommandText();
+
+    /**
+     * Sets the last successfully executed command text.
+     */
+    void setLastCommandText(String commandText);
 }

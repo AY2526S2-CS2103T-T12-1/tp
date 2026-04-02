@@ -108,10 +108,10 @@ public class VersionTest {
     @Test
     public void versionComparable_validVersion_hashCodeIsCorrect() {
         Version version = new Version(100, 100, 100, true);
-        assertEquals(100100100, version.hashCode());
+        assertEquals(18779388, version.hashCode());
 
         version = new Version(10, 10, 10, false);
-        assertEquals(1010010010, version.hashCode());
+        assertEquals(16008924, version.hashCode());
     }
 
     @Test

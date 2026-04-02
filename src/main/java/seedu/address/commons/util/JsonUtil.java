@@ -24,7 +24,7 @@ import seedu.address.commons.core.LogsCenter;
 import seedu.address.commons.exceptions.DataLoadingException;
 
 /**
- * Converts a Java object instance to JSON and vice versa
+ * Converts a Java object instance to JSON and vice versa.
  */
 public class JsonUtil {
 
@@ -90,7 +90,6 @@ public class JsonUtil {
 
         serializeObjectToJsonFile(filePath, jsonFile);
     }
-
 
     /**
      * Converts a given string representation of a JSON data to instance of a class

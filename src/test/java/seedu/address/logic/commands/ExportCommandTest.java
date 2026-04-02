@@ -122,6 +122,14 @@ public class ExportCommandTest {
         assertTrue(!content.contains("old content"));
     }
 
+    @Test
+    public void toStringMethod() {
+        Path filePath = Path.of("data/volunteers.csv");
+        ExportCommand exportCommand = new ExportCommand(filePath);
+        String expected = ExportCommand.class.getCanonicalName() + "{filePath=" + filePath + "}";
+        assertEquals(expected, exportCommand.toString());
+    }
+
     /**
      * A default model stub that fails on all methods.
      */
@@ -221,6 +229,12 @@ public class ExportCommandTest {
         }
 
         @Override
+        public ObservableList<Person> getKeptPersonList() {
+            fail("This method should not be called.");
+            return null;
+        }
+
+        @Override
         public ObservableList<Person> getFilteredDeletedPersonList() {
             fail("This method should not be called.");
             return null;
@@ -240,6 +254,17 @@ public class ExportCommandTest {
         public void updateSortedPersonList(Comparator<Person> comparator) {
             fail("This method should not be called.");
         }
+
+        @Override
+        public String getLastCommandText() {
+            fail("This method should not be called.");
+            return null;
+        }
+
+        @Override
+        public void setLastCommandText(String commandText) {
+            fail("This method should not be called.");
+        }
     }
 
     /**
@@ -255,6 +280,11 @@ public class ExportCommandTest {
         @Override
         public ReadOnlyAddressBook getAddressBook() {
             return addressBook;
+        }
+
+        @Override
+        public ObservableList<Person> getKeptPersonList() {
+            return addressBook.getKeptPersonList();
         }
     }
 }

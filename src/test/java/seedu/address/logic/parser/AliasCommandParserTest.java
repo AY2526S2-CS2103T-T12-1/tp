@@ -11,7 +11,6 @@ import seedu.address.logic.commands.AliasCommand;
 /**
  * Reused from Codex suggestions upon providing specifications
  */
-
 public class AliasCommandParserTest {
 
     private static final String MESSAGE_INVALID_FORMAT =

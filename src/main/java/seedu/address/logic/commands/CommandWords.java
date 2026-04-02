@@ -13,13 +13,18 @@ public final class CommandWords {
             AddCommand.COMMAND_WORD,
             AliasCommand.COMMAND_WORD,
             AliasesCommand.COMMAND_WORD,
+            BinCommand.COMMAND_WORD,
             ClearCommand.COMMAND_WORD,
             DeleteCommand.COMMAND_WORD,
             EditCommand.COMMAND_WORD,
+            EditPreviousCommand.COMMAND_WORD,
             ExitCommand.COMMAND_WORD,
+            ExportCommand.COMMAND_WORD,
             FindCommand.COMMAND_WORD,
             HelpCommand.COMMAND_WORD,
+            ImportCommand.COMMAND_WORD,
             ListCommand.COMMAND_WORD,
+            StatsCommand.COMMAND_WORD,
             UnaliasCommand.COMMAND_WORD);
 
     private CommandWords() {}
