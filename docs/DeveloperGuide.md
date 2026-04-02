@@ -287,40 +287,44 @@ _{Explain here how the data archiving feature will be implemented}_
 
 ### CSV import/export commands
 
-The `import` and `export` commands are implemented as a small pipeline that converts a file path argument into a command object, then delegates CSV-specific logic to a utility class.
+The `import` and `export` commands extend the application with CSV file support. Both commands follow a similar flow: user input is parsed into a command object, and CSV-specific processing is handled by dedicated classes.
 
 ![CSV Import Export Class Diagram](images/CsvImportExportCommandClassDiagram.png)
 
 At a high level:
 
-* `AddressBookParser#parseCommand()` identifies the command word and instantiates either `ExportCommandParser` or `ImportCommandParser`.
-* The corresponding parser validates the file path argument and constructs either an `ExportCommand` or `ImportCommand`.
-* `ExportCommand` retrieves the active address book from `Model` and delegates CSV generation to `CsvWriterUtil`.
-* `ImportCommand` delegates file reading to `CsvReaderUtil`, which validates the CSV file and parses valid rows into `Person` objects.
-* `ImportCommand` then skips invalid or duplicate rows and adds only valid non-duplicate persons to the active address book.
+* `AddressBookParser#parseCommand()` identifies the command word and passes control to either `ImportCommandParser` or `ExportCommandParser`.
+* The respective parser validates the file path and creates an `ImportCommand` or `ExportCommand`.
 
-The sequence diagram below focuses on `import`, since it contains the more complex execution flow.
+For the `export` command:
+
+* `ExportCommand` retrieves the active list of persons from `Model`.
+* It then calls `CsvWriterUtil` to convert the data into CSV format and write it to the file.
+
+For the `import` command:
+
+* `ImportCommand` calls `CsvReaderUtil` to read and process the CSV file.
+* `CsvReaderUtil` validates the file (e.g. header row), parses each non-blank row, and returns a `CsvImportFileResult` containing:
+    * successfully parsed rows (`CsvImportRowSuccess`)
+    * invalid rows (`CsvImportRowError`)
+* `ImportCommand` retrieves valid and invalid rows from `CsvImportFileResult`.
+* For each valid row, `ImportCommand`:
+    * checks for duplicates using `Model#hasPerson(...)` and previously imported entries
+    * skips duplicates and records them
+    * adds non-duplicate persons to the model
+* Finally, `ImportCommand` returns a summary showing the number of imported, duplicate, and invalid rows.
+
+The sequence diagram below illustrates the execution of the `import` command.
 
 ![Import Command Execution Sequence Diagram](images/ImportCommandSequenceDiagram.png)
 
-The import flow is as follows:
+The CSV-specific logic is contained in the `logic.csv` package:
 
-* `ImportCommand` calls `CsvReaderUtil.readPersons(...)` to read and validate the CSV file.
-* `CsvReaderUtil` validates the header row, parses each non-blank row, and uses `ParserUtil` so imported values follow the same validation rules as normal command input.
-* Invalid rows are recorded and skipped.
-* For each valid `Person`, `ImportCommand` checks `Model#hasPerson(...)`.
-* Duplicate persons are skipped, while non-duplicate persons are added using `Model#addPerson(...)`.
-* `ImportCommand` returns a summary showing how many rows were imported, and identified which rows were skipped as duplicates, and skipped as invalid.
+* `CsvReaderUtil` reads the file, validates its structure, and converts rows into structured results.
+* `CsvWriterUtil` converts `Person` objects into CSV format and writes them to a file.
+* `CsvImportFileResult` and related classes store parsed data and row-level errors.
 
-The `export` command is simpler and does not require a separate sequence diagram. `ExportCommand` retrieves the active address book from `Model`, delegates writing to `CsvWriterUtil.writePersons(...)`, and returns a success message with the number of exported volunteers and the target file path.
-
-`CsvReaderUtil` and `CsvWriterUtil` keep CSV-specific logic out of the command classes:
-
-* `CsvReaderUtil` handles file reading, header validation, row parsing, and invalid-row detection.
-* `CsvWriterUtil` handles serializing each `Person` into the agreed CSV schema and writing the final file.
-
-This keeps the commands small and limits each class to one main responsibility.
-
+This design keeps command classes focused on coordinating the workflow, while CSV-related processing is handled by specialised classes.
 
 --------------------------------------------------------------------------------------------------------------------
 
