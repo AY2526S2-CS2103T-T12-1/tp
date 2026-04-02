@@ -113,7 +113,7 @@ Here are the other classes in `Logic` (omitted from the class diagram above) tha
 How the parsing works:
 * When called upon to parse a user command, the `AddressBookParser` class creates an `XYZCommandParser` (`XYZ` is a placeholder for the specific command name e.g., `AddCommandParser`) which uses the other classes shown above to parse the user command and create a `XYZCommand` object (e.g., `AddCommand`) which the `AddressBookParser` returns back as a `Command` object.
 * All `XYZCommandParser` classes (e.g., `AddCommandParser`, `DeleteCommandParser`, ...) inherit from the `Parser` interface so that they can be treated similarly where possible e.g, during testing.
-* Alias validation uses `CommandWords` as the canonical list of built-in command words. When adding a new top-level command, update both `AddressBookParser` and `CommandWords` so the new command remains aliasable.
+* Alias validation uses `CommandWords` as the canonical source of reserved command words and allowed alias targets. `TOP_LEVEL_COMMAND_WORDS` defines reserved command words, while allowed alias targets are derived from it by excluding disallowed meta-commands. When adding a new top-level command, update both `AddressBookParser` and `CommandWords` so parsing and alias behavior stay in sync.
 
 ### Model component
 **API** : [`Model.java`](https://github.com/AY2526S2-CS2103T-T12-1/tp/tree/master/src/main/java/seedu/address/model/Model.java)
@@ -384,9 +384,9 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 **MSS:**
 
-1. User requests to bind a specific alias to a specific target command.
-2. System validates that the given alias does not conflict with pre-existing commands.
-3. System maps the given alias to the given target command, and updates the storage file.
+1. User requests to bind a specific alias to a specific built-in target command word.
+2. System validates that the given alias does not conflict with pre-existing commands, and that the target command word is supported for aliasing.
+3. System maps the given alias to the given target command word, and updates the storage file.
 4. System informs user that the new alias has been successfully defined.
    Use case ends.
 
@@ -395,6 +395,14 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 * 2a. The given alias conflicts with an existing command.
   * 2a1. System rejects the alias binding and issues an error.
   * 2a2. Use case ends.
+
+* 2b. The target command word is not supported for aliasing.
+  * 2b1. System rejects the alias binding and issues an error.
+  * 2b2. Use case ends.
+
+**Startup behavior note (aliases):**
+- On application startup, aliases loaded from preferences are revalidated against current alias rules.
+- Invalid entries are removed, and a one-time warning is shown in the result display.
 
 **Use Case: Handle Duplicate Contact**
 
@@ -519,7 +527,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 |             Term              | Definition                                                                                                                       |
 |:-----------------------------:|:---------------------------------------------------------------------------------------------------------------------------------|
-|             Alias             | A user-defined shortcut that maps a short command to a longer target command.                                                    |
+|             Alias             | A user-defined shortcut that maps a short command word to a supported built-in command word.                                     |
 |      Availability Window      | The time period during which a volunteer is available to participate in events.                                                  |
 |        Bulk Operation         | An operation that applies to multiple contacts within a single command (e.g., deleting or assigning several volunteers at once). |
 | CSV (Comma-Separated Values)  | A text file format used to store tabular data, used by the system for importing or exporting volunteer records.                  |

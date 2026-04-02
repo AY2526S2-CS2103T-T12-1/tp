@@ -15,7 +15,7 @@ public class AliasCommand extends Command {
     public static final String COMMAND_WORD = "alias";
     public static final String MESSAGE_USAGE = COMMAND_WORD
             + ": Creates a command alias.\n"
-            + "Parameters: SHORT TEMPLATE\n"
+            + "Parameters: SHORT COMMAND_WORD\n"
             + "Example: " + COMMAND_WORD + " ls list";
     public static final String MESSAGE_SUCCESS = "Alias created: %1$s -> %2$s";
     public static final String MESSAGE_DUPLICATE_ALIAS =
@@ -24,30 +24,35 @@ public class AliasCommand extends Command {
             "Alias names should start with a lowercase letter and contain only lowercase letters, digits, or hyphens.";
     public static final String MESSAGE_RESERVED_ALIAS_NAME = "Alias name cannot be an existing command word.";
     public static final String MESSAGE_INVALID_ALIAS_TEMPLATE =
-            "Alias target's first word must be an existing command word.";
+            "Alias target must be exactly one existing command word.";
+    public static final String MESSAGE_RESERVED_ALIAS_TARGET =
+            "Alias target cannot be alias, aliases, unalias, or editprev.";
     private static final String ALIAS_NAME_VALIDATION_REGEX = "[a-z][a-z0-9-]*";
 
     private final String shortName;
-    private final String template;
+    private final String targetCommandWord;
 
     /**
      * Creates an AliasCommand.
      */
-    public AliasCommand(String shortName, String template) {
+    public AliasCommand(String shortName, String targetCommandWord) {
         requireNonNull(shortName);
-        requireNonNull(template);
+        requireNonNull(targetCommandWord);
         if (!isValidAliasName(shortName)) {
             throw new IllegalArgumentException(MESSAGE_INVALID_ALIAS_NAME);
         }
         if (CommandWords.isBuiltInCommandWord(shortName)) {
             throw new IllegalArgumentException(MESSAGE_RESERVED_ALIAS_NAME);
         }
-        if (!isValidAliasTemplate(template)) {
+        if (!isValidAliasTemplate(targetCommandWord)) {
             throw new IllegalArgumentException(MESSAGE_INVALID_ALIAS_TEMPLATE);
+        }
+        if (!isAllowedAliasTarget(targetCommandWord)) {
+            throw new IllegalArgumentException(MESSAGE_RESERVED_ALIAS_TARGET);
         }
 
         this.shortName = shortName;
-        this.template = template.trim();
+        this.targetCommandWord = targetCommandWord.trim();
     }
 
     /**
@@ -59,12 +64,24 @@ public class AliasCommand extends Command {
     }
 
     /**
-     * Returns true if the alias template begins with a built-in command word.
+     * Returns true if the alias target is exactly one existing command word.
      */
     public static boolean isValidAliasTemplate(String template) {
         requireNonNull(template);
         return ParserUtil.parseCommandComponents(template)
+                .filter(commandComponents -> commandComponents.getArguments().trim().isEmpty())
                 .map(commandComponents -> CommandWords.isBuiltInCommandWord(commandComponents.getCommandWord()))
+                .orElse(false);
+    }
+
+    /**
+     * Returns true if the alias target is allowed.
+     */
+    public static boolean isAllowedAliasTarget(String template) {
+        requireNonNull(template);
+        return ParserUtil.parseCommandComponents(template)
+                .filter(commandComponents -> commandComponents.getArguments().trim().isEmpty())
+                .map(commandComponents -> CommandWords.isAllowedAliasTarget(commandComponents.getCommandWord()))
                 .orElse(false);
     }
 
@@ -76,8 +93,8 @@ public class AliasCommand extends Command {
             throw new CommandException(MESSAGE_DUPLICATE_ALIAS);
         }
 
-        model.setCommandAlias(shortName, template);
-        return new CommandResult(String.format(MESSAGE_SUCCESS, shortName, template));
+        model.setCommandAlias(shortName, targetCommandWord);
+        return new CommandResult(String.format(MESSAGE_SUCCESS, shortName, targetCommandWord));
     }
 
     @Override
@@ -92,14 +109,14 @@ public class AliasCommand extends Command {
 
         AliasCommand otherAliasCommand = (AliasCommand) other;
         return shortName.equals(otherAliasCommand.shortName)
-                && template.equals(otherAliasCommand.template);
+                && targetCommandWord.equals(otherAliasCommand.targetCommandWord);
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this)
                 .add("shortName", shortName)
-                .add("template", template)
+                .add("targetCommandWord", targetCommandWord)
                 .toString();
     }
 }
