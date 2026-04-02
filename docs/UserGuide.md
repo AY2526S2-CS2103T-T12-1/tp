@@ -169,9 +169,9 @@ Examples:
 
 ### Locating persons by keyword: `find`
 
-Finds persons whose fields contain any of the given keywords.
+Finds persons whose fields contain any of the given keywords, optionally filtered by volunteer availability.
 
-Format: `find [m/MATCH_TYPE] KEYWORD [MORE_KEYWORDS]`
+Format: `find [m/MATCH_TYPE] [KEYWORD [MORE_KEYWORDS]] [va/DAY,HH:mm,HH:mm]`
 
 * The search is case-insensitive. e.g `hans` will match `Hans`
 * The order of the keywords does not matter. e.g. `Hans Bo` will match `Bo Hans`
@@ -183,6 +183,9 @@ Format: `find [m/MATCH_TYPE] KEYWORD [MORE_KEYWORDS]`
   e.g. `Hans Bo` will return `Hans Gruber`, `Bo Yang`
 * `MATCH_TYPE` is optional. When omitted, keyword matching is used.
 * Currently supported `MATCH_TYPE`: `kw`, `ss`, `fz`.
+* `va/DAY,HH:mm,HH:mm` filters for volunteers whose availability **fully covers** the specified time period. `DAY` is a full day name (e.g., `MONDAY`), and start time must be before end time.
+* When both keywords and `va/` are provided, only persons matching **both** the keyword search **and** the availability filter are returned.
+* At least one of keywords or `va/` must be provided.
 
 Examples:
 * `find John` returns `john` and `John Doe`
@@ -191,6 +194,8 @@ Examples:
 * `find m/kw John` also returns `john` and `John Doe`
 * `find m/ss ali` returns `Alice Pauline` and `Ali Tan`
 * `find m/fz michigan` returns `Elle Meyer` (address: `michegan ave`)
+* `find va/MONDAY,14:00,17:00` returns all persons available on Monday from 14:00 to 17:00
+* `find alice va/MONDAY,14:00,17:00` returns persons matching `alice` who are also available on Monday from 14:00 to 17:00
 
 ### Viewing volunteer statistics : `stats`
 
@@ -294,7 +299,7 @@ Action | Format, Examples
 **Delete** | `delete INDEX [MORE_INDICES]`<br> e.g., `delete 2 3`
 **Edit** | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [nt/NOTES] [t/TAG]…​ [va/AVAILABILITY]…​ [vr/RECORD]…​`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com va/MONDAY,14:00,17:00`
 **Edit Previous** | `editprev`
-**Find** | `find [m/MATCH_TYPE] KEYWORD [MORE_KEYWORDS]`<br> e.g., `find m/kw James Jake`, `find m/ss ali`, `find m/fz michigan`
+**Find** | `find [m/MATCH_TYPE] [KEYWORD [MORE_KEYWORDS]] [va/DAY,HH:mm,HH:mm]`<br> e.g., `find m/kw James Jake`, `find m/ss ali`, `find m/fz michigan`, `find va/MONDAY,14:00,17:00`, `find alice va/MONDAY,14:00,17:00`
 **List** | `list [ATTRIBUTE [asc｜desc]]`<br> e.g., `list name desc`
 **Help** | `help`
 **Stats** | `stats CATEGORY`<br> e.g., `stats role`, `stats record`
