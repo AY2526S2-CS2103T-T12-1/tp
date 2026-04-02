@@ -96,7 +96,7 @@ public class FindCommandParserTest {
                 new PersonContainsKeywordsPredicate(Arrays.asList("Alice"));
         FindCommand expectedCommand = new FindCommand(
                 new CombinedPersonPredicate(List.of(textPredicate, availPredicate)));
-        assertParseSuccess(parser, "Alice " + PREFIX_AVAILABILITY + "MONDAY,14:00,17:00", expectedCommand);
+        assertParseSuccess(parser, PREFIX_AVAILABILITY + "MONDAY,14:00,17:00 Alice", expectedCommand);
     }
 
     @Test
@@ -107,8 +107,8 @@ public class FindCommandParserTest {
                 new PersonContainsKeywordsPredicate(Arrays.asList("Bob", "Charlie"));
         FindCommand expectedCommand = new FindCommand(
                 new CombinedPersonPredicate(List.of(textPredicate, availPredicate)));
-        assertParseSuccess(parser, PREFIX_MATCH_TYPE + KEYWORD_TOKEN + " Bob Charlie "
-                + PREFIX_AVAILABILITY + "TUESDAY,09:00,12:00", expectedCommand);
+        assertParseSuccess(parser, PREFIX_MATCH_TYPE + KEYWORD_TOKEN + " "
+                + PREFIX_AVAILABILITY + "TUESDAY,09:00,12:00 Bob Charlie", expectedCommand);
     }
 
     @Test
@@ -119,8 +119,8 @@ public class FindCommandParserTest {
                 new PersonContainsSubstringsPredicate(Arrays.asList("ali"));
         FindCommand expectedCommand = new FindCommand(
                 new CombinedPersonPredicate(List.of(textPredicate, availPredicate)));
-        assertParseSuccess(parser, PREFIX_MATCH_TYPE + SUBSTRING_TOKEN + " ali "
-                + PREFIX_AVAILABILITY + "WEDNESDAY,10:00,15:00", expectedCommand);
+        assertParseSuccess(parser, PREFIX_MATCH_TYPE + SUBSTRING_TOKEN + " "
+                + PREFIX_AVAILABILITY + "WEDNESDAY,10:00,15:00 ali", expectedCommand);
     }
 
     @Test
@@ -131,8 +131,8 @@ public class FindCommandParserTest {
                 new PersonContainsFuzzyKeywordsPredicate(Arrays.asList("meyr"));
         FindCommand expectedCommand = new FindCommand(
                 new CombinedPersonPredicate(List.of(textPredicate, availPredicate)));
-        assertParseSuccess(parser, PREFIX_MATCH_TYPE + FUZZY_TOKEN + " meyr "
-                + PREFIX_AVAILABILITY + "FRIDAY,08:00,12:00", expectedCommand);
+        assertParseSuccess(parser, PREFIX_MATCH_TYPE + FUZZY_TOKEN + " "
+                + PREFIX_AVAILABILITY + "FRIDAY,08:00,12:00 meyr", expectedCommand);
     }
 
     @Test

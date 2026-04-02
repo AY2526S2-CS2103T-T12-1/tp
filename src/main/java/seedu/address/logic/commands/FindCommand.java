@@ -23,15 +23,15 @@ public class FindCommand extends Command {
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Finds all persons whose fields contain any of "
             + "the specified keywords (case-insensitive) and displays them as a list with index numbers.\n"
             + "Searches across name, phone, email, address, role, notes, and tags.\n"
-            + "Optionally filter by volunteer availability with " + PREFIX_AVAILABILITY + "DAY,START,END.\n"
-            + "Parameters: [" + PREFIX_MATCH_TYPE + "MATCH_TYPE] [KEYWORD ...] "
-            + "[" + PREFIX_AVAILABILITY + "DAY,HH:mm,HH:mm]\n"
+            + "Optionally filter by volunteer availability with " + PREFIX_AVAILABILITY + "DAY,HH:mm,HH:mm.\n"
+            + "Parameters: [" + PREFIX_MATCH_TYPE + "MATCH_TYPE] "
+            + "[" + PREFIX_AVAILABILITY + "DAY,HH:mm,HH:mm] [KEYWORD ...]\n"
             + "Currently supported MATCH_TYPE: " + KEYWORD_TOKEN + ", " + SUBSTRING_TOKEN + ", " + FUZZY_TOKEN + "\n"
             + "Example: " + COMMAND_WORD + " " + PREFIX_MATCH_TYPE + KEYWORD_TOKEN + " alice bob charlie\n"
             + "Example: " + COMMAND_WORD + " " + PREFIX_MATCH_TYPE + SUBSTRING_TOKEN + " ali\n"
             + "Example: " + COMMAND_WORD + " " + PREFIX_MATCH_TYPE + FUZZY_TOKEN + " meyr\n"
             + "Example: " + COMMAND_WORD + " " + PREFIX_AVAILABILITY + "MONDAY,14:00,17:00\n"
-            + "Example: " + COMMAND_WORD + " alice " + PREFIX_AVAILABILITY + "MONDAY,14:00,17:00";
+            + "Example: " + COMMAND_WORD + " " + PREFIX_AVAILABILITY + "MONDAY,14:00,17:00 alice";
 
     private final PersonPredicate predicate;
 
