@@ -4,28 +4,23 @@ skinparam arrowThickness 1.1
 skinparam arrowColor LOGIC_COLOR_T4
 skinparam classBackgroundColor LOGIC_COLOR
 
+package Logic {
 
-@startuml
-!include style.puml
-skinparam classAttributeIconSize 0
-hide empty members
-
-package Logic LOGIC_COLOR_T1 {
-
-  package commands LOGIC_COLOR_T2 {
+  package commands {
     abstract class Command LOGIC_COLOR
     class ExportCommand LOGIC_COLOR
     class ImportCommand LOGIC_COLOR
   }
 
-  package parser LOGIC_COLOR_T2 {
+  package parser {
     class AddressBookParser LOGIC_COLOR
+    class Parser <<interface>> LOGIC_COLOR
     class ExportCommandParser LOGIC_COLOR
     class ImportCommandParser LOGIC_COLOR
     class ParserUtil LOGIC_COLOR
   }
 
-  package csv LOGIC_COLOR_T2 {
+  package csv {
     class CsvWriterUtil LOGIC_COLOR
     class CsvReaderUtil LOGIC_COLOR
     class CsvImportFileResult LOGIC_COLOR
@@ -34,18 +29,21 @@ package Logic LOGIC_COLOR_T1 {
   }
 }
 
-package Model MODEL_COLOR_T1 {
+package Model {
   class Person MODEL_COLOR
 }
 
 AddressBookParser ..> ExportCommandParser
 AddressBookParser ..> ImportCommandParser
 
+ExportCommandParser ..|> Parser
+ImportCommandParser ..|> Parser
+
 ExportCommandParser ..> ExportCommand
 ImportCommandParser ..> ImportCommand
 
-ExportCommand --|> Command
-ImportCommand --|> Command
+ExportCommand --> Command
+ImportCommand --> Command
 
 ExportCommand ..> CsvWriterUtil
 
