@@ -58,7 +58,7 @@ RosterBolt is a **desktop app for managing team contacts, optimized for use via 
 * Parameters can be in any order.<br>
   e.g. if the command specifies `n/NAME p/PHONE_NUMBER`, `p/PHONE_NUMBER n/NAME` is also acceptable.
 
-* Extraneous parameters for commands that do not take in parameters (such as `help`, `exit` and `clear`) will be ignored.<br>
+* Extraneous parameters for commands that do not take in parameters (such as `help`, `exit`, `clear`, `bin`, `aliases` and `editprev`) will be ignored.<br>
   e.g. if the command specifies `help 123`, it will be interpreted as `help`.
 
 * If you are using a PDF version of this document, be careful when copying and pasting commands that span multiple lines as space characters surrounding line-breaks may be omitted when copied over to the application.
@@ -159,6 +159,7 @@ Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [r/ROLE] [nt/NOTES]
 * Existing values will be updated to the input values.
 * When editing tags, availabilities, or records, existing values of that field will be replaced (i.e. adding is not cumulative).
 * You can remove all the person’s tags, availabilities, or records by typing `t/`, `va/`, or `vr/` without specifying values after the prefix.
+* You can remove a person’s role or notes by typing `r/` or `nt/` without specifying values after the prefix.
 * `AVAILABILITY` format: `DAY,HH:mm,HH:mm` (e.g., `MONDAY,14:00,17:00`).
 * `RECORD` format: `yyyy-MM-ddTHH:mm,yyyy-MM-ddTHH:mm` (e.g., `2026-03-20T14:00,2026-03-20T17:00`).
 
@@ -178,7 +179,7 @@ Format: `find [m/MATCH_TYPE] [va/DAY,HH:mm,HH:mm] [KEYWORD [MORE_KEYWORDS]]`
 * `m/kw` matches full words only. e.g. `Han` will not match `Hans`
 * `m/ss` matches substrings. e.g. `Han` will match `Hans`
 * `m/fz` allows small spelling mistakes. Words that are up to 2 simple edits away (in terms of adding, removing, or changing a letter) can still match. e.g. `michigan` will match `michegan`
-* `va/DAY,HH:mm,HH:mm` filters for volunteers whose availability **fully covers** the specified time period. `DAY` is a full day name (e.g., `MONDAY`), and start time must be before end time.
+* `va/DAY,HH:mm,HH:mm` filters for volunteers whose availability covers the specified time period, i.e. the volunteer's availability is on the same day, starts at or before the specified start time, and ends at or after the specified end time. `DAY` is a full day name (e.g., `MONDAY`), and start time must be before end time.
 * At least one of keywords or `va/` must be provided.
 * When both keywords and `va/` are provided, only persons matching **both** the keyword search **and** the availability filter are returned.
 * If `m/MATCH_TYPE` is specified, at least one keyword must also be provided.
@@ -290,14 +291,14 @@ _Details coming soon ..._
 
 Action | Format, Examples
 --------|------------------
-**Add** | `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​ [r/ROLE] [nt/NOTES]` <br> e.g., `add n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 t/friend t/colleague r/Usher nt/Available weekends`
+**Add** | `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​ [r/ROLE] [nt/NOTES] [va/AVAILABILITIES]…​ [vr/RECORDS]…​` <br> e.g., `add n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 t/friend t/colleague r/Usher nt/Available weekends va/MONDAY,14:00,17:00 vr/2026-03-20T14:00,2026-03-20T17:00`
 **Alias** | `alias SHORT COMMAND_WORD`<br> e.g., `alias ls list`
 **Aliases** | `aliases`
 **Unalias** | `unalias SHORT`<br> e.g., `unalias ls`
 **Bin** | `bin`
 **Clear** | `clear`
 **Delete** | `delete INDEX [MORE_INDICES]`<br> e.g., `delete 2 3`
-**Edit** | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [nt/NOTES] [t/TAG]…​ [va/AVAILABILITY]…​ [vr/RECORD]…​`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com va/MONDAY,14:00,17:00`
+**Edit** | `edit INDEX [n/NAME] [p/PHONE_NUMBER] [e/EMAIL] [a/ADDRESS] [r/ROLE] [nt/NOTES] [t/TAG]…​ [va/AVAILABILITY]…​ [vr/RECORD]…​`<br> e.g.,`edit 2 n/James Lee e/jameslee@example.com va/MONDAY,14:00,17:00`
 **Edit Previous** | `editprev`
 **Find** | `find [m/MATCH_TYPE] [va/DAY,HH:mm,HH:mm] [KEYWORD [MORE_KEYWORDS]]`<br> e.g., `find m/kw James Jake`, `find m/ss ali`, `find m/fz michigan`, `find va/MONDAY,14:00,17:00`, `find va/MONDAY,14:00,17:00 alice`
 **List** | `list [ATTRIBUTE [asc｜desc]]`<br> e.g., `list name desc`
