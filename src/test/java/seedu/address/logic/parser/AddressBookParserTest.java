@@ -35,6 +35,7 @@ import seedu.address.logic.commands.UnaliasCommand;
 import seedu.address.logic.parser.exceptions.ParseException;
 import seedu.address.model.person.Person;
 import seedu.address.model.person.VolunteerAvailability;
+import seedu.address.model.person.predicates.CombinedAndPersonPredicate;
 import seedu.address.model.person.predicates.PersonAvailableDuringPredicate;
 import seedu.address.model.person.predicates.PersonContainsKeywordsPredicate;
 import seedu.address.model.person.sort.SortAttribute;
@@ -114,8 +115,15 @@ public class AddressBookParserTest {
 
     @Test
     public void parseCommand_findWithAvailabilityAndKeywords() throws Exception {
-        assertTrue(parser.parseCommand(
-                FindCommand.COMMAND_WORD + " va/MONDAY,14:00,17:00 alice") instanceof FindCommand);
+        VolunteerAvailability query = VolunteerAvailability.fromString("MONDAY,14:00,17:00");
+        PersonAvailableDuringPredicate availPredicate = new PersonAvailableDuringPredicate(query);
+        PersonContainsKeywordsPredicate textPredicate =
+                new PersonContainsKeywordsPredicate(Arrays.asList("alice"));
+        FindCommand expected = new FindCommand(
+                new CombinedAndPersonPredicate(List.of(textPredicate, availPredicate)));
+        FindCommand command = (FindCommand) parser.parseCommand(
+                FindCommand.COMMAND_WORD + " va/MONDAY,14:00,17:00 alice");
+        assertEquals(expected, command);
     }
 
     @Test

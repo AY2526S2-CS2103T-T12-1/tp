@@ -112,6 +112,19 @@ public class FindCommandParserTest {
     }
 
     @Test
+    public void parse_availabilityBeforeMatchType_returnsFindCommand() {
+        // va/ before m/ — keywords trail after m/ (the last prefix)
+        VolunteerAvailability query = VolunteerAvailability.fromString("TUESDAY,09:00,12:00");
+        PersonAvailableDuringPredicate availPredicate = new PersonAvailableDuringPredicate(query);
+        PersonContainsKeywordsPredicate textPredicate =
+                new PersonContainsKeywordsPredicate(Arrays.asList("Bob", "Charlie"));
+        FindCommand expectedCommand = new FindCommand(
+                new CombinedAndPersonPredicate(List.of(textPredicate, availPredicate)));
+        assertParseSuccess(parser, PREFIX_AVAILABILITY + "TUESDAY,09:00,12:00 "
+                + PREFIX_MATCH_TYPE + KEYWORD_TOKEN + " Bob Charlie", expectedCommand);
+    }
+
+    @Test
     public void parse_matchTypeSubstringAndAvailability_returnsFindCommand() {
         VolunteerAvailability query = VolunteerAvailability.fromString("WEDNESDAY,10:00,15:00");
         PersonAvailableDuringPredicate availPredicate = new PersonAvailableDuringPredicate(query);
