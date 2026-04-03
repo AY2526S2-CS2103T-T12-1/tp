@@ -60,7 +60,8 @@ public class CommandResult {
      * @deprecated Use {@link #CommandResult(String, PersonListView)} instead, which specifies
      *         the personListView of the result.
      */
-    @Deprecated public CommandResult(String feedbackToUser) {
+    @Deprecated
+    public CommandResult(String feedbackToUser) {
         this(feedbackToUser, PersonListView.KEPT_PERSONS);
     }
 

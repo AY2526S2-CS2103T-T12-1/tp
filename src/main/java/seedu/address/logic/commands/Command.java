@@ -32,7 +32,8 @@ public abstract class Command {
      * @throws CommandException If an error occurs during command execution.
      * @deprecated Use {@link #execute(Model, PersonListView)} instead, which specifies the currently viewed list.
      */
-    @Deprecated public CommandResult execute(Model model) throws CommandException {
+    @Deprecated
+    public CommandResult execute(Model model) throws CommandException {
         return execute(model, PersonListView.KEPT_PERSONS);
     }
 
