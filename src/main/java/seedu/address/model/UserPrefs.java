@@ -82,7 +82,7 @@ public class UserPrefs implements ReadOnlyUserPrefs {
     public void setCommandAlias(String shortName, String template) {
         requireNonNull(shortName);
         requireNonNull(template);
-        commandAliases.put(shortName, template);
+        commandAliases.put(shortName.trim(), template.trim());
     }
 
     /**

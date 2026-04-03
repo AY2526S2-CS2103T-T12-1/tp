@@ -158,6 +158,11 @@ public class ModelManager implements Model {
     }
 
     @Override
+    public ObservableList<Person> getKeptPersonList() {
+        return addressBook.getKeptPersonList();
+    }
+
+    @Override
     public ObservableList<Person> getFilteredDeletedPersonList() {
         return filteredDeletedPersons;
     }

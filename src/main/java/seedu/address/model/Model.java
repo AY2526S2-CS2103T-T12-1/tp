@@ -106,6 +106,9 @@ public interface Model {
     /** Returns an unmodifiable view of the filtered kept person list */
     ObservableList<Person> getFilteredKeptPersonList();
 
+    /** Returns an unmodifiable view of the full kept person list. */
+    ObservableList<Person> getKeptPersonList();
+
     /** Returns an unmodifiable view of the filtered deleted person list */
     ObservableList<Person> getFilteredDeletedPersonList();
 

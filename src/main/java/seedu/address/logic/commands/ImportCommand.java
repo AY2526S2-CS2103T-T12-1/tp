@@ -64,11 +64,10 @@ public class ImportCommand extends Command {
         for (CsvImportRowSuccess successRow : result.getValidRows()) {
             Person person = successRow.getPerson();
 
-            Person duplicatePerson = findDuplicatePerson(model, personsImportedThisRun, person);
-            if (duplicatePerson != null) {
+            if (hasDuplicatePerson(model, personsImportedThisRun, person)) {
                 duplicateRows.add(new CsvImportRowError(
                         successRow.getRowNumber(),
-                        getDuplicateReason(person, duplicatePerson)));
+                        "duplicate"));
             } else {
                 model.addPerson(person);
                 personsImportedThisRun.add(person);
@@ -79,37 +78,9 @@ public class ImportCommand extends Command {
         return new CommandResult(buildSummaryMessage(importedCount, duplicateRows, invalidRows));
     }
 
-    private Person findDuplicatePerson(Model model, List<Person> personsImportedThisRun, Person person) {
-        if (model.hasPerson(person)) {
-            for (Person existingPerson : model.getAddressBook().getKeptPersonList()) {
-                if (existingPerson.isSamePerson(person)) {
-                    return existingPerson;
-                }
-            }
-        }
-
-        for (Person importedPerson : personsImportedThisRun) {
-            if (importedPerson.isSamePerson(person)) {
-                return importedPerson;
-            }
-        }
-
-        return null;
-    }
-
-    private String getDuplicateReason(Person importedPerson, Person existingPerson) {
-        boolean samePhone = existingPerson.getPhone().equals(importedPerson.getPhone());
-        boolean sameEmail = existingPerson.getEmail().equals(importedPerson.getEmail());
-
-        if (samePhone && sameEmail) {
-            return "same phone and email";
-        } else if (samePhone) {
-            return "same phone";
-        } else if (sameEmail) {
-            return "same email";
-        } else {
-            return "duplicate";
-        }
+    private boolean hasDuplicatePerson(Model model, List<Person> personsImportedThisRun, Person person) {
+        return model.hasPerson(person)
+                || personsImportedThisRun.stream().anyMatch(importedPerson -> importedPerson.isSamePerson(person));
     }
 
     private String buildSummaryMessage(int importedCount,

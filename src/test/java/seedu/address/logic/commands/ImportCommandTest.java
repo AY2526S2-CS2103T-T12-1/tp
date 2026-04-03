@@ -22,6 +22,7 @@ import seedu.address.model.Model;
 import seedu.address.model.ReadOnlyAddressBook;
 import seedu.address.model.ReadOnlyUserPrefs;
 import seedu.address.model.person.Person;
+import seedu.address.testutil.PersonBuilder;
 
 public class ImportCommandTest {
 
@@ -66,9 +67,36 @@ public class ImportCommandTest {
         assertEquals(String.join(System.lineSeparator(),
                 "Imported 1 volunteers from " + inputFile + ".",
                 "Duplicate rows: 1, Invalid rows: 1",
-                "Duplicate row details: 3 (same phone and email)",
+                "Duplicate row details: 3 (duplicate)",
                 "Invalid row details: 4 (missing phone)"), result.getFeedbackToUser());
 
+        assertEquals(1, model.personsAdded.size());
+    }
+
+    @Test
+    public void execute_duplicateAlreadyInAddressBook_reportsDuplicate() throws Exception {
+        Path inputFile = tempDir.resolve("volunteers.csv");
+        Files.writeString(inputFile, String.join(System.lineSeparator(),
+                "name,phone,email,address,role,notes,tags,availabilities,records",
+                "Alice Pauline,94351253,alice@example.com,123 Jurong West Ave 6,,,,,",
+                "Bob Choo,91234567,bob@example.com,456 Clementi Ave 3,,,,,"
+        ));
+
+        Person existingAlice = new PersonBuilder()
+                .withName("Alice Pauline")
+                .withPhone("94351253")
+                .withEmail("alice@example.com")
+                .withAddress("123 Jurong West Ave 6")
+                .build();
+        ModelStubWithExistingPersons model = new ModelStubWithExistingPersons(existingAlice);
+        ImportCommand command = new ImportCommand(inputFile);
+
+        CommandResult result = command.execute(model);
+
+        assertEquals(String.join(System.lineSeparator(),
+                "Imported 1 volunteers from " + inputFile + ".",
+                "Duplicate rows: 1, Invalid rows: 0",
+                "Duplicate row details: 2 (duplicate)"), result.getFeedbackToUser());
         assertEquals(1, model.personsAdded.size());
     }
 
@@ -194,6 +222,11 @@ public class ImportCommandTest {
         }
 
         @Override
+        public ObservableList<Person> getKeptPersonList() {
+            return FXCollections.observableArrayList();
+        }
+
+        @Override
         public ObservableList<Person> getFilteredDeletedPersonList() {
             fail("This method should not be called.");
             return null;
@@ -237,6 +270,20 @@ public class ImportCommandTest {
         @Override
         public void addPerson(Person person) {
             personsAdded.add(person);
+        }
+    }
+
+    private static class ModelStubWithExistingPersons extends ModelStubAcceptingPersonsAdded {
+        private final List<Person> existingPersons = new ArrayList<>();
+
+        ModelStubWithExistingPersons(Person... existingPersons) {
+            this.existingPersons.addAll(List.of(existingPersons));
+        }
+
+        @Override
+        public boolean hasPerson(Person person) {
+            return existingPersons.stream().anyMatch(existing -> existing.isSamePerson(person))
+                    || super.hasPerson(person);
         }
     }
 }

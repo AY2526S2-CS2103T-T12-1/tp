@@ -229,6 +229,12 @@ public class ExportCommandTest {
         }
 
         @Override
+        public ObservableList<Person> getKeptPersonList() {
+            fail("This method should not be called.");
+            return null;
+        }
+
+        @Override
         public ObservableList<Person> getFilteredDeletedPersonList() {
             fail("This method should not be called.");
             return null;
@@ -274,6 +280,11 @@ public class ExportCommandTest {
         @Override
         public ReadOnlyAddressBook getAddressBook() {
             return addressBook;
+        }
+
+        @Override
+        public ObservableList<Person> getKeptPersonList() {
+            return addressBook.getKeptPersonList();
         }
     }
 }

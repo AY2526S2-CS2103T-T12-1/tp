@@ -3,11 +3,14 @@ package seedu.address.logic;
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.Path;
+import java.util.List;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 import javafx.collections.ObservableList;
 import seedu.address.commons.core.GuiSettings;
 import seedu.address.commons.core.LogsCenter;
+import seedu.address.logic.commands.AliasCommand;
 import seedu.address.logic.commands.Command;
 import seedu.address.logic.commands.CommandResult;
 import seedu.address.logic.commands.EditPreviousCommand;
@@ -28,12 +31,15 @@ public class LogicManager implements Logic {
 
     public static final String FILE_OPS_PERMISSION_ERROR_FORMAT =
             "Could not save data to file %s due to insufficient permissions to write to the file or the folder.";
+    public static final String MESSAGE_INVALID_ALIASES_REMOVED_ON_STARTUP =
+            "Removed invalid aliases from preferences: %1$s";
 
     private final Logger logger = LogsCenter.getLogger(LogicManager.class);
 
     private final Model model;
     private final Storage storage;
     private final AddressBookParser addressBookParser;
+    private Optional<String> startupMessage = Optional.empty();
 
     /**
      * Constructs a {@code LogicManager} with the given {@code Model} and {@code Storage}.
@@ -42,6 +48,7 @@ public class LogicManager implements Logic {
         this.model = model;
         this.storage = storage;
         addressBookParser = new AddressBookParser();
+        sanitizeLoadedAliases();
     }
 
     @Override
@@ -104,6 +111,13 @@ public class LogicManager implements Logic {
         model.setGuiSettings(guiSettings);
     }
 
+    @Override
+    public Optional<String> consumeStartupMessage() {
+        Optional<String> message = startupMessage;
+        startupMessage = Optional.empty();
+        return message;
+    }
+
     private String expandAlias(String commandText) {
         return ParserUtil.parseCommandComponents(commandText)
                 .map(commandComponents -> expandAlias(commandText, commandComponents))
@@ -111,12 +125,27 @@ public class LogicManager implements Logic {
     }
 
     private String expandAlias(String commandText, ParserUtil.CommandComponents commandComponents) {
-        String aliasTemplate = model.getCommandAliases().get(commandComponents.getCommandWord());
-        if (aliasTemplate == null) {
+        String targetCommandWord = model.getCommandAliases().get(commandComponents.getCommandWord());
+        if (targetCommandWord == null) {
             return commandText;
         }
 
-        return aliasTemplate + commandComponents.getArguments();
+        return targetCommandWord + commandComponents.getArguments();
+    }
+
+    private void sanitizeLoadedAliases() {
+        List<String> invalidAliases = model.getCommandAliases().entrySet().stream()
+                .filter(entry -> !AliasCommand.isValidAliasName(entry.getKey())
+                        || !AliasCommand.isValidAliasTemplate(entry.getValue())
+                        || !AliasCommand.isAllowedAliasTarget(entry.getValue()))
+                .map(entry -> entry.getKey())
+                .toList();
+
+        invalidAliases.forEach(model::removeCommandAlias);
+        if (!invalidAliases.isEmpty()) {
+            startupMessage = Optional.of(String.format(MESSAGE_INVALID_ALIASES_REMOVED_ON_STARTUP,
+                    String.join(", ", invalidAliases)));
+        }
     }
 
     /**

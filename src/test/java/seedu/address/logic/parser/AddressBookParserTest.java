@@ -119,6 +119,13 @@ public class AddressBookParserTest {
     }
 
     @Test
+    public void parseCommand_export() throws Exception {
+        ExportCommand command = (ExportCommand) parser.parseCommand(
+                ExportCommand.COMMAND_WORD + " data/volunteers.csv");
+        assertEquals(new ExportCommand(java.nio.file.Paths.get("data/volunteers.csv")), command);
+    }
+
+    @Test
     public void parseCommand_find() throws Exception {
         List<String> keywords = Arrays.asList("foo", "bar", "baz");
         FindCommand defaultCommand = (FindCommand) parser.parseCommand(
@@ -130,6 +137,13 @@ public class AddressBookParserTest {
     public void parseCommand_help() throws Exception {
         assertTrue(parser.parseCommand(HelpCommand.COMMAND_WORD) instanceof HelpCommand);
         assertTrue(parser.parseCommand(HelpCommand.COMMAND_WORD + " 3") instanceof HelpCommand);
+    }
+
+    @Test
+    public void parseCommand_import() throws Exception {
+        ImportCommand command = (ImportCommand) parser.parseCommand(
+                ImportCommand.COMMAND_WORD + " data/volunteers.csv");
+        assertEquals(new ImportCommand(java.nio.file.Paths.get("data/volunteers.csv")), command);
     }
 
     @Test
@@ -167,7 +181,7 @@ public class AddressBookParserTest {
                 Map.entry(StatsCommand.COMMAND_WORD, "stats role"),
                 Map.entry(UnaliasCommand.COMMAND_WORD, "unalias ls"));
 
-        assertEquals(CommandWords.BUILT_IN_COMMAND_WORDS, commandExamples.keySet());
+        assertEquals(CommandWords.TOP_LEVEL_COMMAND_WORDS, commandExamples.keySet());
         for (String commandExample : commandExamples.values()) {
             parser.parseCommand(commandExample);
         }

@@ -1,6 +1,7 @@
 package seedu.address.logic;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
 import static seedu.address.logic.Messages.MESSAGE_PERSONS_LISTED_OVERVIEW;
 import static seedu.address.logic.Messages.MESSAGE_UNKNOWN_COMMAND;
@@ -17,6 +18,7 @@ import java.io.IOException;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.Path;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -135,17 +137,17 @@ public class LogicManagerTest {
     }
 
     @Test
-    public void execute_aliasExpandedCommandTemplateWithDefaultArguments_success() throws Exception {
+    public void execute_aliasExpandedFindCommandWithArguments_success() throws Exception {
         model = new ModelManager(getTypicalAddressBook(), new UserPrefs());
-        model.setCommandAlias("ss", "find m/ss meie");
+        model.setCommandAlias("ss", "find");
         resetLogic();
 
         Model expectedModel = new ModelManager(getTypicalAddressBook(), new UserPrefs());
-        expectedModel.setCommandAlias("ss", "find m/ss meie");
+        expectedModel.setCommandAlias("ss", "find");
         expectedModel.updateFilteredKeptPersonList(
                 new PersonContainsSubstringsPredicate(Collections.singletonList("meie")));
 
-        assertCommandSuccess("ss", PersonListView.KEPT_PERSONS,
+        assertCommandSuccess("ss m/ss meie", PersonListView.KEPT_PERSONS,
                 String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 2), expectedModel);
     }
 
@@ -218,12 +220,96 @@ public class LogicManagerTest {
     public void execute_reservedAliasName_throwsParseException() {
         assertParseException("alias list help", PersonListView.KEPT_PERSONS,
                 AliasCommand.MESSAGE_RESERVED_ALIAS_NAME);
+        assertParseException("alias import help", PersonListView.KEPT_PERSONS,
+                AliasCommand.MESSAGE_RESERVED_ALIAS_NAME);
+        assertParseException("alias export help", PersonListView.KEPT_PERSONS,
+                AliasCommand.MESSAGE_RESERVED_ALIAS_NAME);
+        assertParseException("alias editprev help", PersonListView.KEPT_PERSONS,
+                AliasCommand.MESSAGE_RESERVED_ALIAS_NAME);
     }
 
     @Test
     public void execute_invalidAliasTemplate_throwsParseException() {
-        assertParseException("alias l ls", PersonListView.DELETED_PERSONS,
+        assertParseException("alias l ls", PersonListView.KEPT_PERSONS,
                 AliasCommand.MESSAGE_INVALID_ALIAS_TEMPLATE);
+        assertParseException("alias l find m/ss meie", PersonListView.KEPT_PERSONS,
+                AliasCommand.MESSAGE_INVALID_ALIAS_TEMPLATE);
+    }
+
+    @Test
+    public void execute_reservedAliasTarget_throwsParseException() {
+        assertParseException("alias aa alias", PersonListView.KEPT_PERSONS,
+                AliasCommand.MESSAGE_RESERVED_ALIAS_TARGET);
+        assertParseException("alias aa aliases", PersonListView.KEPT_PERSONS,
+                AliasCommand.MESSAGE_RESERVED_ALIAS_TARGET);
+        assertParseException("alias aa unalias", PersonListView.KEPT_PERSONS,
+                AliasCommand.MESSAGE_RESERVED_ALIAS_TARGET);
+        assertParseException("alias aa editprev", PersonListView.KEPT_PERSONS,
+                AliasCommand.MESSAGE_RESERVED_ALIAS_TARGET);
+    }
+
+    @Test
+    public void constructor_invalidLoadedAliases_sanitizesAliasRegistry() {
+        UserPrefs userPrefs = new UserPrefs();
+        userPrefs.setCommandAliases(Map.of(
+                "good", ListCommand.COMMAND_WORD,
+                "chain", "good",
+                "loop", "loop",
+                "aa", EditPreviousCommand.COMMAND_WORD));
+        model = new ModelManager(getTypicalAddressBook(), userPrefs);
+        resetLogic();
+
+        assertEquals(Map.of("good", ListCommand.COMMAND_WORD), model.getCommandAliases());
+    }
+
+    @Test
+    public void consumeStartupMessage_afterSanitizingLoadedAliases_returnsOneTimeWarning() {
+        UserPrefs userPrefs = new UserPrefs();
+        Map<String, String> aliases = new LinkedHashMap<>();
+        aliases.put("good", ListCommand.COMMAND_WORD);
+        aliases.put("chain", "good");
+        aliases.put("loop", "loop");
+        aliases.put("aa", EditPreviousCommand.COMMAND_WORD);
+        userPrefs.setCommandAliases(aliases);
+        model = new ModelManager(getTypicalAddressBook(), userPrefs);
+        resetLogic();
+
+        String startupMessage = logic.consumeStartupMessage().orElseThrow();
+        assertTrue(startupMessage.startsWith("Removed invalid aliases from preferences: "));
+        assertTrue(startupMessage.contains("chain"));
+        assertTrue(startupMessage.contains("loop"));
+        assertTrue(startupMessage.contains("aa"));
+        assertEquals(Optional.empty(), logic.consumeStartupMessage());
+    }
+
+    @Test
+    public void consumeStartupMessage_withoutInvalidAliases_returnsEmpty() {
+        UserPrefs userPrefs = new UserPrefs();
+        userPrefs.setCommandAliases(Map.of("good", ListCommand.COMMAND_WORD));
+        model = new ModelManager(getTypicalAddressBook(), userPrefs);
+        resetLogic();
+
+        assertEquals(Optional.empty(), logic.consumeStartupMessage());
+    }
+
+    @Test
+    public void execute_afterSanitizingLoadedAliases_savesOnlyValidAliases() throws Exception {
+        UserPrefs userPrefs = new UserPrefs();
+        userPrefs.setCommandAliases(Map.of(
+                "good", ListCommand.COMMAND_WORD,
+                "chain", "good",
+                "loop", "loop",
+                "meta", AliasCommand.COMMAND_WORD));
+        model = new ModelManager(getTypicalAddressBook(), userPrefs);
+        resetLogic();
+
+        Model expectedModel = new ModelManager(getTypicalAddressBook(), new UserPrefs());
+        expectedModel.setCommandAlias("good", ListCommand.COMMAND_WORD);
+        assertCommandSuccess(ListCommand.COMMAND_WORD, PersonListView.KEPT_PERSONS,
+                ListCommand.MESSAGE_SUCCESS, expectedModel);
+
+        UserPrefs readBack = new JsonUserPrefsStorage(temporaryFolder.resolve("userPrefs.json")).readUserPrefs().get();
+        assertEquals(Map.of("good", ListCommand.COMMAND_WORD), readBack.getCommandAliases());
     }
 
     @Test
