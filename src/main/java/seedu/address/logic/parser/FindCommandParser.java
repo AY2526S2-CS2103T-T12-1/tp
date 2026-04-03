@@ -97,7 +97,7 @@ public class FindCommandParser implements Parser<FindCommand> {
 
         FindMatchType matchType = parseMatchType(rawMatchType);
         VolunteerAvailability availability = parseAvailability(rawAvail);
-        List<String> keywords = collectKeywords(rawMatchType, rawAvail, preamble, matchType);
+        List<String> keywords = collectKeywords(rawMatchType, rawAvail, preamble);
 
         return new ParsedFindArgs(matchType, availability, keywords);
     }
@@ -159,32 +159,27 @@ public class FindCommandParser implements Parser<FindCommand> {
     /**
      * Collects keywords from the appropriate source.
      *
-     * <p>Keywords can come from exactly one of three places:
+     * <p>Keywords come from exactly one of three places:
      * <ol>
-     *   <li>Trailing tokens in the {@code m/} value (when {@code m/} is the last prefix).</li>
-     *   <li>Trailing tokens in the {@code va/} value (when {@code va/} is the last prefix).</li>
+     *   <li>Trailing tokens after the match type in {@code m/} (when {@code m/} is the last prefix).</li>
+     *   <li>Trailing tokens after the availability in {@code va/} (when {@code va/} is the last prefix).</li>
      *   <li>The preamble (when no prefix is used, e.g. {@code find alice bob}).</li>
      * </ol>
      *
-     * <p>"Trailing tokens" means everything after the first token (which is the primary
-     * value of that prefix — the match type or availability string).
-     *
-     * @param matchType the parsed match type, used to determine how many tokens to skip
-     *                  in the m/ value (1 if match type was parsed, 0 if not).
+     * <p>Each prefix's value has one primary token (the match type or availability string).
+     * Any tokens after that primary token are keywords. Since {@code ArgumentTokenizer}
+     * assigns all trailing content to the last prefix, only the last prefix can have keywords.
      */
     private List<String> collectKeywords(Optional<String> rawMatchType, Optional<String> rawAvail,
-            String preamble, FindMatchType matchType) {
-        // Try m/ trailing tokens (keywords appear here when m/ is the last prefix).
-        List<String> matchTypeTokens = tokenizeOptional(rawMatchType);
-        // Skip the first token (the match type itself) if a valid match type was parsed.
-        int matchTypeSkip = matchType != null ? 1 : 0;
-        if (matchTypeTokens.size() > matchTypeSkip) {
-            return matchTypeTokens.subList(matchTypeSkip, matchTypeTokens.size());
+            String preamble) {
+        // Try m/ trailing tokens: skip first token (match type), rest are keywords.
+        List<String> matchTypeTokens = ParserUtil.tokenizeOptionalValue(rawMatchType);
+        if (matchTypeTokens.size() > 1) {
+            return matchTypeTokens.subList(1, matchTypeTokens.size());
         }
 
-        // Try va/ trailing tokens (keywords appear here when va/ is the last prefix).
-        List<String> availTokens = tokenizeOptional(rawAvail);
-        // Skip the first token (the availability string itself) if va/ was provided.
+        // Try va/ trailing tokens: skip first token (availability), rest are keywords.
+        List<String> availTokens = ParserUtil.tokenizeOptionalValue(rawAvail);
         if (availTokens.size() > 1) {
             return availTokens.subList(1, availTokens.size());
         }
@@ -195,21 +190,6 @@ public class FindCommandParser implements Parser<FindCommand> {
         }
 
         return List.of();
-    }
-
-    /**
-     * Tokenizes an optional prefix value into space-separated tokens.
-     * Returns an empty list if the value is absent or blank.
-     */
-    private List<String> tokenizeOptional(Optional<String> rawValue) {
-        if (rawValue.isEmpty()) {
-            return List.of();
-        }
-        String trimmed = rawValue.get().trim();
-        if (trimmed.isEmpty()) {
-            return List.of();
-        }
-        return ParserUtil.tokenizeSpaceSeparated(trimmed);
     }
 
     /**

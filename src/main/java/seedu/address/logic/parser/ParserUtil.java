@@ -58,6 +58,17 @@ public class ParserUtil {
     }
 
     /**
+     * Tokenizes an optional prefix value into space-separated tokens.
+     * Returns an empty list if the value is absent or blank.
+     */
+    public static List<String> tokenizeOptionalValue(Optional<String> rawValue) {
+        if (rawValue.isEmpty()) {
+            return List.of();
+        }
+        return tokenizeSpaceSeparated(rawValue.get());
+    }
+
+    /**
      * Parses {@code oneBasedIndex} into an {@code Index} and returns it. Leading and trailing whitespaces will be
      * trimmed.
      * @throws ParseException if the specified index is invalid (not non-zero unsigned integer).
