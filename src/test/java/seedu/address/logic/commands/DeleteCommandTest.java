@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.commands.Command.MESSAGE_NOT_VIEWING_KEPT_PERSONS;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
+import static seedu.address.logic.commands.CommandTestUtil.showNoPerson;
 import static seedu.address.logic.commands.CommandTestUtil.showPersonAtIndex;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 import static seedu.address.testutil.TypicalIndexes.INDEX_SECOND_PERSON;
@@ -210,14 +211,5 @@ public class DeleteCommandTest {
         String actualMessage = DeleteCommand.buildSuccessMessage(List.of(firstPerson, secondPerson));
 
         assertEquals(expectedMessage, actualMessage);
-    }
-
-    /**
-     * Updates {@code model}'s filtered list to show no one.
-     */
-    private void showNoPerson(Model model) {
-        model.updateFilteredKeptPersonList(p -> false);
-
-        assertTrue(model.getFilteredKeptPersonList().isEmpty());
     }
 }

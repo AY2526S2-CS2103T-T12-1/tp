@@ -250,4 +250,22 @@ public class CommandTestUtil {
         assertEquals(1, model.getFilteredDeletedPersonList().size());
     }
 
+    /**
+     * Updates {@code model}'s filtered kept list to show no one.
+     */
+    public static void showNoPerson(Model model) {
+        model.updateFilteredKeptPersonList(p -> false);
+
+        assertTrue(model.getFilteredKeptPersonList().isEmpty());
+    }
+
+    /**
+     * Updates {@code model}'s filtered deleted list to show no one.
+     */
+    public static void showNoDeletedPerson(Model model) {
+        model.updateFilteredDeletedPersonList(p -> false);
+
+        assertTrue(model.getFilteredDeletedPersonList().isEmpty());
+    }
+
 }
