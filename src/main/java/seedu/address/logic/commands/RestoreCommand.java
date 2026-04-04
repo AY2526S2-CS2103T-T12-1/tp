@@ -37,7 +37,13 @@ public class RestoreCommand extends Command {
 
     private final List<Index> targetIndices;
 
+    /**
+     * Constructs a RestoreCommand object.
+     *
+     * @param targetIndices Indices of persons to restore in increasing order without duplicates.
+     */
     public RestoreCommand(List<Index> targetIndices) {
+        assert isStrictlyIncreasing(targetIndices) : "targetIndices should be in increasing order without duplicates";
         this.targetIndices = List.copyOf(targetIndices); //defensive copy to ensure immutability
     }
 
@@ -77,6 +83,15 @@ public class RestoreCommand extends Command {
                 }
             }
         }
+    }
+
+    private boolean isStrictlyIncreasing(List<Index> indices) {
+        for (int i = 0; i + 1 < indices.size(); i++) {
+            if (indices.get(i).compareTo(indices.get(i + 1)) >= 0) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private void requireIndicesInRange(Model model) throws CommandException {
