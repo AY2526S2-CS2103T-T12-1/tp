@@ -111,7 +111,7 @@ public class AddressBookParserTest {
                 ExportCommand.COMMAND_WORD + " data/volunteers.csv");
         assertEquals(new ExportCommand(Paths.get("data/volunteers.csv")), command);
     }
-  
+
     @Test
     public void parseCommand_findWithAvailability() throws Exception {
         VolunteerAvailability query = VolunteerAvailability.fromString("MONDAY,14:00,17:00");
@@ -132,13 +132,6 @@ public class AddressBookParserTest {
         FindCommand command = (FindCommand) parser.parseCommand(
                 FindCommand.COMMAND_WORD + " va/MONDAY,14:00,17:00 alice");
         assertEquals(expected, command);
-    }
-
-    @Test
-    public void parseCommand_export() throws Exception {
-        ExportCommand command = (ExportCommand) parser.parseCommand(
-                ExportCommand.COMMAND_WORD + " data/volunteers.csv");
-        assertEquals(new ExportCommand(java.nio.file.Paths.get("data/volunteers.csv")), command);
     }
 
     @Test
@@ -225,7 +218,7 @@ public class AddressBookParserTest {
             parser.parseCommand(commandExample);
         }
     }
-  
+
     @Test
     public void parseCommand_stats() throws Exception {
         StatsCommand roleCommand = (StatsCommand) parser.parseCommand(StatsCommand.COMMAND_WORD + " role");
