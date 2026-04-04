@@ -212,10 +212,12 @@ Format: `delete INDEX [MORE_INDICES]`
 * Deletes the person at the specified indices.
 * Indices refer to index numbers shown in the displayed person list.
 * Indices **must be positive integers** 1, 2, 3, …​
+* Duplicate indices will be ignored.
 * Deleted persons will be added to the recycle bin.
 
 Examples:
 * `list` followed by `delete 2 3` deletes the 2nd and 3rd persons in RosterBolt.
+* `list` followed by `delete 3 3 2` has the same behavior, as duplicate indices are ignored and the order of indices does not matter.
 * `find Betsy` followed by `delete 1` deletes the 1st person in the results of the `find` command.
 
 ### Restoring a deleted person : `restore`
