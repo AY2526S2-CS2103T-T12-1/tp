@@ -7,6 +7,7 @@ import static seedu.address.logic.Messages.MESSAGE_UNKNOWN_COMMAND;
 import static seedu.address.testutil.Assert.assertThrows;
 import static seedu.address.testutil.TypicalIndexes.INDEX_FIRST_PERSON;
 
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -106,6 +107,13 @@ public class AddressBookParserTest {
     }
 
     @Test
+    public void parseCommand_export() throws Exception {
+        ExportCommand command = (ExportCommand) parser.parseCommand(
+                ExportCommand.COMMAND_WORD + " data/volunteers.csv");
+        assertEquals(new ExportCommand(Paths.get("data/volunteers.csv")), command);
+    }
+
+    @Test
     public void parseCommand_findWithAvailability() throws Exception {
         VolunteerAvailability query = VolunteerAvailability.fromString("MONDAY,14:00,17:00");
         PersonAvailableDuringPredicate predicate = new PersonAvailableDuringPredicate(query);
@@ -128,13 +136,6 @@ public class AddressBookParserTest {
     }
 
     @Test
-    public void parseCommand_export() throws Exception {
-        ExportCommand command = (ExportCommand) parser.parseCommand(
-                ExportCommand.COMMAND_WORD + " data/volunteers.csv");
-        assertEquals(new ExportCommand(java.nio.file.Paths.get("data/volunteers.csv")), command);
-    }
-
-    @Test
     public void parseCommand_find() throws Exception {
         List<String> keywords = Arrays.asList("foo", "bar", "baz");
         FindCommand defaultCommand = (FindCommand) parser.parseCommand(
@@ -152,7 +153,7 @@ public class AddressBookParserTest {
     public void parseCommand_import() throws Exception {
         ImportCommand command = (ImportCommand) parser.parseCommand(
                 ImportCommand.COMMAND_WORD + " data/volunteers.csv");
-        assertEquals(new ImportCommand(java.nio.file.Paths.get("data/volunteers.csv")), command);
+        assertEquals(new ImportCommand(Paths.get("data/volunteers.csv")), command);
     }
 
     @Test
@@ -200,6 +201,29 @@ public class AddressBookParserTest {
 
         assertEquals(CommandWords.TOP_LEVEL_COMMAND_WORDS, commandExamples.keySet());
         for (String commandExample : commandExamples.values()) {
+            parser.parseCommand(commandExample);
+        }
+    }
+
+    @Test
+    public void parseCommand_documentedCommandSummaryExamples_success() throws Exception {
+        List<String> commandExamples = List.of(
+                "add n/James Ho p/22224444 e/jamesho@example.com a/123, Clementi Rd, 1234665 "
+                        + "t/friend t/colleague r/Usher nt/Available weekends",
+                "alias ls list",
+                "aliases",
+                "unalias ls",
+                "clear",
+                "delete 2 3",
+                "edit 2 n/James Lee e/jameslee@example.com va/MONDAY,14:00,17:00",
+                "export data/volunteers.csv",
+                "find m/kw James Jake",
+                "help",
+                "import data/volunteers.csv",
+                "list name desc",
+                "exit");
+
+        for (String commandExample : commandExamples) {
             parser.parseCommand(commandExample);
         }
     }
