@@ -395,16 +395,13 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | `* * *` | user | see confirmation messages after commands | avoid wasting time double-checking that my command was executed successfully |
 | `* * *` | user | have my data automatically saved after each command | avoid manually saving data |
 | `* * *` | returning user | automatically load my saved data on startup | continue from where I left off |
-| `* *` | user | browse command history using arrow keys | reuse previously entered commands |
 | `* *` | user | edit and re-run previous commands | quickly correct input mistakes |
-| `* *` | fast typist | use tab completion for commands | execute commands with fewer keystrokes |
 | `* *` | fast typist | define custom command aliases | tailor the application to my workflow |
 | `* *` | volunteer coordinator | be warned when adding contacts with duplicate email or phone | avoid redundant volunteer records |
 | `* *` | volunteer coordinator | include volunteer role information when adding a contact | track manpower allocation |
 | `* *` | volunteer coordinator | include volunteer availability when adding a contact | plan recurring events efficiently |
 | `* *` | volunteer coordinator | import volunteers from a CSV file | onboard an existing roster without retyping |
 | `* *` | volunteer coordinator | assign or update volunteer roles when editing a contact | maintain accurate role allocation |
-| `* *` | volunteer coordinator | assign volunteers to roles and receive warnings about availability conflicts | avoid scheduling clashes |
 | `* *` | volunteer coordinator | unassign volunteers from roles without deleting their contact | adjust the roster easily |
 | `* *` | volunteer coordinator | delete multiple contacts in one command | manage large volunteer rosters efficiently |
 | `* *` | volunteer coordinator | restore recently deleted contacts | recover from accidental deletions |
@@ -426,7 +423,6 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | `*` | volunteer coordinator | view volunteer statistics | understand manpower distribution |
 | `*` | volunteer coordinator | view text-based role distribution graphs | analyze volunteer data in the CLI |
 | `*` | volunteer coordinator | list volunteers sorted by least-recently-served | distribute workload more fairly |
-| `*` | volunteer coordinator | export only selected fields to CSV | generate reports without exposing sensitive personal data |
 | `*` | volunteer coordinator | find volunteers even when part of the name is remembered | locate contacts without exact matches |
 | `*` | volunteer coordinator | find volunteers despite small typing mistakes | avoid slowdowns due to typos |
 | `*` | volunteer coordinator | search names case-insensitively | avoid worrying about capitalization |
@@ -513,7 +509,7 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 
 1. User requests to assign a specific volunteer to a designated role for a specific event.
 2. System cross-references the volunteer's current assignments to ensure no overlapping commitments exist for the specified event.
-3. System cross-references the event's time period against the volunteer's registered availability windows.
+3. System verifies the event's time period falls within the volunteer's registered availability windows.
 4. System appends the new assignment to the volunteer's record.
 5. System displays a confirmation of the assignment.
    Use case ends.
@@ -523,11 +519,6 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 * 2a. System detects a scheduling conflict with an existing assignment (i.e. double-booking).
   * 2a1. System aborts the assignment, and issues an error detailing the conflicting event.
   * 2a2. Use case ends.
-
-* 3a. The target event falls outside the volunteer's registered availability window.
-  * 3a1. System stops the assignment, and displays an out-of-availability warning.
-  * 3a2. User overrides the warning, acknowledging the out-of-availability assignment.
-  * 3a3. Use case resumes at Step 4.
 
 **Use Case: Export Roster Data to CSV**
 
@@ -540,12 +531,6 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 3. System executes a file write operation to the specified location on the local filesystem.
 4. System displays a success message indicating the CSV file was created.
    Use case ends.
-
-**Extensions:**
-
-* 1a. User specifies a parameter to exclusively export specific fields (e.g. exporting only names and roles, omitting addresses and phone numbers).
-  * 1a1. System filters the serialized data, retaining only the explicitly requested columns.
-  * 1a2. Use case resumes at Step 3.
 
 
 ### Non-Functional Requirements
