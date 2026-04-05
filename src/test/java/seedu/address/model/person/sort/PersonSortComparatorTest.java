@@ -121,4 +121,22 @@ public class PersonSortComparatorTest {
         PersonSortComparator descComparator = new PersonSortComparator(SortAttribute.VR, SortOrder.DESC);
         assertTrue(descComparator.compare(noRecords, withRecords) > 0);
     }
+
+    @Test
+    public void compare_multipleVolunteerRecordsPerPerson_ordersByLatestRecordEnd() {
+        Person earlierLatest = new PersonBuilder().withName("Alice")
+                .withRecords("2026-03-20T09:00,2026-03-20T12:00",
+                        "2026-03-25T14:00,2026-03-25T16:00")
+                .build();
+        Person laterLatest = new PersonBuilder().withName("Bob")
+                .withRecords("2026-03-18T09:00,2026-03-18T12:00",
+                        "2026-04-01T14:00,2026-04-01T16:00")
+                .build();
+
+        PersonSortComparator ascComparator = new PersonSortComparator(SortAttribute.VR, SortOrder.ASC);
+        assertTrue(ascComparator.compare(earlierLatest, laterLatest) < 0);
+
+        PersonSortComparator descComparator = new PersonSortComparator(SortAttribute.VR, SortOrder.DESC);
+        assertTrue(descComparator.compare(earlierLatest, laterLatest) > 0);
+    }
 }
