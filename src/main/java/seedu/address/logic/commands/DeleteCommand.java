@@ -1,6 +1,10 @@
 package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
+import static seedu.address.logic.commands.CommandUtil.collectItemsByIndices;
+import static seedu.address.logic.commands.CommandUtil.isStrictlyIncreasing;
+import static seedu.address.logic.commands.CommandUtil.requireIndicesInRange;
+import static seedu.address.logic.commands.CommandUtil.requireViewingKeptPersons;
 
 import java.util.List;
 
