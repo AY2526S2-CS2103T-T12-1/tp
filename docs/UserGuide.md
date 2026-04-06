@@ -301,7 +301,9 @@ Examples:
 
 ### Saving the data
 
-RosterBolt data are saved in the hard disk automatically after any command that changes the data. There is no need to save manually.
+RosterBolt data are saved to the hard disk automatically after any command that changes the data. There is no need to save manually.
+
+If a command is executed successfully but RosterBolt fails to save the updated data to the hard disk, the result display will still show the command’s success message, together with an error message explaining that saving failed and a warning that the changes are not saved and will be lost if the application is closed.
 
 ### Editing the data file
 

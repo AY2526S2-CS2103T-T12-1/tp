@@ -1,6 +1,7 @@
 package seedu.address.logic;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.logic.Messages.MESSAGE_INVALID_PERSON_DISPLAYED_INDEX;
 import static seedu.address.logic.Messages.MESSAGE_PERSONS_LISTED_OVERVIEW;
@@ -371,14 +372,14 @@ public class LogicManagerTest {
     }
 
     @Test
-    public void execute_storageThrowsIoException_throwsCommandException() {
-        assertCommandFailureForExceptionFromStorage(DUMMY_IO_EXCEPTION, String.format(
+    public void execute_storageThrowsIoException_returnsCommandResultWithSaveWarning() throws Exception {
+        assertCommandSuccessWithStorageWarning(DUMMY_IO_EXCEPTION, String.format(
                 LogicManager.FILE_OPS_ERROR_FORMAT, DUMMY_IO_EXCEPTION.getMessage()));
     }
 
     @Test
-    public void execute_storageThrowsAdException_throwsCommandException() {
-        assertCommandFailureForExceptionFromStorage(DUMMY_AD_EXCEPTION, String.format(
+    public void execute_storageThrowsAdException_returnsCommandResultWithSaveWarning() throws Exception {
+        assertCommandSuccessWithStorageWarning(DUMMY_AD_EXCEPTION, String.format(
                 LogicManager.FILE_OPS_PERMISSION_ERROR_FORMAT, DUMMY_AD_EXCEPTION.getMessage()));
     }
 
@@ -444,9 +445,10 @@ public class LogicManagerTest {
      * Tests the Logic component's handling of an {@code IOException} thrown by the Storage component.
      *
      * @param e the exception to be thrown by the Storage component
-     * @param expectedMessage the message expected inside exception thrown by the Logic component
+     * @param expectedStorageMessage the storage warning message expected inside the returned command result
      */
-    private void assertCommandFailureForExceptionFromStorage(IOException e, String expectedMessage) {
+    private void assertCommandSuccessWithStorageWarning(IOException e, String expectedStorageMessage)
+            throws Exception {
         Path prefPath = temporaryFolder.resolve("ExceptionUserPrefs.json");
 
         // Inject LogicManager with an AddressBookStorage that throws the IOException e when saving
@@ -470,7 +472,18 @@ public class LogicManagerTest {
         Person expectedPerson = new PersonBuilder(AMY).withTags().build();
         ModelManager expectedModel = new ModelManager();
         expectedModel.addPerson(expectedPerson);
-        assertCommandFailure(addCommand, PersonListView.KEPT_PERSONS,
-                CommandException.class, expectedMessage, expectedModel);
+
+        CommandResult result = logic.execute(addCommand, PersonListView.KEPT_PERSONS);
+
+        assertTrue(result.getFeedbackToUser().contains(String.format(AddCommand.MESSAGE_SUCCESS,
+                Messages.format(expectedPerson))));
+        assertTrue(result.getFeedbackToUser().contains(expectedStorageMessage));
+        assertTrue(result.getFeedbackToUser().contains(LogicManager.FILE_OPS_UNSAVED_WARNING));
+        assertEquals(PersonListView.KEPT_PERSONS, result.getPersonListView());
+        assertFalse(result.shouldShowHelp());
+        assertFalse(result.shouldExit());
+        assertEquals(Optional.empty(), result.getCommandTextToPopulate());
+        assertEquals(addCommand, model.getLastCommandText());
+        assertEquals(expectedModel, model);
     }
 }

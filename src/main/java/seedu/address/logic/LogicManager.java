@@ -5,6 +5,7 @@ import java.nio.file.AccessDeniedException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javafx.collections.ObservableList;
@@ -31,6 +32,8 @@ public class LogicManager implements Logic {
 
     public static final String FILE_OPS_PERMISSION_ERROR_FORMAT =
             "Could not save data to file %s due to insufficient permissions to write to the file or the folder.";
+    public static final String FILE_OPS_UNSAVED_WARNING =
+            "Warning: changes are not saved and will be lost if the application is closed.";
     public static final String MESSAGE_INVALID_ALIASES_REMOVED_ON_STARTUP =
             "Removed invalid aliases from preferences: %1$s";
 
@@ -65,17 +68,25 @@ public class LogicManager implements Logic {
             commandResult = replacePersonListView(commandResult, personListView);
         }
 
+        String saveFailureMessage = null;
         try {
             storage.saveAddressBook(model.getAddressBook());
             storage.saveUserPrefs(model.getUserPrefs());
         } catch (AccessDeniedException e) {
-            throw new CommandException(String.format(FILE_OPS_PERMISSION_ERROR_FORMAT, e.getMessage()), e);
+            saveFailureMessage = String.format(FILE_OPS_PERMISSION_ERROR_FORMAT, e.getMessage());
+            logger.log(Level.WARNING, "Command executed successfully, but saving data failed.", e);
         } catch (IOException ioe) {
-            throw new CommandException(String.format(FILE_OPS_ERROR_FORMAT, ioe.getMessage()), ioe);
+            saveFailureMessage = String.format(FILE_OPS_ERROR_FORMAT, ioe.getMessage());
+            logger.log(Level.WARNING, "Command executed successfully, but saving data failed.", ioe);
         }
 
         if (!(command instanceof EditPreviousCommand)) {
             model.setLastCommandText(commandText);
+        }
+
+        if (saveFailureMessage != null) {
+            return replaceFeedbackToUser(commandResult, String.format("%s%n%n%s%n%s",
+                    commandResult.getFeedbackToUser(), saveFailureMessage, FILE_OPS_UNSAVED_WARNING));
         }
 
         return commandResult;
@@ -155,6 +166,18 @@ public class LogicManager implements Logic {
         return new CommandResult(
                 result.getFeedbackToUser(),
                 personListView,
+                result.shouldShowHelp(),
+                result.shouldExit(),
+                result.getCommandTextToPopulate().orElse(null));
+    }
+
+    /**
+     * Returns a new {@code CommandResult} with the same fields but a different feedback message.
+     */
+    private static CommandResult replaceFeedbackToUser(CommandResult result, String feedbackToUser) {
+        return new CommandResult(
+                feedbackToUser,
+                result.getPersonListView(),
                 result.shouldShowHelp(),
                 result.shouldExit(),
                 result.getCommandTextToPopulate().orElse(null));
