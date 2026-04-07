@@ -85,7 +85,8 @@ Format: `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​ [r/ROLE] [nt/
 A person can have any number of tags, availabilities, and records (including 0). Role and notes are optional.
 </div>
 
-* A person is considered a duplicate if the phone number matches exactly, or the email matches case-insensitively. If a duplicate is detected, the command is rejected and an error is shown.
+* A person is considered a duplicate if the phone number matches exactly, or the email matches case-insensitively. 
+  * If a duplicate is detected, the command is rejected and an error is shown.
 * `AVAILABILITIES` must be in the format `DAY,HH:mm,HH:mm` (day, start time, end time) where `DAY` is a full day name (case-insensitive, e.g., `MONDAY`, `monday`, or `Monday`) and start time is earlier than end time.
 * `RECORDS` must be in the format `yyyy-MM-ddTHH:mm,yyyy-MM-ddTHH:mm` (start date-time, end date-time) and start date-time must be earlier than end date-time.
 
@@ -162,11 +163,12 @@ You must be viewing the working list to use this command. Otherwise, an error me
 
 Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [r/ROLE] [nt/NOTES] [t/TAG]…​ [va/AVAILABILITIES]…​ [vr/RECORDS]…​`
 
-* Edits the person at the specified `INDEX`. The index refers to the index number shown in the displayed person list. The index **must be a positive integer** 1, 2, 3, …​
+* Edits the person at the specified `INDEX`. The index refers to the index number shown in the displayed person list. The index **must be a positive integer** 1, 2, 3, ...​
 * At least one of the optional fields must be provided.
 * Existing values will be updated to the input values.
 * When editing tags, availabilities, or records, existing values of that field will be replaced (i.e. adding is not cumulative).
 * You can remove all the person’s tags, availabilities, records, role, or notes by typing `t/`, `va/`, `vr/`, `r/`, or `nt/` without specifying values after the prefix.
+* If the edit would make this person a duplicate of another contact (same phone or email), the command is rejected with an error.
 * `AVAILABILITY` format: `DAY,HH:mm,HH:mm` where `DAY` is case-insensitive (e.g., `MONDAY,14:00,17:00`).
 * `RECORD` format: `yyyy-MM-ddTHH:mm,yyyy-MM-ddTHH:mm` (e.g., `2026-03-20T14:00,2026-03-20T17:00`).
 
@@ -229,8 +231,7 @@ Format: `delete INDEX [MORE_INDICES]`
 
 * Deletes the person at the specified indices.
 * Indices refer to index numbers shown in the displayed person list.
-* Indices **must be positive integers** 1, 2, 3, …​
-* Each index must be within the range of the currently displayed list.
+* Indices **must be positive integers** 1, 2, 3, …​, up to the number of persons in the currently displayed list.
 * Duplicate indices will be ignored.
 * Deleted persons will be added to the recycle bin.
 
@@ -265,6 +266,9 @@ Imports volunteers from a CSV file into the active address book.
 
 Format: `import FILE_PATH`
 
+* The CSV file must include the headers `name`, `phone`, `email`, and `address`. 
+  * The following headers are optional: `role`, `notes`, `tags`, `availabilities`, `records`.
+* If the file cannot be found or read, the import fails with an error.
 * Rows with invalid data are skipped — valid rows in the same file are still imported.
 * Rows that duplicate an existing contact (same phone or email) are flagged separately.
 
@@ -276,6 +280,8 @@ Examples:
 Exports all active volunteers in the address book to a CSV file.
 
 Format: `export FILE_PATH`
+
+* If a file already exists at the given path, it will be overwritten without warning.
 
 Examples:
 * `export data/volunteers.csv`
