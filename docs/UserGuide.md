@@ -86,6 +86,7 @@ A person can have any number of tags, availabilities, and records (including 0).
 </div>
 
 * A person is considered a duplicate if the phone number matches exactly, or the email matches case-insensitively.
+  * Email comparisons are case-insensitive across RosterBolt (e.g., `A@b.com` is treated as the same as `a@b.com`).
 * `AVAILABILITY` must be in the format `DAY,HH:mm,HH:mm` (day, start time, end time) where `DAY` is a full day name (case-insensitive, e.g., `MONDAY`, `monday`, or `Monday`) and start time is earlier than end time.
 * `RECORD` must be in the format `yyyy-MM-ddTHH:mm,yyyy-MM-ddTHH:mm` (start date-time, end date-time) and start date-time must be earlier than end date-time.
 
@@ -251,8 +252,9 @@ Format: `restore INDEX [MORE_INDICES]`
 * Indices **must be positive integers** 1, 2, 3, …​
 * Duplicate indices will be ignored.
 * Restored persons will be removed from the recycle bin and added to the working list of kept contacts.
-* You cannot restore persons who are duplicates of existing contacts in the working list.
-* You cannot restore two persons who are duplicates of each other in the recycle bin.
+* Persons are considered duplicate if their phone matches exactly, or email matches case-insensitively.
+  * You cannot restore persons who are duplicates of existing contacts in the working list.
+  * You cannot restore two persons who are duplicates of each other in the recycle bin.
 
 Examples:
 * `bin` followed by `restore 2 3` restores the 2nd and 3rd persons in the recycle bin.
