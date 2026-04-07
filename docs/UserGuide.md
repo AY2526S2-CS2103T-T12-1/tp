@@ -158,6 +158,8 @@ Format: `bin`
 
 Edits an existing person in RosterBolt.
 
+You must be viewing the working list to use this command. Otherwise, an error message will be shown, and no person will be edited.
+
 Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [r/ROLE] [nt/NOTES] [t/TAG]…​ [va/AVAILABILITIES]…​ [vr/RECORDS]…​`
 
 * Edits the person at the specified `INDEX`. The index refers to the index number shown in the displayed person list. The index **must be a positive integer** 1, 2, 3, …​

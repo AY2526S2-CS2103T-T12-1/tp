@@ -1,6 +1,7 @@
 package seedu.address.logic.commands;
 
 import static java.util.Objects.requireNonNull;
+import static seedu.address.logic.commands.CommandUtil.requireViewingKeptPersons;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_AVAILABILITY;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
@@ -88,6 +89,7 @@ public class EditCommand extends Command {
     @Override
     public CommandResult execute(Model model, PersonListView personListView) throws CommandException {
         requireNonNull(model);
+        requireViewingKeptPersons(personListView);
         List<Person> lastShownList = model.getFilteredKeptPersonList();
 
         if (index.getZeroBased() >= lastShownList.size()) {
@@ -103,7 +105,8 @@ public class EditCommand extends Command {
 
         model.setPerson(personToEdit, editedPerson);
         model.updateFilteredKeptPersonList(PREDICATE_SHOW_ALL_PERSONS);
-        return new CommandResult(String.format(MESSAGE_EDIT_PERSON_SUCCESS, Messages.format(editedPerson)));
+        return new CommandResult(String.format(MESSAGE_EDIT_PERSON_SUCCESS, Messages.format(editedPerson)),
+                PersonListView.KEPT_PERSONS);
     }
 
     /**
