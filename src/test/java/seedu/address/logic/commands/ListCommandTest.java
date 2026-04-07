@@ -39,6 +39,22 @@ public class ListCommandTest {
         expectedModel = new ModelManager(model.getAddressBook(), new UserPrefs());
     }
 
+    /* This is the only test where the ListCommand is executed while viewing deleted persons.
+     *
+     * It is expected that the logical flow of ListCommand is identical to the case where the
+     * user views kept persons, with the only difference being that the viewed list switches to
+     * the list of kept persons after execution. This test aims to check that difference.
+     *
+     * For more robust integration testing of ListCommand with the Model,
+     * refer to the tests which are executed while viewing kept persons.
+     */
+    @Test
+    public void execute_viewingDeletedPersons_switchesToKeptPersons() {
+        assertCommandSuccess(new ListCommand(), model, PersonListView.DELETED_PERSONS,
+                ListCommand.MESSAGE_SUCCESS, PersonListView.KEPT_PERSONS, expectedModel);
+        assertEquals(getTypicalPersons(), model.getFilteredKeptPersonList());
+    }
+
     @Test
     public void execute_listIsNotFiltered_showsSameList() {
         assertCommandSuccess(new ListCommand(), model, PersonListView.KEPT_PERSONS,
