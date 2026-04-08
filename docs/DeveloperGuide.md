@@ -553,7 +553,12 @@ Priorities: High (must have) - `* * *`, Medium (nice to have) - `* *`, Low (unli
 | CSV (Comma-Separated Values)  | A text file format used to store tabular data, used by the system for importing or exporting volunteer records.                  |
 |       Duplicate Contact       | A contact that shares critical identifying fields (e.g., phone number or email address) with an existing contact in the system.  |
 |         Mainstream OS         | Windows, Linux, Unix, macOS.                                                                                                     |
+|          Match Type           | The search strategy used by the `find` command: keyword (`kw`), substring (`ss`), or fuzzy (`fz`).                              |
+|          Recycle Bin          | Temporary in-memory storage for recently deleted contacts, accessible via the `bin` command and cleared when the app exits.      |
+|             Role              | A free-text field describing the function a volunteer performs (e.g., “Usher”, “Logistics”).                                    |
 |              Tag              | A user-defined label used to categorize volunteers (e.g., “first-aid”, “logistics”).                                             |
+|    Volunteer Availability     | A recurring weekly time slot (day, start time, end time) during which a volunteer is available.                                  |
+|      Volunteer Record         | A datetime range (start and end) representing a period during which a volunteer has served.                                      |
 
 --------------------------------------------------------------------------------------------------------------------
 
