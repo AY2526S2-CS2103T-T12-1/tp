@@ -39,6 +39,7 @@ import static seedu.address.logic.commands.CommandTestUtil.VALID_RECORD_BOB;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_ROLE_AMY;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_TAG_FRIEND;
 import static seedu.address.logic.commands.CommandTestUtil.VALID_TAG_HUSBAND;
+import static seedu.address.logic.parser.CliSyntax.KNOWN_PERSON_PREFIXES;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_ADDRESS;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_AVAILABILITY;
 import static seedu.address.logic.parser.CliSyntax.PREFIX_EMAIL;
@@ -302,7 +303,7 @@ public class EditCommandParserTest {
     @Test
     public void parse_unknownPrefix_failure() {
         assertParseFailure(parser, "1" + NAME_DESC_AMY + " x/foo" + PHONE_DESC_AMY,
-                String.format(MESSAGE_UNKNOWN_PREFIX, "x/", "n/, p/, e/, a/, t/, r/, nt/, va/, vr/"));
+                String.format(MESSAGE_UNKNOWN_PREFIX, "x/", KNOWN_PERSON_PREFIXES));
     }
 
     @Test

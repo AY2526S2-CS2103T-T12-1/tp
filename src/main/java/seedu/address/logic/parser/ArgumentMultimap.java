@@ -128,11 +128,8 @@ public class ArgumentMultimap {
             return true;
         }
         // Single non-whitespace char then whitespace or end (e.g., "s/o", "c/o", "f/t")
-        if (afterSlashPos + 1 >= value.length()
-                || Character.isWhitespace(value.charAt(afterSlashPos + 1))) {
-            return true;
-        }
-        return false;
+        return afterSlashPos + 1 >= value.length()
+                || Character.isWhitespace(value.charAt(afterSlashPos + 1));
     }
 
     /**
