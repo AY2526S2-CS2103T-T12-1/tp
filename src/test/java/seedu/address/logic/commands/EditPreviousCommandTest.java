@@ -35,8 +35,11 @@ public class EditPreviousCommandTest {
         EditPreviousCommand command = new EditPreviousCommand();
         Model model = new ModelStubWithLastCommandText(null);
 
-        assertThrows(CommandException.class, EditPreviousCommand.MESSAGE_NO_PREVIOUS_COMMAND,
-                () -> command.execute(model, PersonListView.DELETED_PERSONS));
+        assertThrows(CommandException.class,
+            EditPreviousCommand.MESSAGE_NO_PREVIOUS_COMMAND, () -> command.execute(
+                model, PersonListView.DELETED_PERSONS
+            )
+        );
     }
 
     @Test
