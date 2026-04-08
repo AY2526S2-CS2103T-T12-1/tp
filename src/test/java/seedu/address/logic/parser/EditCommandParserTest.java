@@ -304,4 +304,17 @@ public class EditCommandParserTest {
         assertParseFailure(parser, "1" + NAME_DESC_AMY + " x/foo" + PHONE_DESC_AMY,
                 String.format(MESSAGE_UNKNOWN_PREFIX, "x/", "n/, p/, e/, a/, t/, r/, nt/, va/, vr/"));
     }
+
+    @Test
+    public void parse_abbreviationInValue_success() {
+        // "s/o" abbreviation in address should not be flagged as unknown prefix
+        Index targetIndex = INDEX_FIRST_PERSON;
+        String userInput = targetIndex.getOneBased() + " a/123 s/o Main St";
+
+        EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder()
+                .withAddress("123 s/o Main St").build();
+        EditCommand expectedCommand = new EditCommand(targetIndex, descriptor);
+
+        assertParseSuccess(parser, userInput, expectedCommand);
+    }
 }

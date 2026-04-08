@@ -84,23 +84,31 @@ public class ArgumentMultimap {
 
         for (Map.Entry<Prefix, List<String>> entry : argMultimap.entrySet()) {
             for (String value : entry.getValue()) {
-                Matcher matcher = PREFIX_PATTERN.matcher(value);
-                while (matcher.find()) {
-                    String found = matcher.group(1);
-                    int afterSlash = matcher.end();
-                    if (isLikelyNotPrefix(value, afterSlash)) {
-                        continue;
-                    }
-                    if (!argMultimap.containsKey(new Prefix(found)) && !unknown.contains(found)) {
-                        unknown.add(found);
-                    }
-                }
+                collectUnknownPrefixesFromValue(value, unknown);
             }
         }
 
         if (!unknown.isEmpty()) {
             throw new ParseException(String.format(Messages.MESSAGE_UNKNOWN_PREFIX,
                     String.join(", ", unknown), knownPrefixList));
+        }
+    }
+
+    /**
+     * Scans a single field value for prefix-like tokens that are not in the known prefix set,
+     * adding any new unknown prefixes to the given list.
+     */
+    private void collectUnknownPrefixesFromValue(String value, List<String> unknown) {
+        Matcher matcher = PREFIX_PATTERN.matcher(value);
+        while (matcher.find()) {
+            String found = matcher.group(1);
+            int afterSlash = matcher.end();
+            if (isLikelyNotPrefix(value, afterSlash)) {
+                continue;
+            }
+            if (!argMultimap.containsKey(new Prefix(found)) && !unknown.contains(found)) {
+                unknown.add(found);
+            }
         }
     }
 
