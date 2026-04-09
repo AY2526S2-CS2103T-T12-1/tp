@@ -183,7 +183,8 @@ Shows the recycle bin, which contains all recently deleted persons in RosterBolt
 Format: `bin`
 
 * Persons deleted by the `clear` and `delete` commands will be added to the recycle bin.
-* The recycle bin can contain duplicate persons (i.e., persons sharing the same phone number or email). For example, if you delete a person, add a new person with the same phone number, then delete the new person, both will appear in the recycle bin.
+* The recycle bin can contain duplicate persons (i.e., persons sharing the same phone number or email). For example, if you delete a person, add a new person with the same phone number, then delete the new person, both will appear in the recycle bin only if they do not have **all fields identical**.
+   * Conversely, if the 2nd person has **all fields identical** to the 1st person, then only one of them will be in the recycle bin.
 * The recycle bin is cleared when the application is closed.
 
 ### Editing a person : `edit`
@@ -199,9 +200,6 @@ Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [r/ROLE] [nt/NOTES]
 * Existing values will be updated to the input values.
 * When editing tags, availabilities, or records, existing values of that field will be replaced (i.e. adding is not cumulative).
 * You can remove all the person’s tags, availabilities, records, role, or notes by typing `t/`, `va/`, `vr/`, `r/`, or `nt/` without specifying values after the prefix.
-* If the edit would make this person a duplicate of another contact (same phone or email), the command is rejected with an error.
-* `AVAILABILITY` format: `DAY,HH:mm,HH:mm` where `DAY` is case-insensitive (e.g., `MONDAY,14:00,17:00`).
-* `RECORD` format: `yyyy-MM-ddTHH:mm,yyyy-MM-ddTHH:mm` (e.g., `2026-03-20T14:00,2026-03-20T17:00`).
 
 Examples:
 *  `edit 1 p/91234567 e/johndoe@example.com va/MONDAY,18:00,20:00` Edits the phone number, email address, and availability of the 1st person.
