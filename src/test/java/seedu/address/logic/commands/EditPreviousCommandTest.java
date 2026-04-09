@@ -1,5 +1,6 @@
 package seedu.address.logic.commands;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandFailure;
 import static seedu.address.logic.commands.CommandTestUtil.assertCommandSuccess;
 
@@ -29,8 +30,7 @@ public class EditPreviousCommandTest {
     @Test
     public void execute_nullModel_throwsNullPointerException() {
         EditPreviousCommand command = new EditPreviousCommand();
-        assertThrows(NullPointerException.class,
-                () -> command.execute(null, PersonListView.KEPT_PERSONS));
+        assertThrows(NullPointerException.class, () -> command.execute(null, PersonListView.KEPT_PERSONS));
     }
 
 
