@@ -106,6 +106,7 @@ A person can have any number of tags, availabilities, and records (including 0).
 </div>
 
 * A person is considered a duplicate if the phone number matches exactly, or the email matches case-insensitively.
+  * If a duplicate is detected, the command is rejected and an error is shown.
   * Email comparisons are case-insensitive across RosterBolt (e.g., `A@b.com` is treated as the same as `a@b.com`).
 * `AVAILABILITY` must be in the format `DAY,HH:mm,HH:mm` (day, start time, end time) where `DAY` is a full day name (case-insensitive, e.g., `MONDAY`, `monday`, or `Monday`) and start time is earlier than end time.
 * `RECORD` must be in the format `yyyy-MM-ddTHH:mm,yyyy-MM-ddTHH:mm` (start date-time, end date-time) and start date-time must be earlier than end date-time.
@@ -173,6 +174,7 @@ Shows the recycle bin, which contains all recently deleted persons in RosterBolt
 Format: `bin`
 
 * Persons deleted by the `clear` and `delete` commands will be added to the recycle bin.
+* The recycle bin can contain duplicate persons (i.e., persons sharing the same phone number or email). For example, if you delete a person, add a new person with the same phone number, then delete the new person, both will appear in the recycle bin.
 * The recycle bin is cleared when the application is closed.
 
 ### Editing a person : `edit`
@@ -183,11 +185,14 @@ You must be viewing the working list to use this command. Otherwise, an error me
 
 Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [r/ROLE] [nt/NOTES] [t/TAG]…​ [va/AVAILABILITY]…​ [vr/RECORD]…​`
 
-* Edits the person at the specified `INDEX`. The index refers to the index number shown in the displayed person list. The index **must be a positive integer** 1, 2, 3, …​
+* Edits the person at the specified `INDEX`. The index refers to the index number shown in the displayed person list. The index **must be a positive integer** 1, 2, 3, ...​
 * At least one of the optional fields must be provided.
 * Existing values will be updated to the input values.
 * When editing tags, availabilities, or records, existing values of that field will be replaced (i.e. adding is not cumulative).
 * You can remove all the person’s tags, availabilities, records, role, or notes by typing `t/`, `va/`, `vr/`, `r/`, or `nt/` without specifying values after the prefix.
+* If the edit would make this person a duplicate of another contact (same phone or email), the command is rejected with an error.
+* `AVAILABILITY` format: `DAY,HH:mm,HH:mm` where `DAY` is case-insensitive (e.g., `MONDAY,14:00,17:00`).
+* `RECORD` format: `yyyy-MM-ddTHH:mm,yyyy-MM-ddTHH:mm` (e.g., `2026-03-20T14:00,2026-03-20T17:00`).
 
 Examples:
 *  `edit 1 p/91234567 e/johndoe@example.com va/MONDAY,18:00,20:00` Edits the phone number, email address, and availability of the 1st person.
@@ -248,7 +253,7 @@ Format: `delete INDEX [MORE_INDICES]`
 
 * Deletes the person at the specified indices.
 * Indices refer to index numbers shown in the displayed person list.
-* Indices **must be positive integers** 1, 2, 3, …​
+* Indices **must be positive integers** 1, 2, 3, ...​, up to the number of persons in the currently displayed list.
 * Duplicate indices will be ignored.
 * Deleted persons will be added to the recycle bin.
 
@@ -270,9 +275,8 @@ Format: `restore INDEX [MORE_INDICES]`
 * Indices **must be positive integers** 1, 2, 3, …​
 * Duplicate indices will be ignored.
 * Restored persons will be removed from the recycle bin and added to the working list of kept contacts.
-* Persons are considered duplicate if their phone matches exactly, or email matches case-insensitively.
-  * You cannot restore persons who are duplicates of existing contacts in the working list.
-  * You cannot restore two persons who are duplicates of each other in the recycle bin.
+* You cannot restore a person who is a duplicate of an existing contact in the working list (i.e., shares the same phone number or email). The command will be rejected with an error.
+* You cannot restore two persons who are duplicates of each other (same phone or email) in a single `restore` command. The command will be rejected with an error.
 
 Examples:
 * `bin` followed by `restore 2 3` restores the 2nd and 3rd persons in the recycle bin.
@@ -284,6 +288,12 @@ Imports volunteers from a CSV file into the active address book.
 
 Format: `import FILE_PATH`
 
+* The CSV file must include the headers `name`, `phone`, `email`, and `address`. 
+  * The following headers are optional: `role`, `notes`, `tags`, `availabilities`, `records`.
+* If the file cannot be found or read, the import fails with an error.
+* Rows with invalid data are skipped — valid rows in the same file are still imported.
+* Rows that duplicate an existing contact (same phone or email) are flagged separately.
+
 Examples:
 * `import data/volunteers.csv`
 
@@ -292,6 +302,8 @@ Examples:
 Exports all active volunteers in the address book to a CSV file.
 
 Format: `export FILE_PATH`
+
+* If a file already exists at the given path, it will be overwritten without warning.
 
 Examples:
 * `export data/volunteers.csv`
