@@ -107,7 +107,7 @@ Opens a help window with a link to this user guide, in case you need a quick ref
 Format: `help`
 
 
-### Adding a person: `add`
+### Adding a volunteer: `add`
 
 Adds a new volunteer to your RosterBolt contact list.
 
@@ -128,7 +128,7 @@ Examples:
 * `add n/Betsy Crowe t/friend e/betsycrowe@example.com a/Newgate Prison p/1234567 t/criminal r/Logistics nt/Prefers morning shifts va/SATURDAY,09:00,12:00 va/SUNDAY,13:00,16:00`
 * `add n/Alex Tan p/91234567 e/alex@example.com a/NUS`
 
-### Listing all persons : `list`
+### Listing all volunteers : `list`
 
 Shows all volunteers in your RosterBolt contact list, optionally sorted by a chosen attribute. This is useful for getting an overview of your roster or finding volunteers in a particular order.
 
@@ -179,7 +179,7 @@ Format: `unalias SHORT`
 Examples:
 * `unalias ls`
 
-### Showing recycle bin of recently deleted persons : `bin`
+### Showing recycle bin of recently deleted volunteers : `bin`
 
 Opens the recycle bin, where you can see volunteers you have recently deleted. This gives you a safety net, so if you accidentally remove someone, you can find them here and restore them.
 
@@ -190,7 +190,7 @@ Format: `bin`
    * If both volunteers are **completely identical** in every field, only one of them will be kept in the recycle bin.
 * The recycle bin is cleared when you close RosterBolt, so make sure to restore any accidentally deleted volunteers before exiting.
 
-### Editing a person : `edit`
+### Editing a volunteer : `edit`
 
 Updates the details of a volunteer that's already in your RosterBolt contact list. Use this when a volunteer changes their phone number, email, availability, or any other information.
 
@@ -202,14 +202,14 @@ Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [r/ROLE] [nt/NOTES]
 * You must provide at least one field to update.
 * The values you provide will replace the existing values for those fields.
 * When you edit tags, availabilities, or records, the new values will **replace all existing values** for that field (i.e., they aren't added on top of the old ones).
-* You can remove all the person's tags, availabilities, records, role, or notes by typing `t/`, `va/`, `vr/`, `r/`, or `nt/` without specifying values after the prefix.
+* You can remove all the volunteer's tags, availabilities, records, role, or notes by typing `t/`, `va/`, `vr/`, `r/`, or `nt/` without specifying values after the prefix.
 * See [field constraints](#field-constraints) for valid values for each field.
 
 Examples:
-*  `edit 1 p/91234567 e/johndoe@example.com va/MONDAY,18:00,20:00` Edits the phone number, email address, and availability of the 1st person.
-*  `edit 2 n/Betsy Crower t/ va/ vr/` Edits the name of the 2nd person and clears all existing tags, availabilities, and records.
+*  `edit 1 p/91234567 e/johndoe@example.com va/MONDAY,18:00,20:00` Edits the phone number, email address, and availability of the 1st volunteer.
+*  `edit 2 n/Betsy Crower t/ va/ vr/` Edits the name of the 2nd volunteer and clears all existing tags, availabilities, and records.
 
-### Locating persons by keyword: `find`
+### Locating volunteers by keyword: `find`
 
 Searches your RosterBolt contact list for volunteers matching any of the given keywords, with an optional filter for availability. This is handy when you need to quickly find a specific volunteer, or locate everyone who is free on a particular day and time for an upcoming event.
 
@@ -223,7 +223,7 @@ Format: `find [m/MATCH_TYPE] [va/DAY,HH:mm,HH:mm] [KEYWORD [MORE_KEYWORDS]]`
 * `m/fz` (fuzzy) allows small spelling mistakes. Words that are up to 2 edits away (in terms of adding, removing, or changing a letter) can still match. e.g. `michigan` will match `michegan`
 * `va/DAY,HH:mm,HH:mm` filters for volunteers whose availability covers the specified time period, i.e. the volunteer's availability is on the same day, starts at or before the specified start time, and ends at or after the specified end time. See [field constraints](#field-constraints) for the `AVAILABILITY` format.
 * At least one of keywords or `va/` must be provided.
-* When both keywords and `va/` are provided, only persons matching **both** the keyword search **and** the availability filter are returned.
+* When both keywords and `va/` are provided, only volunteers matching **both** the keyword search **and** the availability filter are returned.
 * If `m/MATCH_TYPE` is specified, at least one keyword must also be provided.
 * If you provide multiple keywords, volunteers matching **any** of them will be shown (i.e. it's an `OR` search).
   e.g. `Hans Bo` will return `Hans Gruber`, `Bo Yang`
@@ -237,8 +237,8 @@ Examples:
 * `find m/kw John` also returns `john` and `John Doe`
 * `find m/ss ali` returns `Alice Pauline` and `Ali Tan`
 * `find m/fz michigan` returns `Elle Meyer` (address: `michegan ave`)
-* `find va/MONDAY,14:00,17:00` returns all persons available on Monday from 14:00 to 17:00
-* `find va/MONDAY,14:00,17:00 alice` returns persons matching `alice` who are also available on Monday from 14:00 to 17:00
+* `find va/MONDAY,14:00,17:00` returns all volunteers available on Monday from 14:00 to 17:00
+* `find va/MONDAY,14:00,17:00 alice` returns volunteers matching `alice` who are also available on Monday from 14:00 to 17:00
 
 ### Viewing volunteer statistics : `stats`
 
@@ -254,9 +254,9 @@ Examples:
 * `stats role`
 * `stats record`
 
-### Deleting a person : `delete`
+### Deleting a volunteer : `delete`
 
-Removes volunteer(s) from your RosterBolt contact list. Don't worry, deleted volunteers are moved to the recycle bin, so you can [restore](#restoring-a-deleted-person--restore) them if needed.
+Removes volunteer(s) from your RosterBolt contact list. Don't worry, deleted volunteers are moved to the recycle bin, so you can [restore](#restoring-a-deleted-volunteer--restore) them if needed.
 
 You must be viewing the working list to use this command. Otherwise, you'll see an error message and no volunteer(s) will be deleted.
 
@@ -269,11 +269,11 @@ Format: `delete INDEX [MORE_INDICES]`
 * All deleted volunteers will be moved to the recycle bin.
 
 Examples:
-* `list` followed by `delete 2 3` deletes the 2nd and 3rd persons in RosterBolt.
+* `list` followed by `delete 2 3` deletes the 2nd and 3rd volunteers in RosterBolt.
 * `list` followed by `delete 3 3 2` has the same behavior, as duplicate indices are ignored and the order of indices doesn't matter.
-* `find Betsy` followed by `delete 1` deletes the 1st person in the results of the `find` command.
+* `find Betsy` followed by `delete 1` deletes the 1st volunteer in the results of the `find` command.
 
-### Restoring a deleted person : `restore`
+### Restoring a deleted volunteer : `restore`
 
 Restores volunteers that were previously deleted, recovering them from the recycle bin.
 
@@ -290,7 +290,7 @@ Format: `restore INDEX [MORE_INDICES]`
 * Similarly, you can't restore two volunteers that share the same phone number or email in a single `restore` command.
 
 Examples:
-* `bin` followed by `restore 2 3` restores the 2nd and 3rd persons in the recycle bin.
+* `bin` followed by `restore 2 3` restores the 2nd and 3rd volunteers in the recycle bin.
 * `bin` followed by `restore 3 3 2` has the same behavior, as duplicate indices are ignored and the order of indices doesn't matter.
 
 ### Importing volunteers from a CSV file : `import`
@@ -327,7 +327,7 @@ Examples:
 
 ### Clearing all entries : `clear`
 
-Removes all volunteers from your active contact list at once. This is a quick way to start fresh, as all removed volunteers are moved to the recycle bin so you can still [restore](#restoring-a-deleted-person--restore) them before closing the app.
+Removes all volunteers from your active contact list at once. This is a quick way to start fresh, as all removed volunteers are moved to the recycle bin so you can still [restore](#restoring-a-deleted-volunteer--restore) them before closing the app.
 
 You must be viewing the working list to use this command. Otherwise, you'll see an error message and your contacts won't be cleared.
 
