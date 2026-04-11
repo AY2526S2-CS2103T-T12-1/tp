@@ -7,7 +7,7 @@ RosterBolt is a **desktop app for managing team contacts, optimized for use via 
 
 RosterBolt is built for **volunteer coordinators** who run recurring events and manage **20-500 volunteers** on their own. It's a **single-user, offline, CLI-first** contact management tool designed for fast typists who prefer keyboards to mouse interactions, are comfortable with CLI apps, and may operate without Internet access.
 
-RosterBolt reduces admin overhead by **streamlining repetitive tasks** (such as bulk deleting or modifying contacts) so you can manage volunteer manpower **efficiently and accurately**. It also lets you **track volunteer availability and service history**, **view participation statistics** at a glance, and **import/export volunteer data via CSV** for easy migration and sharing with other tools.
+RosterBolt reduces admin overhead by **streamlining repetitive tasks** (such as bulk deleting or modifying contacts) so you can manage volunteer manpower **efficiently and accurately**. It also lets you **track volunteer availability and volunteer service records**, **view participation statistics** at a glance, and **import/export volunteer data via CSV** for easy migration and sharing with other tools.
 
 * Table of Contents
 {:toc}
@@ -116,7 +116,7 @@ You must be viewing the working list to use this command. Otherwise, you'll see 
 Format: `add n/NAME p/PHONE_NUMBER e/EMAIL a/ADDRESS [t/TAG]…​ [r/ROLE] [nt/NOTES] [va/AVAILABILITY]…​ [vr/RECORD]…​`
 
 <div markdown="span" class="alert alert-primary">:bulb: **Tip:**
-You can give a volunteer any number of tags (e.g., `logistics`, `firstaid`), availability slots, and service records (including 0). Role and notes are optional.
+You can give a volunteer any number of tags (e.g., `logistics`, `firstaid`), availability slots, and volunteer records (including 0). Role and notes are optional.
 </div>
 
 * RosterBolt prevents duplicate entries. A volunteer is considered a duplicate if their phone number matches an existing contact exactly, or their email matches case-insensitively (e.g., `A@b.com` is treated as the same as `a@b.com`).
@@ -137,7 +137,7 @@ Format: `list [ATTRIBUTE [asc|desc]]`
 * Currently supported `ATTRIBUTE`: `name`, `phone`, `email`, `role`, `tag`, or `vr`.
 * Order defaults to `asc` when omitted.
 * Omitting `ATTRIBUTE` shows the list in the default order.
-* `vr` sorts by the end time of each volunteer's most recent service record. Use `list vr asc` to see who hasn't served recently (useful for distributing duties fairly), or `list vr desc` to see who served most recently.
+* `vr` sorts by the end time of each volunteer's most recent volunteer record. Use `list vr asc` to see who hasn't served recently (useful for distributing duties fairly), or `list vr desc` to see who served most recently.
   * Volunteers without any volunteer records are treated as least-recently served (i.e., they appear first when sorting in ascending order, so you can easily spot who hasn't served yet).
 
 Examples:
@@ -275,7 +275,7 @@ Examples:
 
 ### Restoring a deleted volunteer : `restore`
 
-Restores volunteers that were previously deleted, recovering them from the recycle bin.
+Restores volunteers that were previously deleted in the current session, recovering them from the recycle bin.
 
 You must be viewing the recycle bin to use this command. Otherwise, you'll see an error message and no volunteers will be restored.
 
