@@ -174,7 +174,7 @@ The sequence diagram below shows how the `find` command arguments are transforme
 The parsing flow is as follows:
 * `LogicManager` calls `AddressBookParser#parseCommand()`, which instantiates a `FindCommandParser` for the `find` command.
 * `FindCommandParser#parseArgs(...)` processes the argument multimap:
-  * If the user provides an `m/` prefix, `FindMatchType.fromToken()` determines the match type; otherwise the default keyword match type is assumed.
+  * If the user provides an `m/` prefix, `FindMatchType.fromToken()` determines the match type; otherwise the default keyword match type (`m/kw`) is assumed.
   * If the user provides a `va/` prefix, `VolunteerAvailability.fromString()` parses the availability time period.
   * Search terms are extracted from the trailing content after the last prefix, or from the preamble when no prefixes are used.
   * All parsed arguments are stored in a `ParsedFindArgs` object.
