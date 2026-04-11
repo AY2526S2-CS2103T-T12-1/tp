@@ -161,7 +161,7 @@ This section describes some noteworthy details on how certain features are imple
 
 ### Find command
 
-The `find` command is implemented as a small "pipeline" that converts user input into a single `PersonPredicate` object, and then updates the model's filtered person list by applying that predicate. The command supports text-based keyword matching (via `m/` prefix) and volunteer availability filtering (via `va/` prefix), either independently or combined. The diagram below summarizes the key classes and their relationships.
+The `find` command is implemented as a small "pipeline" that converts user input into a single `PersonPredicate` object, and then updates the model's filtered person list by applying that predicate. The command supports text-based search term matching (via `m/` prefix) and volunteer availability filtering (via `va/` prefix), either independently or combined. The diagram below summarizes the key classes and their relationships.
 
 ![Find Command Class Diagram](images/FindCommandClassDiagram.png)
 
@@ -176,12 +176,12 @@ The parsing flow is as follows:
 * `FindCommandParser#parseArgs(...)` processes the argument multimap:
   * If the user provides an `m/` prefix, `FindMatchType.fromToken()` determines the match type; otherwise the default keyword match type is assumed.
   * If the user provides a `va/` prefix, `VolunteerAvailability.fromString()` parses the availability time period.
-  * Keywords are extracted from the trailing content after the last prefix, or from the preamble when no prefixes are used.
+  * Search terms are extracted from the trailing content after the last prefix, or from the preamble when no prefixes are used.
   * All parsed arguments are stored in a `ParsedFindArgs` object.
 * `FindCommandParser#buildPredicate(...)` creates the appropriate predicate:
-  * **Keywords only**: `PersonContainsFieldsPredicateFactory.createPredicate(...)` returns a text-matching predicate.
+  * **Search terms only**: `PersonContainsFieldsPredicateFactory.createPredicate(...)` returns a text-matching predicate.
   * **Availability only**: a `PersonAvailableDuringPredicate` is created, which checks that a volunteer's availability fully covers the queried time period.
-  * **Both keywords and availability**: a `CombinedAndPersonPredicate` is created, which ANDs the text predicate and availability predicate together.
+  * **Both search terms and availability**: a `CombinedAndPersonPredicate` is created, which ANDs the text predicate and availability predicate together.
 * `FindCommandParser` constructs the `FindCommand` with the predicate and returns it to `AddressBookParser`, which returns it to `LogicManager`.
 
 #### Predicate structure
@@ -190,15 +190,15 @@ All find predicates implement `PersonPredicate`, which is a `Predicate<Person>`.
 
 **Text-matching predicates** share an abstract base class (`PersonContainsFieldsPredicate`) that:
 
-* iterates through each keyword
-* returns `true` as soon as any keyword matches any supported field (i.e. `OR` semantics across keywords)
-* checks the keyword against most `Person` fields (e.g. name, phone, email, address, role, notes, tags)
+* iterates through each search term
+* returns `true` as soon as any search term matches any supported field (i.e. `OR` semantics across search terms)
+* checks the search term against most `Person` fields (e.g. name, phone, email, address, role, notes, tags)
 * delegates the actual field-matching logic to `matchesField(...)`
 * concrete predicate classes implement the `matchesField(...)` method, keeping the overall matching logic consistent and easy to extend
 
 **`PersonAvailableDuringPredicate`** checks whether any of a person's `VolunteerAvailability` entries fully cover the queried time period (same day, starts at or before query start, ends at or after query end).
 
-**`CombinedAndPersonPredicate`** takes a list of `PersonPredicate` objects and requires all of them to match (AND logic). This is used when both keywords and availability are specified.
+**`CombinedAndPersonPredicate`** takes a list of `PersonPredicate` objects and requires all of them to match (AND logic). This is used when both search terms and availability are specified.
 
 #### Extending find
 

@@ -91,7 +91,7 @@ public class FindCommandTest {
 
     // This test and all subsequent tests of execute() are executed while viewing kept persons.
     @Test
-    public void execute_zeroKeywords_noPersonFound() {
+    public void execute_zeroSearchTerms_noPersonFound() {
         String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 0);
         PersonContainsKeywordsPredicate predicate = preparePredicate(" ");
         FindCommand command = new FindCommand(predicate);
@@ -102,7 +102,7 @@ public class FindCommandTest {
     }
 
     @Test
-    public void execute_singleKeyword_multiplePersonsFound() {
+    public void execute_singleSearchTerm_multiplePersonsFound() {
         String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 3);
         PersonContainsKeywordsPredicate predicate = preparePredicate("street");
         FindCommand command = new FindCommand(predicate);
@@ -113,7 +113,7 @@ public class FindCommandTest {
     }
 
     @Test
-    public void execute_multipleKeywords_multiplePersonsFound() {
+    public void execute_multipleSearchTerms_multiplePersonsFound() {
         String expectedMessage = String.format(MESSAGE_PERSONS_LISTED_OVERVIEW, 3);
         PersonContainsKeywordsPredicate predicate = preparePredicate("Kurz Elle Kunz");
         FindCommand command = new FindCommand(predicate);
@@ -220,17 +220,17 @@ public class FindCommandTest {
     }
 
     @Test
-    public void execute_keywordsAndAvailability_bothMustMatch() {
+    public void execute_searchTermsAndAvailability_bothMustMatch() {
         AddressBook ab = new AddressBook();
-        // Matches both name keyword "Alice" and Monday availability
+        // Matches both name search term "Alice" and Monday availability
         Person matchesBoth = new PersonBuilder().withName("Alice Tan")
                 .withPhone("91111111").withEmail("alice@example.com")
                 .withAvailabilities("MONDAY,13:00,18:00").build();
-        // Matches name keyword "Alice" but NOT Monday availability
+        // Matches name search term "Alice" but NOT Monday availability
         Person matchesNameOnly = new PersonBuilder().withName("Alice Lee")
                 .withPhone("92222222").withEmail("alicelee@example.com")
                 .withAvailabilities("TUESDAY,09:00,12:00").build();
-        // Matches Monday availability but NOT name keyword "Alice"
+        // Matches Monday availability but NOT name search term "Alice"
         Person matchesAvailOnly = new PersonBuilder().withName("Bob")
                 .withPhone("93333333").withEmail("bob@example.com")
                 .withAvailabilities("MONDAY,13:00,18:00").build();
@@ -257,21 +257,21 @@ public class FindCommandTest {
     }
 
     @Test
-    public void execute_multipleKeywordsAndAvailability_orKeywordsAndAvailability() {
+    public void execute_multipleSearchTermsAndAvailability_orSearchTermsAndAvailability() {
         AddressBook ab = new AddressBook();
-        // Matches keyword "Alice" and Monday availability
+        // Matches search term "Alice" and Monday availability
         Person aliceAvailable = new PersonBuilder().withName("Alice Tan")
                 .withPhone("91111111").withEmail("alice@example.com")
                 .withAvailabilities("MONDAY,13:00,18:00").build();
-        // Matches keyword "Charlie" and Monday availability
+        // Matches search term "Charlie" and Monday availability
         Person charlieAvailable = new PersonBuilder().withName("Charlie Lim")
                 .withPhone("92222222").withEmail("charlie@example.com")
                 .withAvailabilities("MONDAY,13:00,18:00").build();
-        // Matches keyword "Alice" but NOT Monday availability
+        // Matches search term "Alice" but NOT Monday availability
         Person aliceUnavailable = new PersonBuilder().withName("Alice Lee")
                 .withPhone("93333333").withEmail("alicelee@example.com")
                 .withAvailabilities("TUESDAY,09:00,12:00").build();
-        // Matches Monday availability but neither keyword
+        // Matches Monday availability but neither search term
         Person bobAvailable = new PersonBuilder().withName("Bob")
                 .withPhone("94444444").withEmail("bob@example.com")
                 .withAvailabilities("MONDAY,13:00,18:00").build();
@@ -299,9 +299,9 @@ public class FindCommandTest {
     }
 
     @Test
-    public void execute_keywordsAndAvailability_noMatchingPerson() {
+    public void execute_searchTermsAndAvailability_noMatchingPerson() {
         AddressBook ab = new AddressBook();
-        // Matches name keyword "Alice" but wrong day
+        // Matches name search term "Alice" but wrong day
         Person matchesNameOnly = new PersonBuilder().withName("Alice Tan")
                 .withPhone("91111111").withEmail("alice@example.com")
                 .withAvailabilities("TUESDAY,13:00,18:00").build();
@@ -339,7 +339,7 @@ public class FindCommandTest {
     }
 
     /**
-     * Parses {@code userInput} into a {@code PersonContainsKeywordsPredicate}.
+     * Parses {@code userInput} into a {@code PersonContainsKeywordsPredicate} (keyword match type).
      */
     private PersonContainsKeywordsPredicate preparePredicate(String userInput) {
         return new PersonContainsKeywordsPredicate(Arrays.asList(userInput.split("\\s+")));

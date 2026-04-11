@@ -209,22 +209,22 @@ Examples:
 *  `edit 1 p/91234567 e/johndoe@example.com va/MONDAY,18:00,20:00` Edits the phone number, email address, and availability of the 1st volunteer.
 *  `edit 2 n/Betsy Crower t/ va/ vr/` Edits the name of the 2nd volunteer and clears all existing tags, availabilities, and records.
 
-### Finding volunteers by keyword: `find`
+### Finding volunteers: `find`
 
-Finds volunteers in your RosterBolt contact list matching any of the given keywords, with an optional filter for availability. This is handy when you need to quickly find a specific volunteer, or locate everyone who's free on a particular day and time for an upcoming event.
+Finds volunteers in your RosterBolt contact list matching any of the given search terms, with an optional filter for availability. This is handy when you need to quickly find a specific volunteer, or locate everyone who's free on a particular day and time for an upcoming event.
 
-Format: `find [m/MATCH_TYPE] [va/DAY,HH:mm,HH:mm] [KEYWORD [MORE_KEYWORDS]]`
+Format: `find [m/MATCH_TYPE] [va/DAY,HH:mm,HH:mm] [SEARCH_TERM [MORE_SEARCH_TERMS]]`
 
-* **Keyword search:**
+* **Search terms:**
   * The search is case-insensitive. e.g. `hans` matches `Hans`
-  * The order of the keywords doesn't matter. e.g. `Hans Bo` matches `Bo Hans`
+  * The order of the search terms doesn't matter. e.g. `Hans Bo` matches `Bo Hans`
   * The search covers all fields: name, phone, email, address, role, notes, and tags.
-  * If you provide multiple keywords, volunteers matching **any** of them are shown (i.e. it's an `OR` search).
+  * If you provide multiple search terms, volunteers matching **any** of them are shown (i.e. it's an `OR` search).
     e.g. `Hans Bo` returns `Hans Gruber`, `Bo Yang`
 * **Match type (`m/MATCH_TYPE`):**
   * `MATCH_TYPE` is optional. If you don't specify one, keyword matching (`m/kw`) is used by default.
   * Currently supported `MATCH_TYPE`: `kw`, `ss`, `fz`. Note that `MATCH_TYPE` is case-sensitive (e.g. `m/KW` is not valid).
-  * If `m/MATCH_TYPE` is specified, at least one keyword must also be provided.
+  * If `m/MATCH_TYPE` is specified, at least one search term must also be provided.
   * `m/kw` (keyword) matches full words only. e.g. `Han` doesn't match `Hans`
   * `m/ss` (substring) matches substrings (i.e., parts of words). e.g. `Han` matches `Hans`
   * `m/fz` (fuzzy) allows small spelling mistakes. Words that are up to 2 edits away (in terms of adding, removing, or changing a letter) can still match. e.g. `michigan` matches `michegan`
@@ -232,9 +232,9 @@ Format: `find [m/MATCH_TYPE] [va/DAY,HH:mm,HH:mm] [KEYWORD [MORE_KEYWORDS]]`
   * `va/DAY,HH:mm,HH:mm` filters for volunteers whose availability covers the specified time period, i.e. the volunteer's availability is on the same day, starts at or before the specified start time, and ends at or after the specified end time.
   * See [field constraints](#field-constraints) for the `AVAILABILITY` format.
 * **General constraints:**
-  * At least one keyword or `va/` must be provided.
-  * The `m/` and `va/` prefixes can appear in any order, but keywords must appear after all prefixes. For example, `find va/MONDAY,14:00,17:00 alice` and `find va/MONDAY,14:00,17:00 m/kw alice` are valid, but `find alice va/MONDAY,14:00,17:00` is not.
-  * When both keywords and `va/` are provided, only volunteers matching at least one keyword **and** the availability filter are returned. Note that this means the search uses mixed logic: keywords are matched among themselves using `OR`, while the availability filter is applied on top as an additional `AND` condition.
+  * At least one search term or `va/` must be provided.
+  * The `m/` and `va/` prefixes can appear in any order, but search terms must appear after all prefixes. For example, `find va/MONDAY,14:00,17:00 alice` and `find va/MONDAY,14:00,17:00 m/kw alice` are valid, but `find alice va/MONDAY,14:00,17:00` is not.
+  * When both search terms and `va/` are provided, only volunteers matching at least one search term **and** the availability filter are returned. Note that this means the search uses mixed logic: search terms are matched among themselves using `OR`, while the availability filter is applied on top as an additional `AND` condition.
 
 Examples:
 * `find John` returns `john` and `John Doe`
@@ -407,7 +407,7 @@ Action | Format, Examples
 **Edit** | `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [r/ROLE] [nt/NOTES] [t/TAG]…​ [va/AVAILABILITY]…​ [vr/RECORD]…​`<br> e.g., `edit 2 n/James Lee e/jameslee@example.com va/MONDAY,14:00,17:00`
 **Edit Previous** | `editprev`
 **Export** | `export FILE_PATH`<br> e.g., `export data/volunteers.csv`
-**Find** | `find [m/MATCH_TYPE] [va/DAY,HH:mm,HH:mm] [KEYWORD [MORE_KEYWORDS]]`<br> e.g., `find m/kw James Jake`, `find m/ss ali`, `find m/fz michigan`, `find va/MONDAY,14:00,17:00`, `find va/MONDAY,14:00,17:00 alice`
+**Find** | `find [m/MATCH_TYPE] [va/DAY,HH:mm,HH:mm] [SEARCH_TERM [MORE_SEARCH_TERMS]]`<br> e.g., `find m/kw James Jake`, `find m/ss ali`, `find m/fz michigan`, `find va/MONDAY,14:00,17:00`, `find va/MONDAY,14:00,17:00 alice`
 **Import** | `import FILE_PATH`<br> e.g., `import data/volunteers.csv`
 **List** | `list [ATTRIBUTE [asc｜desc]]`<br> e.g., `list name desc`, `list vr desc`
 **Exit** | `exit`
