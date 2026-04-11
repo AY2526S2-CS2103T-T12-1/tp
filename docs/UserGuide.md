@@ -163,6 +163,9 @@ Examples:
 * `alias ls list`
 * `alias rm delete`
 * `alias wipe clear`
+* `alias f find` followed by `f va/MONDAY,14:00,17:00 alice` behaves like `find va/MONDAY,14:00,17:00 alice`.
+* `alias ep editprev` is rejected with `Alias target cannot be alias, aliases, unalias, or editprev.`
+* `alias quickadd add n/John Doe` is rejected with `Alias target must be exactly one existing command word.`
 
 ### Listing command aliases : `aliases`
 
@@ -292,6 +295,9 @@ Format: `restore INDEX [MORE_INDICES]`
 Examples:
 * `bin` followed by `restore 2 3` restores the 2nd and 3rd volunteers in the recycle bin.
 * `bin` followed by `restore 3 3 2` has the same behavior, as duplicate indices are ignored and the order of indices doesn't matter.
+* `list` followed by `restore 1` is rejected with `You must be viewing the recycle bin of recently deleted contacts to perform this command.`
+* If the 1st volunteer in the recycle bin has the same phone number or email as someone in the active list, `bin` followed by `restore 1` is rejected with `A person that you want to restore is already in the address book.`
+* If the 1st and 2nd volunteers in the recycle bin share the same phone number or email, `bin` followed by `restore 1 2` is rejected with `Two people that you want to restore have the same identity.`
 
 ### Importing volunteers from a CSV file : `import`
 
@@ -313,6 +319,10 @@ Format: `import FILE_PATH`
 
 Examples:
 * `import data/volunteers.csv`
+* If `missing.csv` doesn't exist or can't be read, `import missing.csv` is rejected with `Import failed: could not read file missing.csv`.
+* If `data/volunteers.csv` is missing the `address` header, `import data/volunteers.csv` is rejected with `Import failed: missing required headers: name, phone, email, address`.
+* If row 4 has an invalid phone number but the rest of the file is valid, `import data/volunteers.csv` imports the valid rows and reports `Invalid row details: 4 (invalid phone)`.
+* If row 5 has the same phone number or email as an existing volunteer, `import data/volunteers.csv` skips that row and reports `Duplicate row details: 5 (duplicate)`.
 
 ### Exporting volunteers to a CSV file : `export`
 
@@ -324,6 +334,9 @@ Format: `export FILE_PATH`
 
 Examples:
 * `export data/volunteers.csv`
+* `export backups/event-a.csv` creates the `backups` folder if needed and exports the active volunteers there.
+* `export data/volunteers.csv` overwrites `data/volunteers.csv` if it already exists.
+* `export` is rejected with an invalid command format error because a file path is required.
 
 ### Clearing all entries : `clear`
 
@@ -353,6 +366,8 @@ Format: `editprev`
 Examples:
 * `list` followed by `editprev` loads `list` back into the command box.
 * `delete 1` followed by `editprev` loads `delete 1` back into the command box for editing.
+* `alias rm delete` followed by `rm 1` and then `editprev` loads `rm 1`, not `delete 1`, because RosterBolt remembers what you typed.
+* Running `editprev` before any successful command is rejected with `There is no previous command to edit.`
 
 ### Saving the data
 
