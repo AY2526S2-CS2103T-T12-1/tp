@@ -1,5 +1,6 @@
 package seedu.address.model.person;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static seedu.address.testutil.Assert.assertThrows;
@@ -31,11 +32,30 @@ public class PhoneTest {
         assertFalse(Phone.isValidPhone("phone")); // non-numeric
         assertFalse(Phone.isValidPhone("9011p041")); // alphabets within digits
         assertFalse(Phone.isValidPhone("9312 1534")); // spaces within digits
+        assertFalse(Phone.isValidPhone("+")); // plus sign alone
+        assertFalse(Phone.isValidPhone("+12")); // plus sign with less than 3 digits
+        assertFalse(Phone.isValidPhone("++1234")); // more than one plus sign
+        assertFalse(Phone.isValidPhone("12+34")); // plus sign not at the start
+        assertFalse(Phone.isValidPhone("1234+")); // trailing plus sign
+        assertFalse(Phone.isValidPhone("+ 1234")); // space between plus and digits
+        assertFalse(Phone.isValidPhone("+abc")); // plus sign with letters
+        assertFalse(Phone.isValidPhone("+65 9123 4567")); // plus sign with spaces within digits
 
         // valid phone numbers
         assertTrue(Phone.isValidPhone("911")); // exactly 3 numbers
         assertTrue(Phone.isValidPhone("93121534"));
         assertTrue(Phone.isValidPhone("124293842033123")); // long phone numbers
+        assertTrue(Phone.isValidPhone("+911")); // plus sign with exactly 3 digits
+        assertTrue(Phone.isValidPhone("+6591234567")); // plus sign with country code (E.164 style)
+        assertTrue(Phone.isValidPhone("+124293842033123")); // plus sign with long phone number
+    }
+
+    @Test
+    public void constructor_validPhoneWithPlusPrefix_preservesValueVerbatim() {
+        Phone phone = new Phone("+6591234567");
+        // Phone must not normalize or strip the leading '+' — it stores the value as entered.
+        assertEquals("+6591234567", phone.value);
+        assertEquals("+6591234567", phone.toString());
     }
 
     @Test
@@ -56,5 +76,9 @@ public class PhoneTest {
 
         // different values -> returns false
         assertFalse(phone.equals(new Phone("995")));
+
+        // same digits but one has a '+' prefix -> returns false (Phone.equals is exact string match)
+        assertFalse(new Phone("+6591234567").equals(new Phone("6591234567")));
+        assertFalse(new Phone("6591234567").equals(new Phone("+6591234567")));
     }
 }

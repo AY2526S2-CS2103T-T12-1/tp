@@ -21,7 +21,7 @@ import seedu.address.testutil.PersonBuilder;
 
 public class JsonAdaptedPersonTest {
     private static final String INVALID_NAME = "R@chel";
-    private static final String INVALID_PHONE = "+651234";
+    private static final String INVALID_PHONE = "+65a1234";
     private static final String INVALID_ADDRESS = " ";
     private static final String INVALID_EMAIL = "example.com";
     private static final String INVALID_TAG = "#friend";
@@ -96,6 +96,15 @@ public class JsonAdaptedPersonTest {
                 VALID_ROLE, VALID_NOTES, VALID_TAGS, VALID_AVAILABILITIES, VALID_RECORDS);
         String expectedMessage = Phone.MESSAGE_CONSTRAINTS;
         assertThrows(IllegalValueException.class, expectedMessage, person::toModelType);
+    }
+
+    @Test
+    public void toModelType_phoneWithPlusPrefix_returnsPerson() throws Exception {
+        // Exercises the JSON round-trip for '+'-prefixed phones: a Person with an international-format
+        // phone is stored, re-read, and must reconstruct to an equal Person (no normalization).
+        Person personWithIntlPhone = new PersonBuilder(BENSON).withPhone("+6591234567").build();
+        JsonAdaptedPerson person = new JsonAdaptedPerson(personWithIntlPhone);
+        assertEquals(personWithIntlPhone, person.toModelType());
     }
 
     @Test

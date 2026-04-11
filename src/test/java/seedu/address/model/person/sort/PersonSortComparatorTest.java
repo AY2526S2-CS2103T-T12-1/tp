@@ -91,6 +91,21 @@ public class PersonSortComparatorTest {
     }
 
     @Test
+    public void compare_phoneWithPlusPrefixVsPlainDigits_plusSortsFirst() {
+        // Regression pin for the accepted caveat: PersonSortComparator compares phones lexicographically
+        // via String.CASE_INSENSITIVE_ORDER, and '+' (ASCII 43) sorts before digits (ASCII 48-57).
+        // This means '+6591234567' sorts ahead of '6591234567' in ascending order.
+        Person intlPhonePerson = new PersonBuilder().withName("Alice").withPhone("+6591234567").build();
+        Person localPhonePerson = new PersonBuilder().withName("Bob").withPhone("6591234567").build();
+
+        PersonSortComparator ascComparator = new PersonSortComparator(SortAttribute.PHONE, SortOrder.ASC);
+        assertTrue(ascComparator.compare(intlPhonePerson, localPhonePerson) < 0);
+
+        PersonSortComparator descComparator = new PersonSortComparator(SortAttribute.PHONE, SortOrder.DESC);
+        assertTrue(descComparator.compare(intlPhonePerson, localPhonePerson) > 0);
+    }
+
+    @Test
     public void compare_tagOrderIgnoresInputOrder_returnsZero() {
         Person first = new PersonBuilder().withTags("beta", "alpha").build();
         Person second = new PersonBuilder().withTags("alpha", "beta").build();

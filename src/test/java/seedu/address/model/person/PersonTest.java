@@ -110,6 +110,14 @@ public class PersonTest {
         // different phone and different email -> returns false
         editedBob = new PersonBuilder(BOB).withPhone(VALID_PHONE_AMY).withEmail(VALID_EMAIL_AMY).build();
         assertFalse(BOB.isSamePerson(editedBob));
+
+        // same digits but only one has a '+' prefix, different email -> returns false
+        // (Phone.equals is exact string match, so '+6591234567' and '6591234567' are NOT duplicates.)
+        Person plusPhonePerson = new PersonBuilder(ALICE)
+                .withPhone("+6591234567").withEmail(VALID_EMAIL_BOB).build();
+        Person plainPhonePerson = new PersonBuilder(ALICE)
+                .withPhone("6591234567").withEmail(VALID_EMAIL_AMY).build();
+        assertFalse(plusPhonePerson.isSamePerson(plainPhonePerson));
     }
 
     @Test
@@ -137,6 +145,11 @@ public class PersonTest {
         // different phone -> returns false
         editedAlice = new PersonBuilder(ALICE).withPhone(VALID_PHONE_BOB).build();
         assertFalse(ALICE.equals(editedAlice));
+
+        // same digits but one has a '+' prefix -> returns false (Phone.equals is exact string match)
+        Person alicePlusPhone = new PersonBuilder(ALICE).withPhone("+6591234567").build();
+        Person alicePlainPhone = new PersonBuilder(ALICE).withPhone("6591234567").build();
+        assertFalse(alicePlusPhone.equals(alicePlainPhone));
 
         // different email -> returns false
         editedAlice = new PersonBuilder(ALICE).withEmail(VALID_EMAIL_BOB).build();
