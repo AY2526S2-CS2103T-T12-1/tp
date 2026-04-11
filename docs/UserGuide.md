@@ -88,7 +88,10 @@ Instead, please consider rephrasing the input to avoid the need for such abbrevi
 Any extra whitespaces at the start or end of a field value are automatically removed before validation. A field is considered blank if nothing remains after removing these spaces.
 
 * **Name**: Letters, numbers, and spaces only. Must start with letters or numbers, and must not be blank.
-* **Phone**: Numbers only, at least 3 digits.
+* **Phone**: At least 3 digits. May optionally start with a single `+` for international numbers (e.g. `+6591234567`).
+  * Phone numbers are stored exactly as entered and compared as plain strings, so `+6591234567` and `6591234567` are treated as different phone numbers (e.g. duplicate detection won't flag them as the same on the basis of phone alone).
+  * Sorting by phone number is character-by-character, not numeric: in `list phone asc` (ascending), `+`-prefixed entries appear before plain-digit ones; in `list phone desc` (descending), they appear after.
+  * Keyword find (`m/kw`) needs your search term to match the stored phone exactly, so the `+` must be included if the stored phone has one. Substring find (`m/ss`) matches any portion of the value, and fuzzy find (`m/fz`) tolerates up to 2 edits per word — both will match `6591234567` against a stored `+6591234567`.
 * **Email**: Must be in `local-part@domain` format. The local-part is made up of alphanumeric chunks, optionally separated by single special characters (`+_.-`), and must start and end with an alphanumeric character. The domain is made up of one or more labels separated by periods. Each label must start and end with an alphanumeric character, may contain hyphens in between, and can't contain underscores. The last label must be at least 2 characters long. A single-label domain such as `localhost` is allowed.
 * **Address**: Any characters allowed, but must not be blank after trimming.
 * **Tag**: Letters and numbers only. Must not be blank.
