@@ -30,6 +30,12 @@ public class ListCommandParserTest {
     }
 
     @Test
+    public void parse_caseInsensitiveArgs_returnsListCommand() {
+        assertParseSuccess(parser, "ROLE", new ListCommand(SortAttribute.ROLE, SortOrder.ASC));
+        assertParseSuccess(parser, "EMAIL DESC", new ListCommand(SortAttribute.EMAIL, SortOrder.DESC));
+    }
+
+    @Test
     public void parse_invalidArgs_throwsParseException() {
         assertParseFailure(parser, "asc",
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, ListCommand.MESSAGE_USAGE));

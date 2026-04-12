@@ -136,6 +136,7 @@ Format: `list [ATTRIBUTE [asc|desc]]`
 
 * **Sorting attribute (`ATTRIBUTE`):**
   * Currently supported `ATTRIBUTE`: `name`, `phone`, `email`, `address`, `role`, `tag`, or `vr`.
+  * `ATTRIBUTE` is case-insensitive (e.g., `list ROLE` works the same as `list role`).
   * Omitting `ATTRIBUTE` shows the list in the default order.
 * **Sort order (`asc|desc`):**
   * Order defaults to `asc` when omitted.
