@@ -206,6 +206,7 @@ Format: `edit INDEX [n/NAME] [p/PHONE] [e/EMAIL] [a/ADDRESS] [r/ROLE] [nt/NOTES]
 * The values you provide replace the existing values for those fields.
 * When you edit tags, availabilities, or records, the new values **replace all existing values** for that field (i.e., they aren't added on top of the old ones).
 * You can remove all the volunteer's tags, availabilities, records, role, or notes by typing `t/`, `va/`, `vr/`, `r/`, or `nt/` without specifying values after the prefix.
+  * To clear tags, availabilities, or records, the empty prefix must be the only occurrence of that prefix. For example, use `edit 1 t/` to clear all tags; `edit 1 t/ t/` and `edit 1 t/friend t/` are not accepted because the new tags are mutually contradictory.
 * See [field constraints](#field-constraints) for valid values for each field.
 
 Examples:
