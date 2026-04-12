@@ -638,20 +638,6 @@ testers are expected to do more *exploratory* testing.
       1. Re-launch the app.<br>
          Expected: App starts with a set of sample contacts. A new `rosterbolt.json` is created in `data/`.
 
-   1. Simulating a corrupted data file (invalid JSON)
-
-      1. Open `data/rosterbolt.json` in a text editor. Replace its entire contents with `not a json file`.
-
-      1. Re-launch the app.<br>
-         Expected: App starts with an empty address book (no contacts shown).
-
-   1. Simulating illegal values in a valid JSON file
-
-      1. Open `data/rosterbolt.json` in a text editor. Within the `"persons"` array, edit two different person entries to have the same `"phone"` value (e.g., set both to `"91234567"`).
-
-      1. Re-launch the app.<br>
-         Expected: App starts with an empty address book. A person is considered a duplicate if their phone matches OR their email matches (case-insensitive), so the duplicate phone triggers the integrity check.
-
 1. Verifying data persistence after modifications
 
    1. Launch the app. Add a new person using `add n/Alex Tan p/91234567 e/alex@example.com a/NUS`.
