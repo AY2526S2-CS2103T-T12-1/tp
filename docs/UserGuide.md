@@ -323,6 +323,12 @@ Format: `import FILE_PATH`
 
 * Your CSV file must include the column headers `name`, `phone`, `email`, and `address`. 
   * The following headers are optional: `role`, `notes`, `tags`, `availabilities`, `records`.
+* RosterBolt imports standard CSV. For manually edited CSV files, any field containing commas must be enclosed in double quotes.
+  * This is especially important for the optional structured fields `availabilities` and `records`.
+  * `availabilities` values use the format `DAY,HH:mm,HH:mm`, so a valid CSV cell looks like `"MONDAY,09:00,12:00"`.
+  * `records` values use the format `yyyy-MM-ddTHH:mm,yyyy-MM-ddTHH:mm`, so a valid CSV cell looks like `"2026-04-01T09:00,2026-04-01T12:00"`.
+  * Blank `availabilities` and `records` fields are allowed.
+  * CSV files exported by RosterBolt already use the correct format and can be imported back directly.
 * If the file can't be found or read, the import fails, and you'll see an error message.
 * Values in each column must conform to the [field constraints](#field-constraints).
 * Rows with invalid data are skipped, but valid rows in the same file are still imported, meaning one bad row doesn't block the rest.
@@ -335,6 +341,21 @@ Format: `import FILE_PATH`
 
 Examples:
 * `import data/volunteers.csv`
+* Correct CSV content with quoted structured fields:
+
+```csv
+name,phone,email,address,availabilities,records
+Bob Lim,92345678,bob@example.com,NUS,"MONDAY,09:00,12:00","2026-04-01T09:00,2026-04-01T12:00"
+Alice Tan,91234567,alice@example.com,NUS,,
+```
+
+* Incorrect CSV content:
+
+```csv
+Bob Lim,92345678,bob@example.com,NUS,MONDAY,09:00,12:00,2026-04-01T09:00,2026-04-01T12:00
+```
+
+  Unquoted commas are interpreted as column separators in CSV, so rows like this do not match the expected columns and may be skipped as invalid.
 
 ### Exporting volunteers to a CSV file : `export`
 
