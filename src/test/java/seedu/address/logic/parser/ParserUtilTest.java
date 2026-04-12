@@ -91,15 +91,16 @@ public class ParserUtilTest {
     @Test
     public void parseFilePath_blankInput_throwsParseException() {
         assertThrows(ParseException.class,
-                String.format(MESSAGE_INVALID_COMMAND_FORMAT, ExportCommand.MESSAGE_USAGE),
-                () -> ParserUtil.parseFilePath(" \t ", ExportCommand.MESSAGE_USAGE));
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                    ExportCommand.MESSAGE_USAGE), () -> ParserUtil.parseFilePath(" \t ", ExportCommand.MESSAGE_USAGE));
     }
 
     @Test
     public void parseFilePath_multipleTokens_throwsParseException() {
         assertThrows(ParseException.class,
-                String.format(MESSAGE_INVALID_COMMAND_FORMAT, ExportCommand.MESSAGE_USAGE),
-                () -> ParserUtil.parseFilePath("data/volunteers.csv extra", ExportCommand.MESSAGE_USAGE));
+                String.format(MESSAGE_INVALID_COMMAND_FORMAT,
+                    ExportCommand.MESSAGE_USAGE), () -> ParserUtil.parseFilePath("data/volunteers.csv extra",
+                    ExportCommand.MESSAGE_USAGE));
     }
 
     @Test
