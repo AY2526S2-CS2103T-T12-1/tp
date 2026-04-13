@@ -91,7 +91,7 @@ public class EditCommandParser implements Parser<EditCommand> {
 
     /**
      * Parses {@code Collection<String> tags} into a {@code Set<Tag>} if {@code tags} is non-empty.
-     * If {@code tags} contain only one element which is an empty string, it will be parsed into a
+     * If {@code tags} contain only empty strings, it will be parsed into a
      * {@code Set<Tag>} containing zero tags.
      */
     private Optional<Set<Tag>> parseTagsForEdit(Collection<String> tags) throws ParseException {
@@ -100,14 +100,14 @@ public class EditCommandParser implements Parser<EditCommand> {
         if (tags.isEmpty()) {
             return Optional.empty();
         }
-        Collection<String> tagSet = tags.size() == 1 && tags.contains("") ? Collections.emptySet() : tags;
+        Collection<String> tagSet = areAllValuesEmpty(tags) ? Collections.emptySet() : tags;
         return Optional.of(ParserUtil.parseTags(tagSet));
     }
 
     /**
      * Parses {@code Collection<String> availabilities} into a {@code Set<VolunteerAvailability>}
      * if {@code availabilities} is non-empty.
-     * If {@code availabilities} contain only one element which is an empty string, it will be parsed into an
+     * If {@code availabilities} contain only empty strings, it will be parsed into an
      * empty set.
      */
     private Optional<Set<VolunteerAvailability>> parseAvailabilitiesForEdit(Collection<String> availabilities)
@@ -118,14 +118,14 @@ public class EditCommandParser implements Parser<EditCommand> {
             return Optional.empty();
         }
         Collection<String> availabilitySet =
-                availabilities.size() == 1 && availabilities.contains("") ? Collections.emptySet() : availabilities;
+                areAllValuesEmpty(availabilities) ? Collections.emptySet() : availabilities;
         return Optional.of(ParserUtil.parseVolunteerAvailabilities(availabilitySet));
     }
 
     /**
      * Parses {@code Collection<String> records} into a {@code Set<VolunteerRecord>}
      * if {@code records} is non-empty.
-     * If {@code records} contain only one element which is an empty string, it will be parsed into an empty set.
+     * If {@code records} contain only empty strings, it will be parsed into an empty set.
      */
     private Optional<Set<VolunteerRecord>> parseRecordsForEdit(Collection<String> records) throws ParseException {
         assert records != null;
@@ -133,8 +133,12 @@ public class EditCommandParser implements Parser<EditCommand> {
         if (records.isEmpty()) {
             return Optional.empty();
         }
-        Collection<String> recordSet = records.size() == 1 && records.contains("") ? Collections.emptySet() : records;
+        Collection<String> recordSet = areAllValuesEmpty(records) ? Collections.emptySet() : records;
         return Optional.of(ParserUtil.parseVolunteerRecords(recordSet));
+    }
+
+    private boolean areAllValuesEmpty(Collection<String> values) {
+        return values.stream().allMatch(String::isEmpty);
     }
 
 }

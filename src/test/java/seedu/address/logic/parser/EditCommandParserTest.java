@@ -276,9 +276,35 @@ public class EditCommandParserTest {
     }
 
     @Test
+    public void parse_resetTagsWithRepeatedEmptyPrefixes_success() {
+        Index targetIndex = INDEX_THIRD_PERSON;
+        String userInput = targetIndex.getOneBased() + TAG_EMPTY + TAG_EMPTY;
+
+        EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder().withTags().build();
+        EditCommand expectedCommand = new EditCommand(targetIndex, descriptor);
+
+        assertParseSuccess(parser, userInput, expectedCommand);
+    }
+
+    @Test
     public void parse_resetAvailabilityAndRecords_success() {
         Index targetIndex = INDEX_THIRD_PERSON;
         String userInput = targetIndex.getOneBased() + AVAILABILITY_EMPTY + RECORD_EMPTY;
+
+        EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder()
+                .withAvailabilities()
+                .withRecords()
+                .build();
+        EditCommand expectedCommand = new EditCommand(targetIndex, descriptor);
+
+        assertParseSuccess(parser, userInput, expectedCommand);
+    }
+
+    @Test
+    public void parse_resetAvailabilityAndRecordsWithRepeatedEmptyPrefixes_success() {
+        Index targetIndex = INDEX_THIRD_PERSON;
+        String userInput = targetIndex.getOneBased()
+                + AVAILABILITY_EMPTY + AVAILABILITY_EMPTY + RECORD_EMPTY + RECORD_EMPTY;
 
         EditPersonDescriptor descriptor = new EditPersonDescriptorBuilder()
                 .withAvailabilities()
