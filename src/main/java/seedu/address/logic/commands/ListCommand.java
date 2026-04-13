@@ -24,6 +24,7 @@ public class ListCommand extends Command {
             + "Parameters: list [ATTRIBUTE [asc|desc]]\n"
             + "Currently supported ATTRIBUTE: name, phone, email, address, role, tag, vr\n"
             + "Example: list name desc";
+    public static final String MESSAGE_EXTRA_ARGUMENTS = "Too many arguments provided!\n" + MESSAGE_USAGE;
 
     private final SortAttribute sortAttribute;
     private final SortOrder sortOrder;

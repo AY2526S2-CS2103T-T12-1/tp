@@ -43,7 +43,10 @@ public class ListCommandParserTest {
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, ListCommand.MESSAGE_USAGE));
         assertParseFailure(parser, "unknown",
                 String.format(MESSAGE_INVALID_COMMAND_FORMAT, ListCommand.MESSAGE_USAGE));
-        assertParseFailure(parser, "name desc extra",
-                String.format(MESSAGE_INVALID_COMMAND_FORMAT, ListCommand.MESSAGE_USAGE));
+    }
+
+    @Test
+    public void parse_extraArguments_throwsParseException() {
+        assertParseFailure(parser, "name desc extra", ListCommand.MESSAGE_EXTRA_ARGUMENTS);
     }
 }
